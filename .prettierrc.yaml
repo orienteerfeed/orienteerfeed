@@ -1,0 +1,6 @@
+singleQuote: true
+trailingComma: "all"
+overrides:
+  - files: "bin/*.js"
+    options:
+      trailingComma: "es5"

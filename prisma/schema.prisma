@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+model Sport {
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
+  name   String  @unique
+  events Event[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  email     String   @unique
+  firstname String
+  lastname  String
+  password  String   @db.VarChar(255)
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  sport     Sport    @relation(fields: [sportId], references: [id])
+  sportId   Int      @db.UnsignedInt
+  name      String
+  organizer String?
+  date      DateTime @db.Date
+  location  String?
+  zeroTime  DateTime @db.DateTime()
+  relay     Boolean  @default(false)
+  published Boolean  @default(false)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?     @db.UnsignedInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  classes   Class[]
+}
+
+model Class {
+  id               Int          @id @default(autoincrement()) @db.UnsignedInt
+  event            Event        @relation(fields: [eventId], references: [id])
+  eventId          String
+  externalId       String?
+  name             String
+  length           Int?
+  climb            Int?
+  controlsCount    Int?
+  competitorsCount Int?
+  printedMaps      Int?
+  minAge           Int?
+  maxAge           Int?
+  sex              Sex          @default(B)
+  status           ClassStatus  @default(NORMAL)
+  competitors      Competitor[]
+}
+
+model Competitor {
+  id           Int          @id @default(autoincrement()) @db.UnsignedInt
+  class        Class        @relation(fields: [classId], references: [id])
+  classId      Int          @db.UnsignedInt
+  firstname    String
+  lastname     String
+  nationality  String?      @db.Char(3)
+  registration String       @db.VarChar(10)
+  license      String?      @db.Char(1)
+  ranking      Int?         @db.UnsignedInt
+  organisation String?
+  shortName    String?      @db.VarChar(10)
+  card         Int?         @db.UnsignedInt
+  startTime    DateTime?
+  finishTime   DateTime?
+  time         Int?
+  status       ResultStatus @default(Inactive)
+}
+
+enum Sex {
+  B
+  M
+  F
+}
+
+enum ClassStatus {
+  NORMAL
+  DIVIDED
+  JOINED
+  INVALIDATED
+  INVALIDATEDNOFEE
+}
+
+enum ResultStatus {
+  OK
+  Finished
+  MissingPunch
+  Disqualified
+  DidNotFinish
+  Active
+  Inactive
+  OverTime
+  SportingWithdrawal
+  NotCompeting
+  Moved
+  MovedUp
+  DidNotStart
+  DidNotEnter
+  Cancelled
+}
