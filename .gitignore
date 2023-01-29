@@ -17,7 +17,7 @@ npm-debug.log
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
-/build/
+/build/*.js
 
 # dotenv environment variables file
 .env
@@ -37,7 +37,7 @@ lerna-debug.log*
 
 /tmp/*
 !/tmp/.gitkeep
-/public/*
+#/public/*
 
 # yarn v2
 
