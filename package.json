@@ -10,7 +10,7 @@
     "dev:debug": "backpack dev --inspect --inspect-brk",
     "start": "node ./build/main.js",
     "prestart": "run-s build",
-    "build" : "babel src/index.js --out-file ./main.js",
+    "build" : "babel src/index.js --out-file build/main.js",
     "prettier": "prettier --write \"src/**/*.js\" README.md",
     "test": "jest"
   },
