@@ -18,7 +18,7 @@ export const typeDef = /* GraphQL */ `
     card: Int
     startTime: String
     finishTime: String
-    time: Int!
+    time: Int
     status: String
   }
 `;

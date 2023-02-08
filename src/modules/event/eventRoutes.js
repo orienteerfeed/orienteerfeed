@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
-//import { PrismaClient } from '@prisma/client';
 
 import { validation, error, success } from '../../utils/responseApi.js';
 import { formatErrors } from '../../utils/errors.js';
@@ -81,13 +80,17 @@ router.get(
 
 router.get(
   '/:eventId/results',
-  [check('eventId').not().isEmpty().isString()],
+  [
+    check('eventId').not().isEmpty().isString(),
+    check('class').isNumeric().optional(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json(validation(formatErrors(errors)));
     }
     const { eventId } = req.params;
+    const classes = req.query.class;
     // Everything went fine.
     let dbResponse;
     try {
@@ -121,6 +124,7 @@ router.get(
                 },
               },
             },
+            where: { id: classes && parseInt(classes) },
           },
         },
       });

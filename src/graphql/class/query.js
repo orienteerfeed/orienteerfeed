@@ -9,3 +9,9 @@ export const eventClasses = (_, { eventId }, context) => {
     where: { eventId: eventId },
   });
 };
+
+export const eventClassesByIds = (_, { eventId, ids }, context) => {
+  return prisma.class.findMany({
+    where: { eventId: eventId, id: { in: ids } },
+  });
+};

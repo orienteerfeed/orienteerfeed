@@ -3,7 +3,6 @@ import { check, validationResult } from 'express-validator';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import helmet from 'helmet';
 
 import unSecureRoutes from './unSecureRoutes.js';
 import { error } from './utils/responseApi.js';
@@ -14,8 +13,6 @@ import prisma from './utils/context.js';
 const { PORT = 3001 } = process.env;
 
 const app = express();
-
-app.use(helmet());
 
 app.use(express.json());
 app.use(cors());
