@@ -26,7 +26,7 @@ const IOF_XML_SCHEMA =
 
 /**
  * @swagger
- * /upload/iof:
+ * /api/upload/iof:
  *  post:
  *    summary: Upload IOX XML 3
  *    description: Upload data file containing the classes specifications, start list or result list.

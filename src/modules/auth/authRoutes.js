@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *  post:
  *      summary: Authenticate existing user
  *      description: User authentication
@@ -90,7 +90,7 @@ router.post(
 
 /**
  * @swagger
- * /auth/signup:
+ * /api/auth/signup:
  *  post:
  *    summary: Register new user
  *    description: User registration

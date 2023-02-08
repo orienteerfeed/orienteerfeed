@@ -13,7 +13,7 @@ const router = Router();
 
 /**
  * @swagger
- * /event:
+ * /api/event:
  *  get:
  *    summary: All event in the app
  *    description: Get all available events
@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /event/{id}:
+ * /api/event/{id}:
  *  get:
  *    summary: Event detail
  *    description: Get detail info about the event
@@ -108,7 +108,7 @@ router.get(
 
 /**
  * @swagger
- * /event/{id}/results:
+ * /api/event/{id}/results:
  *  get:
  *    summary: Class definition with results
  *    description: Get event class definition and competitors
