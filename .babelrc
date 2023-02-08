@@ -5,12 +5,23 @@
       {
         "targets": {
           "node": "current"
-        }
+        },
+        "modules": false
       }
     ]
   ],
+  "assumptions": {
+    "setSpreadProperties": true
+  },
   "plugins": [
     "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-proposal-object-rest-spread"
+    ["@babel/plugin-proposal-object-rest-spread", { "useBuiltIns": true }],
+    [
+      "@babel/plugin-transform-regenerator",
+      {
+        "async": false
+      }
+    ],
+    ["@babel/plugin-transform-parameters"]
   ]
 }
