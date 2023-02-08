@@ -10,6 +10,17 @@ const router = Router();
 //const prisma = new PrismaClient();
 
 // Event routes
+
+/**
+ * @swagger
+ * /event:
+ *  get:
+ *    summary: All event in the app
+ *    description: Get all available events
+ *    responses:
+ *      200:
+ *        description: Array of events
+ */
 router.get('/', async (req, res) => {
   // Everything went fine.
   let dbResponse;
@@ -35,6 +46,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /event/{id}:
+ *  get:
+ *    summary: Event detail
+ *    description: Get detail info about the event
+ *    parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: String ID of the event to retrieve.
+ *         schema:
+ *           type: string
+ *    responses:
+ *      200:
+ *        description: Array of events
+ */
 router.get(
   '/:eventId',
   [check('eventId').not().isEmpty().isString()],
@@ -78,6 +106,31 @@ router.get(
   },
 );
 
+/**
+ * @swagger
+ * /event/{id}/results:
+ *  get:
+ *    summary: Class definition with results
+ *    description: Get event class definition and competitors
+ *    parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: String ID of the event to retrieve.
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: class
+ *         required: false
+ *         description: ID of the class whose results you want to retrieve.
+ *         schema:
+ *           type: integer
+ *    responses:
+ *      200:
+ *        description: Event with array of classes and competitors
+ *      500:
+ *        description: Internal server error
+ */
 router.get(
   '/:eventId/results',
   [

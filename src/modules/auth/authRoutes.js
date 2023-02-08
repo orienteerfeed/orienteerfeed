@@ -10,6 +10,33 @@ import { formatErrors } from '../../utils/errors.js';
 const router = Router();
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /auth/login:
+ *  post:
+ *      summary: Authenticate existing user
+ *      description: User authentication
+ *      parameters:
+ *       - in: body
+ *         name: email
+ *         required: true
+ *         description: User's email as username.
+ *         schema:
+ *           type: string
+ *           example: user@example.com
+ *       - in: body
+ *         name: password
+ *         required: true
+ *         description: User's password.
+ *         schema:
+ *           type: string
+ *           example: Password123
+ *      responses:
+ *        200:
+ *          description: Return JWT token
+ *        401:
+ *          description: Not authenticated
+ */
 router.post(
   '/login',
   [
@@ -61,6 +88,49 @@ router.post(
   },
 );
 
+/**
+ * @swagger
+ * /auth/signup:
+ *  post:
+ *    summary: Register new user
+ *    description: User registration
+ *    parameters:
+ *       - in: body
+ *         name: firstname
+ *         required: true
+ *         description: User's firstname.
+ *         schema:
+ *           type: string
+ *           example: Jan
+ *       - in: body
+ *         name: lastname
+ *         required: true
+ *         description: User's lastname.
+ *         schema:
+ *           type: string
+ *           example: Novák
+ *       - in: body
+ *         name: email
+ *         required: true
+ *         description: User's email as username.
+ *         schema:
+ *           type: string
+ *           example: user@example.com
+ *       - in: body
+ *         name: password
+ *         required: true
+ *         description: User's password.
+ *         schema:
+ *           type: string
+ *           example: Password123
+ *    responses:
+ *      200:
+ *        description: User successfuly created
+ *      422:
+ *        description: This email is already registered
+ *      500:
+ *        description: Database errors
+ */
 router.post(
   '/signup',
   [

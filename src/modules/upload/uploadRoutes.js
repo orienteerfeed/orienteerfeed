@@ -23,6 +23,28 @@ const IOF_XML_SCHEMA =
 // Link all submodules here
 
 // Upload routes
+
+/**
+ * @swagger
+ * /upload/iof:
+ *  post:
+ *    summary: Upload IOX XML 3
+ *    description: Upload data file containing the classes specifications, start list or result list.
+ *    parameters:
+ *       - in: body
+ *         name: eventId
+ *         required: true
+ *         description: String ID of the event to upload data.
+ *         schema:
+ *           type: string
+ *    responses:
+ *      200:
+ *        description: Iof xml uploaded successfully
+ *      422:
+ *        description: Validation errors
+ *      500:
+ *        description: Internal server error
+ */
 router.post(
   '/iof',
   upload,

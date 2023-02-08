@@ -3,6 +3,8 @@ import { check, validationResult } from 'express-validator';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 import unSecureRoutes from './unSecureRoutes.js';
 import { error } from './utils/responseApi.js';
@@ -18,11 +20,37 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: 'OriCloud API',
+      version: '1.0.0',
+      description:
+        'This is a REST API application made with Express. It retrieves data from JSONPlaceholder.',
+    },
+  },
+  apis: ['./src/index.js', './src/modules/**/*.js'], // files containing annotations as above
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+console.log(swaggerDocs);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // API ENDPOINTS
 
 // unsecured routes for login, registration, etc.
 app.use(unSecureRoutes);
 
+/**
+ * @swagger
+ * /:
+ *  get:
+ *    summary: Hello World! Test endpoint.
+ *    description: Get hello world
+ *    responses:
+ *      200:
+ *        description: Return page with string Hello World!
+ */
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
@@ -69,6 +97,16 @@ const gplServer = new ApolloServer({
 });
 await gplServer.start();
 
+/**
+ * @swagger
+ * /graphql:
+ *  get:
+ *    summary: Play with Graphql in sandbox
+ *    description: GraphQL Playground
+ *    responses:
+ *      200:
+ *        description: Success
+ */
 app.use('/graphql', expressMiddleware(gplServer));
 
 // 404 - not found handling
