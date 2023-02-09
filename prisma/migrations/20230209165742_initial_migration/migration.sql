@@ -1,36 +1,50 @@
-/*
-  Warnings:
-
-  - You are about to alter the column `zeroTime` on the `event` table. The data in that column could be lost. The data in that column will be cast from `DateTime(3)` to `DateTime`.
-  - Added the required column `sportId` to the `Event` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `password` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updatedAt` to the `User` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE `event` ADD COLUMN `relay` BOOLEAN NOT NULL DEFAULT false,
-    ADD COLUMN `sportId` INTEGER NOT NULL,
-    MODIFY `date` DATE NOT NULL,
-    MODIFY `zeroTime` DATETIME NOT NULL;
-
--- AlterTable
-ALTER TABLE `user` ADD COLUMN `active` BOOLEAN NOT NULL DEFAULT false,
-    ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    ADD COLUMN `password` VARCHAR(255) NOT NULL,
-    ADD COLUMN `updatedAt` DATETIME(3) NOT NULL;
-
 -- CreateTable
 CREATE TABLE `Sport` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `Sport_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `User` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(191) NOT NULL,
+    `firstname` VARCHAR(191) NOT NULL,
+    `lastname` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `active` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Event` (
+    `id` VARCHAR(191) NOT NULL,
+    `sportId` INTEGER UNSIGNED NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `organizer` VARCHAR(191) NULL,
+    `date` DATE NOT NULL,
+    `location` VARCHAR(191) NULL,
+    `zeroTime` DATETIME NOT NULL,
+    `relay` BOOLEAN NOT NULL DEFAULT false,
+    `published` BOOLEAN NOT NULL DEFAULT false,
+    `authorId` INTEGER UNSIGNED NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Class` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `eventId` VARCHAR(191) NOT NULL,
+    `externalId` VARCHAR(191) NULL,
     `name` VARCHAR(191) NOT NULL,
     `length` INTEGER NULL,
     `climb` INTEGER NULL,
@@ -47,17 +61,17 @@ CREATE TABLE `Class` (
 
 -- CreateTable
 CREATE TABLE `Competitor` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `classId` INTEGER NOT NULL,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `classId` INTEGER UNSIGNED NOT NULL,
     `firstname` VARCHAR(191) NOT NULL,
     `lastname` VARCHAR(191) NOT NULL,
-    `nationality` VARCHAR(191) NULL,
-    `registration` VARCHAR(191) NOT NULL,
-    `license` VARCHAR(191) NULL,
-    `ranking` INTEGER NULL,
+    `nationality` CHAR(3) NULL,
+    `registration` VARCHAR(10) NOT NULL,
+    `license` CHAR(1) NULL,
+    `ranking` INTEGER UNSIGNED NULL,
     `organisation` VARCHAR(191) NULL,
-    `shortName` VARCHAR(191) NULL,
-    `card` INTEGER NULL,
+    `shortName` VARCHAR(10) NULL,
+    `card` INTEGER UNSIGNED NULL,
     `startTime` DATETIME(3) NULL,
     `finishTime` DATETIME(3) NULL,
     `time` INTEGER NULL,
@@ -68,6 +82,9 @@ CREATE TABLE `Competitor` (
 
 -- AddForeignKey
 ALTER TABLE `Event` ADD CONSTRAINT `Event_sportId_fkey` FOREIGN KEY (`sportId`) REFERENCES `Sport`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Event` ADD CONSTRAINT `Event_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Class` ADD CONSTRAINT `Class_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
