@@ -4,8 +4,8 @@ export const competitorById = (_, { id }, context) => {
     where: { id: id },
   });
 };
-export const eventCompetitors = (_, { eventId }, context) => {
+export const competitorsByClass = (_, { id }, context) => {
   return prisma.competitor.findMany({
-    where: { eventId: eventId },
+    where: { classId: id },
   });
 };

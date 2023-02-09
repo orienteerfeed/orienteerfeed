@@ -15,7 +15,7 @@ const resolvers = {
   Class: {
     competitors(parent, _, context) {
       return prisma.competitor.findMany({
-        where: { classId: 4 },
+        where: { classId: parent.id },
       });
     },
   },

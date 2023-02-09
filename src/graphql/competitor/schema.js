@@ -1,7 +1,7 @@
 export const typeDef = /* GraphQL */ `
   extend type Query {
     competitorById(id: Int!): Competitor!
-    eventCompetitors(eventId: String!): [Competitor!]
+    competitorsByClass(id: Int!): [Competitor!]
   }
   type Competitor {
     id: Int!

@@ -8,7 +8,9 @@ COPY . .
 
 RUN npm install
 
-RUN npx prisma migrate deploy
+RUN npx prisma generate
+
+#RUN npx prisma migrate deploy
 
 EXPOSE 3001
 
