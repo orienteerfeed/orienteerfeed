@@ -145,40 +145,13 @@ router.get(
     const { eventId } = req.params;
     const classes = req.query.class;
     // Everything went fine.
-    let dbResponse;
+    let dbResponseEvent;
     try {
-      dbResponse = await prisma.event.findUnique({
+      dbResponseEvent = await prisma.event.findUnique({
         where: { id: eventId },
         select: {
-          name: true,
-          classes: {
-            select: {
-              id: true,
-              externalId: true,
-              name: true,
-              length: true,
-              climb: true,
-              controlsCount: true,
-              competitors: {
-                select: {
-                  id: true,
-                  lastname: true,
-                  firstname: true,
-                  organisation: true,
-                  shortName: true,
-                  registration: true,
-                  license: true,
-                  ranking: true,
-                  card: true,
-                  startTime: true,
-                  finishTime: true,
-                  time: true,
-                  status: true,
-                },
-              },
-            },
-            where: { id: classes && parseInt(classes) },
-          },
+          id: true,
+          relay: true,
         },
       });
     } catch (err) {
@@ -192,9 +165,172 @@ router.get(
           ),
         );
     }
+
+    if (!dbResponseEvent) {
+      return res
+        .status(422)
+        .json(
+          error(`Event with ID ${eventId} does not exist in the database`, 422),
+        );
+    }
+
+    let eventData;
+    if (!dbResponseEvent.relay) {
+      // Return data for an individual competition
+      let dbIndividualResponse;
+      try {
+        dbIndividualResponse = await prisma.event.findUnique({
+          where: { id: eventId },
+          select: {
+            name: true,
+            classes: {
+              select: {
+                id: true,
+                externalId: true,
+                name: true,
+                length: true,
+                climb: true,
+                controlsCount: true,
+                competitors: {
+                  select: {
+                    id: true,
+                    lastname: true,
+                    firstname: true,
+                    organisation: true,
+                    shortName: true,
+                    registration: true,
+                    license: true,
+                    ranking: true,
+                    card: true,
+                    startTime: true,
+                    finishTime: true,
+                    time: true,
+                    status: true,
+                  },
+                },
+              },
+              where: { id: classes && parseInt(classes) },
+            },
+          },
+        });
+      } catch (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json(
+            error(
+              `Event with ID ${eventId} does not exist in the database` +
+                err.message,
+            ),
+          );
+      }
+      eventData = dbIndividualResponse;
+    } else {
+      // Return data for an relay competition
+      let dbRelayResponse;
+      try {
+        dbRelayResponse = await prisma.event.findUnique({
+          where: { id: eventId },
+          select: {
+            name: true,
+            classes: {
+              select: {
+                id: true,
+                externalId: true,
+                name: true,
+                length: true,
+                climb: true,
+                controlsCount: true,
+                teams: {
+                  select: {
+                    id: true,
+                    name: true,
+                    organisation: true,
+                    shortName: true,
+                    bibNumber: true,
+                    competitors: {
+                      select: {
+                        id: true,
+                        leg: true,
+                        lastname: true,
+                        firstname: true,
+                        registration: true,
+                        license: true,
+                        card: true,
+                        startTime: true,
+                        finishTime: true,
+                        time: true,
+                        status: true,
+                      },
+                    },
+                  },
+                },
+              },
+              where: { id: classes && parseInt(classes) },
+            },
+          },
+        });
+      } catch (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json(
+            error(
+              `Event with ID ${eventId} does not exist in the database` +
+                err.message,
+            ),
+          );
+      }
+      const teamClassesResults = dbRelayResponse.classes.map((classes) => {
+        //TODO: if teams is array
+        const teams = classes.teams.map((team) => {
+          const notAllInactiveCompetitors = !team.competitors.every(
+            (competitor) => competitor.status === 'Inactive',
+          );
+          let status;
+          if (notAllInactiveCompetitors) {
+            status = team.competitors.some(
+              (competitor) => competitor.status !== 'OK',
+            )
+              ? team.competitors.find(
+                  (competitor) =>
+                    competitor.status !== 'OK' ||
+                    competitor.status !== 'Inactive',
+                ).status
+              : 'OK';
+          } else {
+            status = 'Inactive';
+          }
+          const totalTime = team.competitors.reduce(
+            (accumulator, currentValue) => accumulator + currentValue.time,
+            0,
+          );
+          const competitors = team.competitors
+            .sort((a, b) => a.leg - b.leg)
+            .map((competitor) => {
+              return {
+                ...competitor,
+                bibNumber: team.bibNumber + '.' + competitor.leg,
+              };
+            });
+          return {
+            ...team,
+            competitors: competitors,
+            time: status === 'DidNotFinish' || status === 'OK' ? totalTime : 0,
+            status: status,
+          };
+        });
+        classes.teams = teams;
+        return {
+          ...classes,
+          teamsCount: classes.teams.length,
+        };
+      });
+      eventData = { ...dbRelayResponse, classes: teamClassesResults };
+    }
     return res
       .status(200)
-      .json(success('OK', { data: dbResponse }, res.statusCode));
+      .json(success('OK', { data: eventData }, res.statusCode));
   },
 );
 

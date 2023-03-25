@@ -60,6 +60,7 @@ app.post(
   [
     check('name').not().isEmpty().isString(),
     check('date').not().isEmpty(),
+    check('organizer').not().isEmpty().isString(),
     check('location').not().isEmpty().isString(),
     check('zeroTime').not().isEmpty(),
     check('published').isBoolean(),
@@ -72,13 +73,23 @@ app.post(
       return res.status(422).json(errors);
     }
     const {
-      body: { name, date, location, zeroTime, published, sportId, relay },
+      body: {
+        name,
+        date,
+        organizer,
+        location,
+        zeroTime,
+        published,
+        sportId,
+        relay,
+      },
     } = req;
     const dateTime = new Date(date);
     await prisma.event.create({
       data: {
         name,
         date: dateTime,
+        organizer,
         location,
         zeroTime: new Date(zeroTime),
         published,

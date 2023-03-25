@@ -70,12 +70,13 @@ router.post(
     }
 
     // Everything went fine.
-    let dbResponse;
+    let dbResponseEvent;
     try {
-      dbResponse = await prisma.event.findUnique({
+      dbResponseEvent = await prisma.event.findUnique({
         where: { id: eventId },
         select: {
           id: true,
+          relay: true,
         },
       });
     } catch (err) {
@@ -90,7 +91,7 @@ router.post(
         );
     }
 
-    if (!dbResponse) {
+    if (!dbResponseEvent) {
       return res
         .status(422)
         .json(error(`Event with ID ${eventId} does not exist in the database`));
@@ -127,18 +128,19 @@ router.post(
         if (type.jsonKey === 'ResultList') {
           // For-each class
           const classResults = iofXml3.ResultList.ClassResult;
+          if (!classResults || classResults.length === 0) return;
           await Promise.all(
             classResults.map(async (classResult) => {
               // Do something with each classResult
               const classDetails = classResult.Class.shift();
-              const sourceClassId = classDetails.Id.shift()._;
+              //const sourceClassId = classDetails.Id.shift()._;
+              const sourceClassId = classDetails.Id.shift();
               const className = classDetails.Name.shift();
+              const existingClass = dbClassLists.find(
+                (existingClass) => existingClass.externalId === sourceClassId,
+              );
               let classId;
-              const dbClassResponse = await prisma.class.findFirst({
-                where: { eventId: eventId, externalId: sourceClassId },
-                select: { id: true },
-              });
-              if (!dbClassResponse) {
+              if (!existingClass) {
                 const dbClassInsert = await prisma.class.create({
                   data: {
                     eventId: eventId,
@@ -149,183 +151,428 @@ router.post(
                 });
                 classId = dbClassInsert.id;
               } else {
-                classId = dbClassResponse.id;
+                classId = existingClass.id;
                 await prisma.class.update({
                   data: {
                     name: className,
                     sex:
-                      classDetails.ATTR.sex !== ''
+                      classDetails.ATTR && classDetails.ATTR.sex !== ''
                         ? classDetails.ATTR.sex
                         : 'B',
                   },
                   where: { id: classId },
                 });
               }
-              classResult.PersonResult.map(async (competitorResult) => {
-                //console.log(competitorResult);
-                const person = competitorResult.Person.shift();
-                const organisation = competitorResult.Organisation.shift();
-                const result = competitorResult.Result.shift();
-                //console.log(result);
-                const registration = person.Id.find(
-                  (sourceId) => sourceId.ATTR.type === 'CZE',
-                )._;
-                //TODO: check if registration is unique per competition
-                const dbCompetitorResponse = await prisma.competitor.findFirst({
-                  where: {
-                    class: { eventId: eventId },
-                    registration: registration,
-                  },
-                  select: { id: true },
+              if (!dbResponseEvent.relay) {
+                if (!classResult.PersonResult || classResult.PersonResult === 0)
+                  return;
+                classResult.PersonResult.map(async (competitorResult) => {
+                  const person = competitorResult.Person.shift();
+                  const organisation = competitorResult.Organisation.shift();
+                  const result = competitorResult.Result.shift();
+                  const registration = person.Id[0].ATTR
+                    ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')
+                        ._
+                    : person.Id[0];
+                  //TODO: check if registration is unique per competition
+                  const dbCompetitorResponse =
+                    await prisma.competitor.findFirst({
+                      where: {
+                        class: { eventId: eventId },
+                        registration: registration,
+                      },
+                      select: { id: true },
+                    });
+                  let competitorId;
+                  if (!dbCompetitorResponse) {
+                    const dbCompetitorInsert = await prisma.competitor.create({
+                      data: {
+                        classId: classId,
+                        firstname: person.Name[0].Given[0],
+                        lastname: person.Name[0].Family[0],
+                        nationality:
+                          person.Nationality && person.Nationality[0].ATTR.code,
+                        registration: registration,
+                        organisation: organisation.Name[0],
+                        startTime: result.StartTime.shift(),
+                        finishTime: result.FinishTime.shift(),
+                        time: result.Time && parseInt(result.Time[0]),
+                        status: result.Status.toString(),
+                      },
+                    });
+                    competitorId = dbCompetitorInsert.id;
+                  } else {
+                    competitorId = dbCompetitorResponse.id;
+                    await prisma.competitor.update({
+                      where: { id: competitorId },
+                      data: {
+                        classId: classId,
+                        firstname: person.Name[0].Given[0],
+                        lastname: person.Name[0].Family[0],
+                        nationality:
+                          person.Nationality && person.Nationality[0].ATTR.code,
+                        registration: registration,
+                        organisation: organisation.Name[0],
+                        startTime: result.StartTime.shift(),
+                        finishTime: result.FinishTime.shift(),
+                        time: result.Time && parseInt(result.Time[0]),
+                        status: result.Status.toString(),
+                      },
+                    });
+                  }
                 });
-                let competitorId;
-                if (!dbCompetitorResponse) {
-                  const dbCompetitorInsert = await prisma.competitor.create({
-                    data: {
-                      classId: classId,
-                      firstname: person.Name[0].Given[0],
-                      lastname: person.Name[0].Family[0],
-                      nationality:
-                        person.Nationality && person.Nationality[0].ATTR.code,
-                      registration: registration,
-                      organisation: organisation.Name[0],
-                      startTime: result.StartTime.shift(),
-                      finishTime: result.FinishTime.shift(),
-                      time: result.Time && parseInt(result.Time[0]),
-                      status: result.Status.toString(),
+              } else {
+                // TEAM COMPETITION RESULT LIST
+                if (
+                  !classResult.TeamResult ||
+                  classResult.TeamResult.length === 0
+                )
+                  return;
+                classResult.TeamResult.map(async (teamResult) => {
+                  const team = teamResult.Name.shift();
+                  const organisation = teamResult.Organisation.shift();
+                  const bibNumber = teamResult.BibNumber.shift();
+                  const dbRelayResponse = await prisma.team.findFirst({
+                    where: {
+                      class: { eventId: eventId },
+                      bibNumber: parseInt(bibNumber),
                     },
+                    select: { id: true },
                   });
-                  competitorId = dbCompetitorInsert.id;
-                } else {
-                  competitorId = dbCompetitorResponse.id;
-                  await prisma.competitor.update({
-                    where: { id: competitorId },
-                    data: {
-                      classId: classId,
-                      firstname: person.Name[0].Given[0],
-                      lastname: person.Name[0].Family[0],
-                      nationality:
-                        person.Nationality && person.Nationality[0].ATTR.code,
-                      registration: registration,
-                      organisation: organisation.Name[0],
-                      startTime: result.StartTime.shift(),
-                      finishTime: result.FinishTime.shift(),
-                      time: result.Time && parseInt(result.Time[0]),
-                      status: result.Status.toString(),
-                    },
-                  });
-                }
-              });
+                  let teamId;
+                  if (!dbRelayResponse) {
+                    const dbRelayInsert = await prisma.team.create({
+                      data: {
+                        classId: classId,
+                        name: team,
+                        organisation: organisation.Name && organisation.Name[0],
+                        shortName:
+                          organisation.ShortName && organisation.ShortName[0],
+                        bibNumber: bibNumber && parseInt(bibNumber),
+                      },
+                    });
+                    teamId = dbRelayInsert.id;
+                  } else {
+                    teamId = dbRelayResponse.id;
+                    await prisma.team.update({
+                      where: { id: teamId },
+                      data: {
+                        classId: classId,
+                        name: team,
+                        organisation: organisation.Name && organisation.Name[0],
+                        shortName:
+                          organisation.ShortName && organisation.ShortName[0],
+                        bibNumber: bibNumber && parseInt(bibNumber),
+                      },
+                    });
+                  }
+                  if (
+                    teamResult.TeamMemberResult &&
+                    teamResult.TeamMemberResult.length > 0
+                  ) {
+                    teamResult.TeamMemberResult.map(
+                      async (teamMemberResult) => {
+                        const person = teamMemberResult.Person.shift();
+                        const result = teamMemberResult.Result.shift();
+                        const leg = result.Leg.shift();
+                        const registration = person.Id[0].ATTR
+                          ? person.Id.find(
+                              (sourceId) => sourceId.ATTR.type === 'CZE',
+                            )._
+                          : person.Id[0];
+                        const dbCompetitorResponse =
+                          await prisma.competitor.findFirst({
+                            where: {
+                              teamId: teamId,
+                              leg: parseInt(leg),
+                            },
+                            select: { id: true },
+                          });
+                        let competitorId;
+                        if (!dbCompetitorResponse) {
+                          const dbCompetitorInsert =
+                            await prisma.competitor.create({
+                              data: {
+                                classId: classId,
+                                firstname: person.Name[0].Given[0],
+                                lastname: person.Name[0].Family[0],
+                                registration: registration,
+                                card:
+                                  result.ControlCard &&
+                                  parseInt(result.ControlCard.shift()),
+                                startTime: result.StartTime.shift(),
+                                finishTime: result.FinishTime.shift(),
+                                time: result.Time && parseInt(result.Time[0]),
+                                status: result.Status.toString(),
+                                teamId: teamId,
+                                leg: parseInt(leg),
+                              },
+                            });
+                          competitorId = dbCompetitorInsert.id;
+                        } else {
+                          competitorId = dbCompetitorResponse.id;
+                          await prisma.competitor.update({
+                            where: { id: competitorId },
+                            data: {
+                              classId: classId,
+                              firstname: person.Name[0].Given[0],
+                              lastname: person.Name[0].Family[0],
+                              registration: registration,
+                              card:
+                                result.ControlCard &&
+                                parseInt(result.ControlCard.shift()),
+                              startTime: result.StartTime.shift(),
+                              finishTime: result.FinishTime.shift(),
+                              time: result.Time && parseInt(result.Time[0]),
+                              status: result.Status.toString(),
+                            },
+                          });
+                        }
+                      },
+                    );
+                  } else {
+                    // Remove competitors from the team when the team is empty
+                    await prisma.competitor.deleteMany({
+                      where: {
+                        teamId: parseInt(teamId),
+                      },
+                    });
+                  }
+                });
+              }
             }),
           );
         } else if (type.jsonKey === 'StartList') {
           // For-each class
           const classStart = iofXml3.StartList.ClassStart;
-          await Promise.all(
-            classStart.map(async (classStart) => {
-              //console.log(classStart);
-              const existingClass = dbClassLists.find(
-                (existingClass) =>
-                  existingClass.externalId === classStart.Class[0].Id[0],
-              );
-              let classId;
-              if (!existingClass) {
-                const dbClassInsert = await prisma.class.create({
-                  data: {
-                    eventId: eventId,
-                    externalId:
-                      classStart.Class[0].Id && classStart.Class[0].Id[0],
-                    name: classStart.Class[0].Name.shift(),
-                    length:
-                      classStart.Course[0].Length &&
-                      parseInt(classStart.Course[0].Length),
-                    climb:
-                      classStart.Course[0].Climb &&
-                      parseInt(classStart.Course[0].Climb),
-                    controlsCount:
-                      classStart.Course[0].NumberOfControls &&
-                      parseInt(classStart.Course[0].NumberOfControls),
-                  },
-                });
-                classId = dbClassInsert.id;
-              } else {
-                classId = existingClass.id;
-                await prisma.class.update({
-                  data: {
-                    name: classStart.Class[0].Name.shift(),
-                    length:
-                      classStart.Course[0].Length &&
-                      parseInt(classStart.Course[0].Length),
-                    climb:
-                      classStart.Course[0].Climb &&
-                      parseInt(classStart.Course[0].Climb),
-                    controlsCount:
-                      classStart.Course[0].NumberOfControls &&
-                      parseInt(classStart.Course[0].NumberOfControls),
-                  },
-                  where: { id: classId },
-                });
-              }
-              classStart.PersonStart.map(async (competitorStart) => {
-                const person = competitorStart.Person.shift();
-                const organisation = competitorStart.Organisation.shift();
-                const start = competitorStart.Start.shift();
-                const registration = person.Id[0].ATTR
-                  ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')._
-                  : person.Id[0];
-                //console.log(start);
-                //TODO: check if registration is unique per competition
-                const dbCompetitorResponse = await prisma.competitor.findFirst({
-                  where: {
-                    class: { eventId: eventId },
-                    registration: registration,
-                  },
-                  select: { id: true },
-                });
-                let competitorId;
-                if (!dbCompetitorResponse) {
-                  const dbCompetitorInsert = await prisma.competitor.create({
+          if (classStart && classStart.length > 0) {
+            await Promise.all(
+              classStart.map(async (classStart) => {
+                const existingClass = dbClassLists.find(
+                  (existingClass) =>
+                    existingClass.externalId === classStart.Class[0].Id[0],
+                );
+                let classId;
+                let length,
+                  climb,
+                  controlsCount = null;
+                if (classStart.Course && classStart.Course.length > 0) {
+                  length =
+                    classStart.Course[0].Length &&
+                    parseInt(classStart.Course[0].Length);
+                  climb =
+                    classStart.Course[0].Climb &&
+                    parseInt(classStart.Course[0].Climb);
+                  controlsCount =
+                    classStart.Course[0].NumberOfControls &&
+                    parseInt(classStart.Course[0].NumberOfControls);
+                }
+                if (!existingClass) {
+                  const dbClassInsert = await prisma.class.create({
                     data: {
-                      classId: classId,
-                      firstname: person.Name[0].Given[0],
-                      lastname: person.Name[0].Family[0],
-                      nationality:
-                        person.Nationality && person.Nationality[0].ATTR.code,
-                      registration: registration,
-                      organisation: organisation.Name && organisation.Name[0],
-                      shortName:
-                        organisation.ShortName && organisation.ShortName[0],
-                      startTime: start.StartTime.shift(),
-                      card:
-                        start.ControlCard &&
-                        parseInt(start.ControlCard.shift()),
-                      // TODO: Check status in QE start list export
+                      eventId: eventId,
+                      externalId:
+                        classStart.Class[0].Id && classStart.Class[0].Id[0],
+                      name: classStart.Class[0].Name.shift(),
+                      length: length,
+                      climb: climb,
+                      controlsCount: controlsCount,
                     },
                   });
-                  competitorId = dbCompetitorInsert.id;
+                  classId = dbClassInsert.id;
                 } else {
-                  competitorId = dbCompetitorResponse.id;
-                  await prisma.competitor.update({
-                    where: { id: competitorId },
+                  classId = existingClass.id;
+                  await prisma.class.update({
                     data: {
-                      classId: classId,
-                      firstname: person.Name[0].Given[0],
-                      lastname: person.Name[0].Family[0],
-                      nationality:
-                        person.Nationality && person.Nationality[0].ATTR.code,
-                      organisation: organisation.Name && organisation.Name[0],
-                      shortName:
-                        organisation.ShortName && organisation.ShortName[0],
-                      startTime: start.StartTime.shift(),
-                      card:
-                        start.ControlCard &&
-                        parseInt(start.ControlCard.shift()),
+                      name: classStart.Class[0].Name.shift(),
+                      length: length,
+                      climb: climb,
+                      controlsCount: controlsCount,
                     },
+                    where: { id: classId },
                   });
                 }
-              });
-            }),
-          );
+                if (!dbResponseEvent.relay) {
+                  // INDIVIDUAL COMPETITION START LIST
+                  classStart.PersonStart.map(async (competitorStart) => {
+                    const person = competitorStart.Person.shift();
+                    const organisation = competitorStart.Organisation.shift();
+                    const start = competitorStart.Start.shift();
+                    const registration = person.Id[0].ATTR
+                      ? person.Id.find(
+                          (sourceId) => sourceId.ATTR.type === 'CZE',
+                        )._
+                      : person.Id[0];
+                    //console.log(start);
+                    //TODO: check if registration is unique per competition
+                    const dbCompetitorResponse =
+                      await prisma.competitor.findFirst({
+                        where: {
+                          class: { eventId: eventId },
+                          registration: registration,
+                        },
+                        select: { id: true },
+                      });
+                    let competitorId;
+                    if (!dbCompetitorResponse) {
+                      const dbCompetitorInsert = await prisma.competitor.create(
+                        {
+                          data: {
+                            classId: classId,
+                            firstname: person.Name[0].Given[0],
+                            lastname: person.Name[0].Family[0],
+                            nationality:
+                              person.Nationality &&
+                              person.Nationality[0].ATTR.code,
+                            registration: registration,
+                            organisation:
+                              organisation.Name && organisation.Name[0],
+                            shortName:
+                              organisation.ShortName &&
+                              organisation.ShortName[0],
+                            startTime: start.StartTime.shift(),
+                            card:
+                              start.ControlCard &&
+                              parseInt(start.ControlCard.shift()),
+                            // TODO: Check status in QE start list export
+                          },
+                        },
+                      );
+                      competitorId = dbCompetitorInsert.id;
+                    } else {
+                      competitorId = dbCompetitorResponse.id;
+                      await prisma.competitor.update({
+                        where: { id: competitorId },
+                        data: {
+                          classId: classId,
+                          firstname: person.Name[0].Given[0],
+                          lastname: person.Name[0].Family[0],
+                          nationality:
+                            person.Nationality &&
+                            person.Nationality[0].ATTR.code,
+                          organisation:
+                            organisation.Name && organisation.Name[0],
+                          shortName:
+                            organisation.ShortName && organisation.ShortName[0],
+                          startTime: start.StartTime.shift(),
+                          card:
+                            start.ControlCard &&
+                            parseInt(start.ControlCard.shift()),
+                        },
+                      });
+                    }
+                  });
+                } else {
+                  // TEAM COMPETITION START LIST
+                  classStart.TeamStart.map(async (teamStart) => {
+                    const team = teamStart.Name.shift();
+                    const organisation = teamStart.Organisation.shift();
+                    const bibNumber = teamStart.BibNumber.shift();
+                    const dbRelayResponse = await prisma.team.findFirst({
+                      where: {
+                        class: { eventId: eventId },
+                        bibNumber: parseInt(bibNumber),
+                      },
+                      select: { id: true },
+                    });
+                    let teamId;
+                    if (!dbRelayResponse) {
+                      const dbRelayInsert = await prisma.team.create({
+                        data: {
+                          classId: classId,
+                          name: team,
+                          organisation:
+                            organisation.Name && organisation.Name[0],
+                          shortName:
+                            organisation.ShortName && organisation.ShortName[0],
+                          bibNumber: bibNumber && parseInt(bibNumber),
+                        },
+                      });
+                      teamId = dbRelayInsert.id;
+                    } else {
+                      teamId = dbRelayResponse.id;
+                      await prisma.team.update({
+                        where: { id: teamId },
+                        data: {
+                          classId: classId,
+                          name: team,
+                          organisation:
+                            organisation.Name && organisation.Name[0],
+                          shortName:
+                            organisation.ShortName && organisation.ShortName[0],
+                          bibNumber: bibNumber && parseInt(bibNumber),
+                        },
+                      });
+                    }
+                    if (
+                      teamStart.TeamMemberStart &&
+                      teamStart.TeamMemberStart.length > 0
+                    ) {
+                      teamStart.TeamMemberStart.map(async (teamMemberStart) => {
+                        const person = teamMemberStart.Person.shift();
+                        const start = teamMemberStart.Start.shift();
+                        const leg = start.Leg.shift();
+                        const registration = person.Id[0].ATTR
+                          ? person.Id.find(
+                              (sourceId) => sourceId.ATTR.type === 'CZE',
+                            )._
+                          : person.Id[0];
+                        const dbCompetitorResponse =
+                          await prisma.competitor.findFirst({
+                            where: {
+                              teamId: teamId,
+                              leg: parseInt(leg),
+                            },
+                            select: { id: true },
+                          });
+                        let competitorId;
+                        if (!dbCompetitorResponse) {
+                          const dbCompetitorInsert =
+                            await prisma.competitor.create({
+                              data: {
+                                classId: classId,
+                                firstname: person.Name[0].Given[0],
+                                lastname: person.Name[0].Family[0],
+                                registration: registration,
+                                startTime: start.StartTime.shift(),
+                                card:
+                                  start.ControlCard &&
+                                  parseInt(start.ControlCard.shift()),
+                                teamId: teamId,
+                                leg: parseInt(leg),
+                              },
+                            });
+                          competitorId = dbCompetitorInsert.id;
+                        } else {
+                          competitorId = dbCompetitorResponse.id;
+                          await prisma.competitor.update({
+                            where: { id: competitorId },
+                            data: {
+                              classId: classId,
+                              firstname: person.Name[0].Given[0],
+                              lastname: person.Name[0].Family[0],
+                              registration: registration,
+                              startTime: start.StartTime.shift(),
+                              card:
+                                start.ControlCard &&
+                                parseInt(start.ControlCard.shift()),
+                            },
+                          });
+                        }
+                      });
+                    } else {
+                      // Remove competitors from the team when the team is empty
+                      await prisma.competitor.deleteMany({
+                        where: {
+                          teamId: teamId,
+                        },
+                      });
+                    }
+                  });
+                }
+              }),
+            );
+          }
         } else if (type.jsonKey === 'CourseData') {
           let dbClassLists;
           try {

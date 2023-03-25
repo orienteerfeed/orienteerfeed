@@ -64,9 +64,12 @@ model Class {
   printedMaps      Int?
   minAge           Int?
   maxAge           Int?
+  minTeamMembers   Int?
+  maxTeamMembers   Int?
   sex              Sex          @default(B)
   status           ClassStatus  @default(NORMAL)
   competitors      Competitor[]
+  teams            Team[]
 }
 
 model Competitor {
@@ -85,7 +88,21 @@ model Competitor {
   startTime    DateTime?
   finishTime   DateTime?
   time         Int?
+  team         Team?       @relation(fields: [teamId], references: [id])
+  teamId       Int?         @db.UnsignedInt
+  leg          Int?         @db.UnsignedInt
   status       ResultStatus @default(Inactive)
+}
+
+model Team {
+  id            Int          @id @default(autoincrement()) @db.UnsignedInt
+  class         Class        @relation(fields: [classId], references: [id])
+  classId       Int          @db.UnsignedInt
+  name          String
+  organisation  String?
+  shortName     String?      @db.VarChar(10)
+  bibNumber     Int
+  competitors   Competitor[]
 }
 
 enum Sex {
