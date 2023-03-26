@@ -8,3 +8,9 @@ export const event = (_, { id }, context) => {
     where: { id: id },
   });
 };
+
+export const eventsBySport = (_, { sportId }, context) => {
+  return prisma.event.findMany({
+    where: { sportId: sportId },
+  });
+};

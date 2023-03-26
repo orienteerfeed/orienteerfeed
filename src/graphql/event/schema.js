@@ -2,6 +2,7 @@ export const typeDef = /* GraphQL */ `
   extend type Query {
     events: [Event!]!
     event(id: String!): Event
+    eventsBySport(sportId: Int!): [Event!]
   }
   type Event {
     id: String!
