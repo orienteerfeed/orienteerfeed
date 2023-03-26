@@ -2,11 +2,15 @@ export const typeDef = /* GraphQL */ `
   extend type Query {
     competitorById(id: Int!): Competitor!
     competitorsByClass(id: Int!): [Competitor!]
+    competitorsByTeam(id: Int!): [Competitor!]
   }
   type Competitor {
     id: Int!
     class: Class!
     classId: Int!
+    team: Team
+    teamId: Int
+    leg: Int
     firstname: String!
     lastname: String!
     nationality: String

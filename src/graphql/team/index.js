@@ -12,15 +12,10 @@ const resolvers = {
   Mutation: {
     ...mutations,
   },
-  Class: {
+  Team: {
     competitors(parent, _, context) {
       return prisma.competitor.findMany({
-        where: { classId: parent.id },
-      });
-    },
-    teams(parent, _, context) {
-      return prisma.team.findMany({
-        where: { classId: parent.id },
+        where: { teamId: parent.id },
       });
     },
   },

@@ -16,6 +16,7 @@ import {
   typeDef as Competitor,
   resolvers as competitorResolvers,
 } from './competitor/index.js';
+import { typeDef as Team, resolvers as teamResolvers } from './team/index.js';
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
@@ -33,12 +34,13 @@ const Mutation = /* GraphQL */ `
 const resolvers = {};
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, Event, Class, Sport, Competitor],
+  typeDefs: [Query, Mutation, Event, Class, Sport, Competitor, Team],
   resolvers: merge(
     resolvers,
     eventResolvers,
     classResolvers,
     sportResolvers,
     competitorResolvers,
+    teamResolvers,
   ),
 });

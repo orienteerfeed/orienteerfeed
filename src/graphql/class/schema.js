@@ -1,6 +1,5 @@
 export const typeDef = /* GraphQL */ `
   extend type Query {
-    classes: [Class!]!
     classById(id: Int!): Class!
     eventClasses(eventId: String!): [Class!]
     eventClassesByIds(eventId: String!, ids: [Int!]): [Class!]
@@ -20,5 +19,6 @@ export const typeDef = /* GraphQL */ `
     sex: String
     status: String
     competitors: [Competitor!]
+    teams: [Team!]
   }
 `;

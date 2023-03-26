@@ -9,3 +9,8 @@ export const competitorsByClass = (_, { id }, context) => {
     where: { classId: id },
   });
 };
+export const competitorsByTeam = (_, { id }, context) => {
+  return prisma.competitor.findMany({
+    where: { teamId: id },
+  });
+};
