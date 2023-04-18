@@ -1,3 +1,13 @@
+FROM nginx:latest
+
+EXPOSE 8080
+
+COPY ./mrb/ /usr/share/nginx/html/
+
+FROM mysql:latest
+
+EXPOSE 3306
+
 FROM node:18-alpine
 
 RUN mkdir -p /usr/src/app
@@ -14,10 +24,8 @@ EXPOSE 3001
 
 RUN npx prisma generate
 
-RUN npx prisma migrate deploy
+#ENTRYPOINT ["npx", "prisma", "migrate", "deploy"]
+
+# https://stackoverflow.com/questions/66646432/how-do-i-run-prisma-migrations-in-a-dockerized-graphql-postgres-setup
 
 CMD ["npm", "run", "dev"]
-
-FROM nginx:stable-alpine
-
-COPY ./mrb/ /usr/share/nginx/html/

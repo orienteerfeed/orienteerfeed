@@ -1,21 +1,5 @@
 version: '3'
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - '80'
-      - '443'
-    links:
-      - api
-    env_file: ./.env
-  api:
-    image: oricloud-app
-    network_mode: host
-    build: .
-    restart: unless-stopped
-    links:
-      - 'mysql'
   mysql:
     env_file: ./.env
     image: mysql:latest
@@ -24,5 +8,29 @@ services:
     ports:
       - '3306:3306'
     environment:
-      'MYSQL_DATABASE': '${DB_DATABASE}'
-      'MYSQL_ROOT_PASSWORD': '${DB_PASSWORD}'
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app-network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - '8080:80'
+      - '443'
+    networks:
+      - app-network
+  api:
+    image: oricloud-app
+    env_file: ./.env
+    build: .
+    ports:
+      - '${PORT}:3001'
+    restart: unless-stopped
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+networks:
+  app-network:
+    driver: bridge
