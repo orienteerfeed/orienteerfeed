@@ -1,9 +1,28 @@
 version: '3'
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - '80'
+      - '443'
+    links:
+      - api
+    env_file: ./.env
   api:
     image: oricloud-app
     network_mode: host
     build: .
     restart: unless-stopped
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
+    links:
+      - 'mysql'
+  mysql:
+    env_file: ./.env
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      'MYSQL_DATABASE': '${DB_DATABASE}'
+      'MYSQL_ROOT_PASSWORD': '${DB_PASSWORD}'

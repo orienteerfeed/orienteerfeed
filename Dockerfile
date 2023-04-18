@@ -17,3 +17,7 @@ RUN npx prisma generate
 RUN npx prisma migrate deploy
 
 CMD ["npm", "run", "dev"]
+
+FROM nginx:stable-alpine
+
+COPY ./mrb/ /usr/share/nginx/html/

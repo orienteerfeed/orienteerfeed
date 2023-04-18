@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api:
+    image: oricloud-app
+    network_mode: host
+    build: .
+    restart: unless-stopped
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
