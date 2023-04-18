@@ -4,14 +4,16 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY package*.json ./
 
 RUN npm install
 
-RUN npx prisma generate
-
-#RUN npx prisma migrate deploy
+COPY . .
 
 EXPOSE 3001
+
+RUN npx prisma generate
+
+RUN npx prisma migrate deploy
 
 CMD ["npm", "run", "dev"]

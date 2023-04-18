@@ -9,6 +9,8 @@ import fetch from 'node-fetch';
 import { validation, error, success } from '../../utils/responseApi.js';
 import { formatErrors } from '../../utils/errors.js';
 
+import crypto from 'crypto';
+
 const router = Router();
 
 const prisma = new PrismaClient();
@@ -160,7 +162,10 @@ router.post(
                     eventId: eventId,
                     externalId: sourceClassId,
                     name: className,
-                    sex: classDetails.ATTR.sex,
+                    sex:
+                      classDetails.ATTR && classDetails.ATTR.sex !== ''
+                        ? classDetails.ATTR.sex
+                        : sex,
                   },
                 });
                 classId = dbClassInsert.id;
@@ -184,10 +189,12 @@ router.post(
                   const person = competitorResult.Person.shift();
                   const organisation = competitorResult.Organisation.shift();
                   const result = competitorResult.Result.shift();
-                  const registration = person.Id[0].ATTR
+                  const competitorRegistration = person.Id[0].ATTR
                     ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')
                         ._
                     : person.Id[0];
+                  //const tempRegistration = createShortHash();
+                  const registration = competitorRegistration;
                   //TODO: check if registration is unique per competition
                   const dbCompetitorResponse =
                     await prisma.competitor.findFirst({
@@ -201,7 +208,11 @@ router.post(
                   if (!dbCompetitorResponse) {
                     const dbCompetitorInsert = await prisma.competitor.create({
                       data: {
-                        classId: classId,
+                        class: {
+                          connect: {
+                            id: classId,
+                          },
+                        },
                         firstname: person.Name[0].Given[0],
                         lastname: person.Name[0].Family[0],
                         nationality:
@@ -220,7 +231,11 @@ router.post(
                     await prisma.competitor.update({
                       where: { id: competitorId },
                       data: {
-                        classId: classId,
+                        class: {
+                          connect: {
+                            id: classId,
+                          },
+                        },
                         firstname: person.Name[0].Given[0],
                         lastname: person.Name[0].Family[0],
                         nationality:
@@ -257,7 +272,11 @@ router.post(
                   if (!dbRelayResponse) {
                     const dbRelayInsert = await prisma.team.create({
                       data: {
-                        classId: classId,
+                        class: {
+                          connect: {
+                            id: classId,
+                          },
+                        },
                         name: team,
                         organisation: organisation.Name && organisation.Name[0],
                         shortName:
@@ -271,7 +290,11 @@ router.post(
                     await prisma.team.update({
                       where: { id: teamId },
                       data: {
-                        classId: classId,
+                        class: {
+                          connect: {
+                            id: classId,
+                          },
+                        },
                         name: team,
                         organisation: organisation.Name && organisation.Name[0],
                         shortName:
@@ -289,11 +312,16 @@ router.post(
                         const person = teamMemberResult.Person.shift();
                         const result = teamMemberResult.Result.shift();
                         const leg = result.Leg.shift();
-                        const registration = person.Id[0].ATTR
+                        const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
                               (sourceId) => sourceId.ATTR.type === 'CZE',
                             )._
                           : person.Id[0];
+                        const tempRegistration = createShortHash(
+                          parseInt(bibNumber) + '.' + parseInt(leg),
+                        );
+                        const registration =
+                          competitorRegistration || tempRegistration;
                         const dbCompetitorResponse =
                           await prisma.competitor.findFirst({
                             where: {
@@ -307,7 +335,11 @@ router.post(
                           const dbCompetitorInsert =
                             await prisma.competitor.create({
                               data: {
-                                classId: classId,
+                                class: {
+                                  connect: {
+                                    id: classId,
+                                  },
+                                },
                                 firstname: person.Name[0].Given[0],
                                 lastname: person.Name[0].Family[0],
                                 registration: registration,
@@ -318,7 +350,11 @@ router.post(
                                 finishTime: result.FinishTime.shift(),
                                 time: result.Time && parseInt(result.Time[0]),
                                 status: result.Status.toString(),
-                                teamId: teamId,
+                                team: {
+                                  connect: {
+                                    id: teamId,
+                                  },
+                                },
                                 leg: parseInt(leg),
                               },
                             });
@@ -328,7 +364,11 @@ router.post(
                           await prisma.competitor.update({
                             where: { id: competitorId },
                             data: {
-                              classId: classId,
+                              class: {
+                                connect: {
+                                  id: classId,
+                                },
+                              },
                               firstname: person.Name[0].Given[0],
                               lastname: person.Name[0].Family[0],
                               registration: registration,
@@ -364,7 +404,8 @@ router.post(
                   climb,
                   controlsCount = null;
                 let sex;
-                const className = classStart.Class[0].Name.shift();
+                const classDetails = classStart.Class.shift();
+                const className = classDetails.Name.shift();
                 const firstLetter = className.charAt(0);
                 if (firstLetter === 'H') {
                   sex = 'M';
@@ -388,13 +429,15 @@ router.post(
                   const dbClassInsert = await prisma.class.create({
                     data: {
                       eventId: eventId,
-                      externalId:
-                        classStart.Class[0].Id && classStart.Class[0].Id[0],
+                      externalId: classDetails.Id && classDetails.Id[0],
                       name: className,
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
-                      sex: sex,
+                      sex:
+                        classDetails.ATTR && classDetails.ATTR.sex !== ''
+                          ? classDetails.ATTR.sex
+                          : sex,
                     },
                   });
                   classId = dbClassInsert.id;
@@ -402,11 +445,14 @@ router.post(
                   classId = existingClass.id;
                   await prisma.class.update({
                     data: {
-                      name: classStart.Class[0].Name.shift(),
+                      name: className,
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
-                      sex: sex,
+                      sex:
+                        classDetails.ATTR && classDetails.ATTR.sex !== ''
+                          ? classDetails.ATTR.sex
+                          : sex,
                     },
                     where: { id: classId },
                   });
@@ -417,11 +463,13 @@ router.post(
                     const person = competitorStart.Person.shift();
                     const organisation = competitorStart.Organisation.shift();
                     const start = competitorStart.Start.shift();
-                    const registration = person.Id[0].ATTR
+                    const competitorRegistration = person.Id[0].ATTR
                       ? person.Id.find(
                           (sourceId) => sourceId.ATTR.type === 'CZE',
                         )._
                       : person.Id[0];
+                    //const tempRegistration = createShortHash();
+                    const registration = competitorRegistration;
                     //console.log(start);
                     //TODO: check if registration is unique per competition
                     const dbCompetitorResponse =
@@ -437,7 +485,11 @@ router.post(
                       const dbCompetitorInsert = await prisma.competitor.create(
                         {
                           data: {
-                            classId: classId,
+                            class: {
+                              connect: {
+                                id: classId,
+                              },
+                            },
                             firstname: person.Name[0].Given[0],
                             lastname: person.Name[0].Family[0],
                             nationality:
@@ -463,7 +515,11 @@ router.post(
                       await prisma.competitor.update({
                         where: { id: competitorId },
                         data: {
-                          classId: classId,
+                          class: {
+                            connect: {
+                              id: classId,
+                            },
+                          },
                           firstname: person.Name[0].Given[0],
                           lastname: person.Name[0].Family[0],
                           nationality:
@@ -498,7 +554,11 @@ router.post(
                     if (!dbRelayResponse) {
                       const dbRelayInsert = await prisma.team.create({
                         data: {
-                          classId: classId,
+                          class: {
+                            connect: {
+                              id: classId,
+                            },
+                          },
                           name: team,
                           organisation:
                             organisation.Name && organisation.Name[0],
@@ -513,7 +573,11 @@ router.post(
                       await prisma.team.update({
                         where: { id: teamId },
                         data: {
-                          classId: classId,
+                          class: {
+                            connect: {
+                              id: classId,
+                            },
+                          },
                           name: team,
                           organisation:
                             organisation.Name && organisation.Name[0],
@@ -531,11 +595,16 @@ router.post(
                         const person = teamMemberStart.Person.shift();
                         const start = teamMemberStart.Start.shift();
                         const leg = start.Leg.shift();
-                        const registration = person.Id[0].ATTR
+                        const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
                               (sourceId) => sourceId.ATTR.type === 'CZE',
                             )._
                           : person.Id[0];
+                        const tempRegistration = createShortHash(
+                          parseInt(bibNumber) + '.' + parseInt(leg),
+                        );
+                        const registration =
+                          competitorRegistration || tempRegistration;
                         const dbCompetitorResponse =
                           await prisma.competitor.findFirst({
                             where: {
@@ -549,7 +618,11 @@ router.post(
                           const dbCompetitorInsert =
                             await prisma.competitor.create({
                               data: {
-                                classId: classId,
+                                class: {
+                                  connect: {
+                                    id: classId,
+                                  },
+                                },
                                 firstname: person.Name[0].Given[0],
                                 lastname: person.Name[0].Family[0],
                                 registration: registration,
@@ -557,8 +630,17 @@ router.post(
                                 card:
                                   start.ControlCard &&
                                   parseInt(start.ControlCard.shift()),
-                                teamId: teamId,
+                                team: {
+                                  connect: {
+                                    id: teamId,
+                                  },
+                                },
                                 leg: parseInt(leg),
+                                team: {
+                                  connect: {
+                                    id: teamId,
+                                  },
+                                },
                               },
                             });
                           competitorId = dbCompetitorInsert.id;
@@ -567,7 +649,11 @@ router.post(
                           await prisma.competitor.update({
                             where: { id: competitorId },
                             data: {
-                              classId: classId,
+                              class: {
+                                connect: {
+                                  id: classId,
+                                },
+                              },
                               firstname: person.Name[0].Given[0],
                               lastname: person.Name[0].Family[0],
                               registration: registration,
@@ -737,6 +823,14 @@ async function getIOFXmlSchema() {
   } catch (err) {
     console.error('Problem to load IOF XML schema: ', err.message);
   }
+}
+
+function createShortHash(number) {
+  const hash = crypto
+    .createHash('sha256')
+    .update(number.toString())
+    .digest('hex');
+  return hash.substring(0, 7);
 }
 
 export const parseXmlForTesting = {
