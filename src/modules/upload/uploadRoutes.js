@@ -48,25 +48,30 @@ const IOF_XML_SCHEMA =
 router.post(
   '/iof',
   upload,
-  [check('eventId').not().isEmpty().isString()],
+  [
+    check('eventId').not().isEmpty().isString(),
+    check('validateXml').isBoolean().optional(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json(validation(formatErrors(errors)));
     }
     const {
-      body: { eventId },
+      body: { eventId, validateXml },
     } = req;
     if (!req.file) {
       console.error('File not found');
       return res.status(400).json(error('No file uploaded'));
     }
-    const xsd = await getIOFXmlSchema();
-    const iofXmlValidation = validateIofXml(req.file.buffer.toString(), xsd);
-    if (!iofXmlValidation.state) {
-      return res
-        .status(422)
-        .json(validation('XML is not valid: ' + iofXmlValidation.message));
+    if (typeof validateXml === 'undefined' || validateXml !== 'false') {
+      const xsd = await getIOFXmlSchema();
+      const iofXmlValidation = validateIofXml(req.file.buffer.toString(), xsd);
+      if (!iofXmlValidation.state) {
+        return res
+          .status(422)
+          .json(validation('XML is not valid: ' + iofXmlValidation.message));
+      }
     }
 
     // Everything went fine.
@@ -140,6 +145,15 @@ router.post(
                 (existingClass) => existingClass.externalId === sourceClassId,
               );
               let classId;
+              let sex;
+              const firstLetter = className.charAt(0);
+              if (firstLetter === 'H') {
+                sex = 'M';
+              } else if (firstLetter === 'D') {
+                sex = 'F';
+              } else {
+                sex = 'B';
+              }
               if (!existingClass) {
                 const dbClassInsert = await prisma.class.create({
                   data: {
@@ -158,7 +172,7 @@ router.post(
                     sex:
                       classDetails.ATTR && classDetails.ATTR.sex !== ''
                         ? classDetails.ATTR.sex
-                        : 'B',
+                        : sex,
                   },
                   where: { id: classId },
                 });
@@ -330,13 +344,6 @@ router.post(
                         }
                       },
                     );
-                  } else {
-                    // Remove competitors from the team when the team is empty
-                    await prisma.competitor.deleteMany({
-                      where: {
-                        teamId: parseInt(teamId),
-                      },
-                    });
                   }
                 });
               }
@@ -356,6 +363,16 @@ router.post(
                 let length,
                   climb,
                   controlsCount = null;
+                let sex;
+                const className = classStart.Class[0].Name.shift();
+                const firstLetter = className.charAt(0);
+                if (firstLetter === 'H') {
+                  sex = 'M';
+                } else if (firstLetter === 'D') {
+                  sex = 'F';
+                } else {
+                  sex = 'B';
+                }
                 if (classStart.Course && classStart.Course.length > 0) {
                   length =
                     classStart.Course[0].Length &&
@@ -373,10 +390,11 @@ router.post(
                       eventId: eventId,
                       externalId:
                         classStart.Class[0].Id && classStart.Class[0].Id[0],
-                      name: classStart.Class[0].Name.shift(),
+                      name: className,
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
+                      sex: sex,
                     },
                   });
                   classId = dbClassInsert.id;
@@ -388,6 +406,7 @@ router.post(
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
+                      sex: sex,
                     },
                     where: { id: classId },
                   });

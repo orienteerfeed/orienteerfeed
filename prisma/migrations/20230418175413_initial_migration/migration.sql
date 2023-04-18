@@ -53,6 +53,8 @@ CREATE TABLE `Class` (
     `printedMaps` INTEGER NULL,
     `minAge` INTEGER NULL,
     `maxAge` INTEGER NULL,
+    `minTeamMembers` INTEGER NULL,
+    `maxTeamMembers` INTEGER NULL,
     `sex` ENUM('B', 'M', 'F') NOT NULL DEFAULT 'B',
     `status` ENUM('NORMAL', 'DIVIDED', 'JOINED', 'INVALIDATED', 'INVALIDATEDNOFEE') NOT NULL DEFAULT 'NORMAL',
 
@@ -75,7 +77,21 @@ CREATE TABLE `Competitor` (
     `startTime` DATETIME(3) NULL,
     `finishTime` DATETIME(3) NULL,
     `time` INTEGER NULL,
+    `teamId` INTEGER UNSIGNED NULL,
+    `leg` INTEGER UNSIGNED NULL,
     `status` ENUM('OK', 'Finished', 'MissingPunch', 'Disqualified', 'DidNotFinish', 'Active', 'Inactive', 'OverTime', 'SportingWithdrawal', 'NotCompeting', 'Moved', 'MovedUp', 'DidNotStart', 'DidNotEnter', 'Cancelled') NOT NULL DEFAULT 'Inactive',
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Team` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `classId` INTEGER UNSIGNED NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `organisation` VARCHAR(191) NULL,
+    `shortName` VARCHAR(10) NULL,
+    `bibNumber` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -91,3 +107,9 @@ ALTER TABLE `Class` ADD CONSTRAINT `Class_eventId_fkey` FOREIGN KEY (`eventId`) 
 
 -- AddForeignKey
 ALTER TABLE `Competitor` ADD CONSTRAINT `Competitor_classId_fkey` FOREIGN KEY (`classId`) REFERENCES `Class`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Competitor` ADD CONSTRAINT `Competitor_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `Team`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Team` ADD CONSTRAINT `Team_classId_fkey` FOREIGN KEY (`classId`) REFERENCES `Class`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -2,18 +2,8 @@ version: '3'
 services:
   api:
     image: oricloud-app
+    network_mode: host
     build: .
-    networks:
-      - backend
-    ports:
-      - '3001:3001'
-
-  web-cli:
-    image: oricloud-app
-    networks:
-      - backend
-    command: sh
-
-networks:
-  backend:
-    driver: bridge
+    restart: unless-stopped
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
