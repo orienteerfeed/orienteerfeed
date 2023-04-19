@@ -1,20 +1,9 @@
-FROM nginx:latest
-
-EXPOSE 8080
-
-COPY ./mrb/ /usr/share/nginx/html/
-
-FROM mysql:latest
-
-EXPOSE 3306
-
 FROM node:18-alpine
-
-RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY prisma ./prisma/
 
 RUN npm install
 
@@ -22,10 +11,33 @@ COPY . .
 
 EXPOSE 3001
 
-RUN npx prisma generate
+CMD ["npm", "run", "start:prod"]
 
-#ENTRYPOINT ["npx", "prisma", "migrate", "deploy"]
 
-# https://stackoverflow.com/questions/66646432/how-do-i-run-prisma-migrations-in-a-dockerized-graphql-postgres-setup
+#
+# Ideally, this is what you want to achieve:
+#
 
-CMD ["npm", "run", "dev"]
+# FROM node:18-alpine AS builder
+
+# WORKDIR /app
+
+# COPY package*.json ./
+# COPY prisma ./prisma/
+
+# RUN npm install
+
+# COPY . .
+
+# RUN npm run build
+
+# FROM node:18-alpine 
+
+# COPY --from=builder /app/node_modules ./node_modules
+# COPY --from=builder /app/package*.json ./
+# COPY --from=builder /app/build ./dist
+# COPY --from=builder /app/prisma ./prisma
+
+# EXPOSE 3001
+
+# CMD ["npm", "run", "start:prod"]
