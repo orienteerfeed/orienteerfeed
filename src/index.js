@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import cors from 'cors';
+import morgan from 'morgan';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -15,6 +16,9 @@ import prisma from './utils/context.js';
 const { PORT = 3001 } = process.env;
 
 const app = express();
+
+// setup the logger middleware
+app.use(morgan('tiny'));
 
 app.use(express.json());
 app.use(cors());
