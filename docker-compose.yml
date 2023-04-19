@@ -7,9 +7,6 @@ services:
     restart: always
     ports:
       - '3306:3306'
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     networks:
       - app-network
   nginx:
@@ -20,6 +17,9 @@ services:
       - '443'
     networks:
       - app-network
+    # mount the static files
+    volumes:
+      - ./mrb:/usr/share/nginx/html/mrb:ro
   api:
     image: oricloud-app
     env_file: ./.env

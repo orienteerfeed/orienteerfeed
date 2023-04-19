@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start:dev": "nodemon --exec babel-node src/index.js",
+    "start:prod": "prisma migrate deploy && prisma generate && prisma db seed && npm run start:dev",
     "dev": "node src/index.js",
     "dev:debug": "backpack dev --inspect --inspect-brk",
     "start": "node ./build/main.js",
