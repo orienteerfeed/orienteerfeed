@@ -1,0 +1,37 @@
+{
+  "Page": {
+    "Auth": {
+      "SignInPage": {
+        "DontHaveAnAccount": "Don't have an account?",
+        "EnterYourEmailToSignIn": "Enter your email to sign in to your account",
+        "Password": "Password",
+        "SignUp": "Sign Up",
+        "SignInWithEmail": "Sign In With Email",
+        "WelcomeBack": "Welcome back"
+      }
+    }
+  },
+  "Route": {
+    "Dashboard": "Dashboard",
+    "Events": "Events",
+    "Finances": "Finances",
+    "Settings": "Settings",
+    "Transactions": "Transactions"
+  },
+  "Validations": {
+    "Required": "Required field",
+    "Email": "Invalid email address",
+    "PasswordsDontMatch": "Passwords don't match",
+    "EmailsContainNotEmail": "One of the entered emails is not valid",
+    "EmailsUnique": "The email addresses entered must be unique",
+    "EmailsMinMax": "The number of emails must be a minimum of {{min}} and a maximum of {{max}}",
+    "SelectRequired": "Select a value",
+    "FileRequired": "Upload a file",
+    "NumberMin": "Enter a number greater than {{min}}",
+    "Date": "Invalid date",
+    "RegistrationNumber": "The registration number must correspond to the valid CSOS format (e.g. XXX0101)",
+    "Number": "The entered value must be a number",
+    "Time": "The time must be entered in the format HH:MM:SS (e.g. 01:18:06)",
+    "TimeInZones": "The time in the zones must not be longer than the total activity time"
+  }
+}
