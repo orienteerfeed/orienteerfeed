@@ -9,17 +9,6 @@ services:
       - '3306:3306'
     networks:
       - app-network
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - '8080:80'
-      - '443'
-    networks:
-      - app-network
-    # mount the static files
-    volumes:
-      - ./mrb:/usr/share/nginx/html/mrb:ro
   api:
     image: oricloud-app
     env_file: ./.env

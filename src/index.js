@@ -6,6 +6,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import path from 'path';
 
 import unSecureRoutes from './unSecureRoutes.js';
 import { error } from './utils/responseApi.js';
@@ -23,6 +24,7 @@ app.use(morgan('tiny'));
 app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
+app.use('/mrb/assets', express.static('mrb/assets', { fallthrough: false }));
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -57,6 +59,10 @@ app.use(unSecureRoutes);
  */
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.get('/mrb*', (req, res) => {
+  res.sendFile(path.join('mrb', 'index.html'), { root: '.' });
 });
 
 app.post(
