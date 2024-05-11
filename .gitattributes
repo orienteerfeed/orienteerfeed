@@ -1,4 +1,22 @@
+# Normalize text files to LF (Linux/Mac) on all platforms
+* text=auto eol=lf
 
 # Convert text file line endings to lf
-* text eol=lf
-*.js text
+*.js text diff=javascript
+*.graphql diff=graphql
+*.json diff=json
+*.md diff=markdown
+
+# Prisma schema diff settings
+*.prisma diff=prisma
+
+# Node.js & npm specific files
+package.json eol=lf
+package-lock.json eol=lf
+yarn.lock eol=lf
+
+# Prisma Client generated files should be normalized
+# Here, we normalize to LF (Linux/Mac) across platforms
+/prisma/*.prisma text eol=lf
+/prisma/migrations/** text eol=lf
+/prisma/seed.js text eol=lf

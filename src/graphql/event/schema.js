@@ -3,6 +3,7 @@ export const typeDef = /* GraphQL */ `
     events: [Event!]!
     event(id: String!): Event
     eventsBySport(sportId: Int!): [Event!]
+    eventsByUser(userId: Int!): [Event!]
   }
   type Event {
     id: String!

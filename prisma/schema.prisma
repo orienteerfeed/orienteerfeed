@@ -31,6 +31,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   events    Event[]
+  protocols Protocol[]
 }
 
 model Event {
@@ -49,6 +50,7 @@ model Event {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   classes   Class[]
+  protocols Protocol[]
 }
 
 model Class {
@@ -88,10 +90,14 @@ model Competitor {
   startTime    DateTime?
   finishTime   DateTime?
   time         Int?
-  team         Team?       @relation(fields: [teamId], references: [id])
+  team         Team?        @relation(fields: [teamId], references: [id])
   teamId       Int?         @db.UnsignedInt
   leg          Int?         @db.UnsignedInt
   status       ResultStatus @default(Inactive)
+  lateStart    Boolean      @default(false)
+  note         String?
+  updatedAt    DateTime     @default(now()) @updatedAt
+  protocols    Protocol[]
 }
 
 model Team {
@@ -103,6 +109,21 @@ model Team {
   shortName     String?      @db.VarChar(10)
   bibNumber     Int
   competitors   Competitor[]
+}
+
+model Protocol {
+  id            Int          @id @default(autoincrement()) @db.UnsignedInt
+  event         Event        @relation(fields: [eventId], references: [id])
+  eventId       String
+  competitor    Competitor   @relation(fields: [competitorId], references: [id])
+  competitorId  Int          @db.UnsignedInt
+  origin        Origin
+  type          ProtocolType
+  previousValue String       @db.VarChar(32)
+  newValue      String       @db.VarChar(32)
+  author        User         @relation(fields: [authorId], references: [id])
+  authorId      Int          @db.UnsignedInt
+  createdAt     DateTime     @default(now())
 }
 
 enum Sex {
@@ -135,4 +156,13 @@ enum ResultStatus {
   DidNotStart
   DidNotEnter
   Cancelled
+}
+
+enum Origin {
+  START
+}
+
+enum ProtocolType {
+  status_change
+  si_card_change
 }
