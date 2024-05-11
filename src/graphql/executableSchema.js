@@ -34,6 +34,11 @@ import {
   typeDef as Changelog,
   resolvers as changelogResolvers,
 } from './changelog/index.js';
+// Import type definitions and resolvers for Country.
+import {
+  typeDef as Country,
+  resolvers as countryResolvers,
+} from './country/index.js';
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 // Basic query and mutation typeDefs
@@ -64,6 +69,7 @@ const schema = makeExecutableSchema({
     Team,
     User,
     Changelog,
+    Country,
   ],
   resolvers: merge(
     {}, // Start with an empty object to avoid mutating the original resolvers
@@ -75,6 +81,7 @@ const schema = makeExecutableSchema({
     teamResolvers,
     userResolvers,
     changelogResolvers,
+    countryResolvers,
   ),
 });
 

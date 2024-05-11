@@ -8,6 +8,9 @@ import fetch from 'node-fetch';
 
 import { validation, error, success } from '../../utils/responseApi.js';
 import { formatErrors } from '../../utils/errors.js';
+import { calculateCompetitorRankingPoints } from '../../utils/ranking.js';
+
+import { storeCzechRankingData } from './uploadService.js';
 
 import crypto from 'crypto';
 
@@ -64,7 +67,9 @@ router.post(
     } = req;
     if (!req.file) {
       console.error('File not found');
-      return res.status(400).json(error('No file uploaded'));
+      return res
+        .status(422)
+        .json(validation('No file uploaded', res.statusCode));
     }
     if (typeof validateXml === 'undefined' || validateXml !== 'false') {
       const xsd = await getIOFXmlSchema();
@@ -84,6 +89,7 @@ router.post(
         select: {
           id: true,
           relay: true,
+          ranking: true,
         },
       });
     } catch (err) {
@@ -101,7 +107,12 @@ router.post(
     if (!dbResponseEvent) {
       return res
         .status(422)
-        .json(error(`Event with ID ${eventId} does not exist in the database`));
+        .json(
+          validation(
+            `Event with ID ${eventId} does not exist in the database`,
+            res.statusCode,
+          ),
+        );
     }
     let iofXml3;
     await parseXml(req, function (err, xml) {
@@ -250,6 +261,14 @@ router.post(
                     });
                   }
                 });
+                // Calculate ranking points
+                if (dbResponseEvent.ranking) {
+                  const rankingCaluclation =
+                    calculateCompetitorRankingPoints(eventId);
+                  if (!rankingCaluclation) {
+                    console.log('Ranking points can not be calculated');
+                  }
+                }
               } else {
                 // TEAM COMPETITION RESULT LIST
                 if (
@@ -744,6 +763,71 @@ router.post(
       );
   },
 );
+
+/**
+ * @swagger
+ * /rest/v1/upload/czech-ranking:
+ *  post:
+ *    summary: Upload CSV with Czech Ranking Data for the current month
+ *    description: Upload data file containing ranking data for czech competition rules.
+ *    parameters:
+ *       - in: body
+ *         name: file
+ *         required: true
+ *         description: CSV File downloaded from ORIS system.
+ *         schema:
+ *           type: file
+ *    responses:
+ *      200:
+ *        description: Iof xml uploaded successfully
+ *      422:
+ *        description: Validation errors
+ *      500:
+ *        description: Internal server error
+ */
+router.post('/czech-ranking', upload, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json(validation(formatErrors(errors)));
+  }
+  if (!req.file) {
+    console.error('File not found');
+    return res.status(422).json(validation('No file uploaded', res.statusCode));
+  }
+
+  console.log(req.file);
+  if (req.file.size > 2000000) {
+    console.error('File is too large');
+    return res
+      .status(422)
+      .json(
+        validation(
+          'File is too large. Allowed size is up to 2MB',
+          res.statusCode,
+        ),
+      );
+  }
+
+  try {
+    const processedRankingData = await storeCzechRankingData(
+      req.file.buffer.toString(),
+    );
+    return res.status(200).json(
+      success(
+        'OK',
+        {
+          data:
+            'Csv ranking Czech data uploaded successfully: ' +
+            processedRankingData,
+        },
+        res.statusCode,
+      ),
+    );
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json(error(err.message, res.statusCode));
+  }
+});
 
 async function parseXml(req, callback) {
   /** This function takes in two parameters, a request object and a callback function.

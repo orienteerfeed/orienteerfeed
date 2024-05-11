@@ -14,11 +14,16 @@ export const typeDef = /* GraphQL */ `
     location: String
     zeroTime: String!
     relay: Boolean!
+    ranking: Boolean!
+    coefRanking: Float
+    startMode: String!
+    countryId: String
     published: Boolean!
     authorId: Int
     createdAt: String!
     updatedAt: String!
     classes: [Class!]
     sport: Sport!
+    country: Country
   }
 `;

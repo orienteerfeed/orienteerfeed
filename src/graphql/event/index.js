@@ -23,5 +23,10 @@ const resolvers = {
         where: { id: parent.sportId },
       });
     },
+    country(parent, _, context) {
+      return prisma.country.findUnique({
+        where: { countryCode: parent.countryId },
+      });
+    },
   },
 };

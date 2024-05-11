@@ -15,6 +15,24 @@ datasource db {
 //   url      = "file:./dev.db"
 // }
 
+model Country {
+  countryCode String @id @db.Char(2)
+  countryName String
+  events      Event[]
+}
+
+model RankingCzech {
+  id            Int     @id @default(autoincrement()) @db.UnsignedInt
+  place         Int
+  firstName     String
+  lastName      String
+  registration  String  @unique @db.VarChar(10)
+  points        Int
+  rankIndex     Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model Sport {
   id     Int     @id @default(autoincrement()) @db.UnsignedInt
   name   String  @unique
@@ -42,8 +60,13 @@ model Event {
   organizer String?
   date      DateTime @db.Date
   location  String?
+  countryId String?  @db.Char(2)
+  country   Country? @relation(fields: [countryId], references: [countryCode])
   zeroTime  DateTime @db.DateTime()
   relay     Boolean  @default(false)
+  startMode StartMode @default(Individual)
+  ranking   Boolean  @default(false)
+  coefRanking Float?
   published Boolean  @default(false)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?     @db.UnsignedInt
@@ -75,29 +98,30 @@ model Class {
 }
 
 model Competitor {
-  id           Int          @id @default(autoincrement()) @db.UnsignedInt
-  class        Class        @relation(fields: [classId], references: [id])
-  classId      Int          @db.UnsignedInt
-  firstname    String
-  lastname     String
-  nationality  String?      @db.Char(3)
-  registration String       @db.VarChar(10)
-  license      String?      @db.Char(1)
-  ranking      Int?         @db.UnsignedInt
-  organisation String?
-  shortName    String?      @db.VarChar(10)
-  card         Int?         @db.UnsignedInt
-  startTime    DateTime?
-  finishTime   DateTime?
-  time         Int?
-  team         Team?        @relation(fields: [teamId], references: [id])
-  teamId       Int?         @db.UnsignedInt
-  leg          Int?         @db.UnsignedInt
-  status       ResultStatus @default(Inactive)
-  lateStart    Boolean      @default(false)
-  note         String?
-  updatedAt    DateTime     @default(now()) @updatedAt
-  protocols    Protocol[]
+  id            Int          @id @default(autoincrement()) @db.UnsignedInt
+  class         Class        @relation(fields: [classId], references: [id])
+  classId       Int          @db.UnsignedInt
+  firstname     String
+  lastname      String
+  nationality   String?      @db.Char(3)
+  registration  String       @db.VarChar(10)
+  license       String?      @db.Char(1)
+  ranking       Int?         @db.UnsignedInt
+  rankPointsAvg Int?         @db.UnsignedInt
+  organisation  String?
+  shortName     String?      @db.VarChar(10)
+  card          Int?         @db.UnsignedInt
+  startTime     DateTime?
+  finishTime    DateTime?
+  time          Int?
+  team          Team?        @relation(fields: [teamId], references: [id])
+  teamId        Int?         @db.UnsignedInt
+  leg           Int?         @db.UnsignedInt
+  status        ResultStatus @default(Inactive)
+  lateStart     Boolean      @default(false)
+  note          String?
+  updatedAt     DateTime     @default(now()) @updatedAt
+  protocols     Protocol[]
 }
 
 model Team {
@@ -165,4 +189,13 @@ enum Origin {
 enum ProtocolType {
   status_change
   si_card_change
+}
+
+enum StartMode {
+  Individual
+  Mass
+  Handicap
+  Pursuit
+  Wave
+  ScoreO
 }

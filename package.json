@@ -26,6 +26,7 @@
     "argon2": "^0.40.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "csv-parse": "^5.5.5",
     "dotenv-flow": "^3.2.0",
     "ejs": "^3.1.10",
     "express": "^4.18.2",

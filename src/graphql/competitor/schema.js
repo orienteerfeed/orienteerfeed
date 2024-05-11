@@ -24,6 +24,7 @@ export const typeDef = /* GraphQL */ `
     registration: String!
     license: String
     ranking: Int
+    rankPointsAvg: Int
     organisation: String
     shortName: String
     card: Int

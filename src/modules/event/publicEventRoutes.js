@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 
 import { validation, error, success } from '../../utils/responseApi.js';
+import { calculateCompetitorRankingPoints } from '../../utils/ranking.js';
 import { formatErrors } from '../../utils/errors.js';
 import prisma from '../../utils/context.js';
 
@@ -28,6 +29,7 @@ router.get('/', async (req, res) => {
         organizer: true,
         date: true,
         location: true,
+        country: true,
         relay: true,
         published: true,
       },
@@ -78,8 +80,11 @@ router.get(
           name: true,
           date: true,
           location: true,
+          country: true,
           organizer: true,
           relay: true,
+          ranking: true,
+          coefRanking: true,
           sport: true,
           zeroTime: true,
           classes: true,
@@ -212,6 +217,7 @@ router.get(
                     registration: true,
                     license: true,
                     ranking: true,
+                    rankPointsAvg: true,
                     card: true,
                     startTime: true,
                     finishTime: true,
@@ -226,14 +232,7 @@ router.get(
         });
       } catch (err) {
         console.error(err);
-        return res
-          .status(500)
-          .json(
-            validation(
-              `Event with ID ${eventId} does not exist in the database` +
-                err.message,
-            ),
-          );
+        return res.status(500).json(error(`An error occurred: ` + err.message));
       }
       eventData = dbIndividualResponse;
     } else {
@@ -431,6 +430,7 @@ router.get(
             registration: true,
             license: true,
             ranking: true,
+            rankPointsAvg: true,
             organisation: true,
             shortName: true,
             card: true,
@@ -534,5 +534,15 @@ router.get(
       .json(success('OK', { data: competitorData }, res.statusCode));
   },
 );
+
+router.post('/:eventId/ranking', async (req, res) => {
+  // Everything went fine.
+
+  const { eventId } = req.params;
+  calculateCompetitorRankingPoints(eventId);
+  return res
+    .status(200)
+    .json(success('OK', { data: 'Calculate ranking' }, res.statusCode));
+});
 
 export default router;
