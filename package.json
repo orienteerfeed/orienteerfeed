@@ -16,7 +16,7 @@
     "test": "jest"
   },
   "author": "Martin Křivda",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "type": "module",
   "dependencies": {
     "@apollo/server": "^4.9.3",
