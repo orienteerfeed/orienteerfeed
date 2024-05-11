@@ -30,7 +30,7 @@ This application is like a digital hub for all things related to orienteering ev
 ### Local development
 
 Clone the git repo, install dependencies, and deploy database schema.
-To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer. The required version of Node.js can be found in the [.nvmrc](./.nvmrc) file. From your command line:
+To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer. For consistent development and deployment environments, this project specifies a required Node.js version in the [.nvmrc](./.nvmrc) file. It is recommended to manage your Node.js installation using [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm), which helps ensure that you are using the exact version of Node.js needed for this project. From your command line:
 
 ```bash
 # Clone this repository
