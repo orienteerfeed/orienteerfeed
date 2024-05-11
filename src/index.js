@@ -14,7 +14,7 @@ import { error, success } from './utils/responseApi.js';
 import { schemaWithDirectives } from './graphql/executableSchema.js';
 import prisma from './utils/context.js';
 
-import packageJson from '../package.json' assert { type: 'json' };
+import packageJson from '../package.json' with { type: "json" };
 
 const { PORT = 3001 } = process.env;
 

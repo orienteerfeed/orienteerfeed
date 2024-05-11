@@ -2,7 +2,7 @@
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
-We will be using [Node.js](https://nodejs.org/) v18.12.1.
+We will be using [Node.js](https://nodejs.org/) v22.1.0.
 New JavaScript features (ES2015) are "enabled" for all modern browsers with [Babel](https://babeljs.io/).
 
 ## How It Works
