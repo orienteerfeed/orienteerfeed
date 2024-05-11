@@ -1,0 +1,37 @@
+{
+  "Page": {
+    "Auth": {
+      "SignInPage": {
+        "DontHaveAnAccount": "Ještě nemáš svůj účet?",
+        "EnterYourEmailToSignIn": "Vlož svůj e-mail pro přihlášení do svého účtu",
+        "Password": "Heslo",
+        "SignUp": "Zaregistruj se",
+        "SignInWithEmail": "Přihlásit se přes e-mail",
+        "WelcomeBack": "Vítej zpět"
+      }
+    }
+  },
+  "Route": {
+    "Dashboard": "Nástěnka",
+    "Events": "Události",
+    "Finances": "Finance",
+    "Settings": "Nastavení",
+    "Transactions": "Transakce"
+  },
+  "Validations": {
+    "Required": "Povinný údaj",
+    "Email": "Neplatná e-mailová adresa",
+    "PasswordsDontMatch": "Hesla se neshodují",
+    "EmailsContainNotEmail": "Některý ze zadaných emailů není validní",
+    "EmailsUnique": "Zadané e-mailové adresy musí být unikátní",
+    "EmailsMinMax": "Počet emailů musí být minimálně {{min}} a maximálně {{max}}",
+    "SelectRequired": "Vyberte hodnotu",
+    "FileRequired": "Nahrajte soubor",
+    "NumberMin": "Zadejte číslo větší než {{min}}",
+    "Date": "Neplatné datum",
+    "RegistrationNumber": "Registrační číslo musí odpovídat platnému formátu ČSOS (např. XXX0101)",
+    "Number": "Zadaná hodnota musí být číslo",
+    "Time": "Čas musí být zadán ve formátu HH:MM:SS (např. 01:18:06)",
+    "TimeInZones": "Čas v zónách nesmí být delší než celkový čas aktivity"
+  }
+}

@@ -14,3 +14,9 @@ export const eventsBySport = (_, { sportId }, context) => {
     where: { sportId: sportId },
   });
 };
+
+export const eventsByUser = (_, { userId }, context) => {
+  return prisma.event.findMany({
+    where: { authorId: userId },
+  });
+};

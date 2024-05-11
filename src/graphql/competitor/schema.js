@@ -4,6 +4,13 @@ export const typeDef = /* GraphQL */ `
     competitorsByClass(id: Int!): [Competitor!]
     competitorsByTeam(id: Int!): [Competitor!]
   }
+  extend type Mutation {
+    competitorStatusChange(input: StatusChange): ResponseMessage
+    competitorUpdate(input: UpdateCompetitorInput): ResponseMessage
+  }
+  type ResponseMessage {
+    message: String!
+  }
   type Competitor {
     id: Int!
     class: Class!
@@ -24,5 +31,24 @@ export const typeDef = /* GraphQL */ `
     finishTime: String
     time: Int
     status: String
+    lateStart: Boolean!
+    note: String
+  }
+  input StatusChange {
+    eventId: ID!
+    competitorId: Int!
+    origin: String! @constraint(pattern: "^START$", maxLength: 32)
+    status: String!
+      @constraint(
+        pattern: "^(Active|Inactive|DidNotStart|LateStart)$"
+        maxLength: 32
+      )
+  }
+  input UpdateCompetitorInput {
+    eventId: ID!
+    competitorId: Int!
+    origin: String! @constraint(pattern: "^START$", maxLength: 32)
+    card: Int!
+    note: String
   }
 `;
