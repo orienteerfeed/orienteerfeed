@@ -9,6 +9,7 @@ Features:
 - RESTful API endpoints for start changes
 - Event protocol
 - User authentication using JWT
+- Ranking processing on-the-fly
 
 ## 1.0.0 (2023-11-05)
 
