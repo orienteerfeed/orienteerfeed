@@ -4,6 +4,8 @@
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/bXHnBcNWNc)](https://discord.gg/https://discord.gg/bXHnBcNWNc)
+
 ## How It Works
 
 This application is like a digital hub for all things related to orienteering events. It serves as a one-stop platform where you can get details about various events, the classes offered at these events, and the competitors participating in them. It provides these services through a web server and is capable of communicating using both RESTful APIs and GraphQL, which are two ways of fetching data from a server.
