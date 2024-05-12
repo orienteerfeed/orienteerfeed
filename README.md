@@ -1,9 +1,8 @@
 # Orienteering Cloud Data Hub
 
-⭐ Star us on GitHub — it motivates us a lot!
+"OrienteerFeed" is designed to be a dynamic and interactive web API platform which is specifically made for the orienteering community. Delivering real-time updates, live tracking, and a continuous stream of information about orienteering events is its key service.
 
-We will be using [Node.js](https://nodejs.org/) v22.1.0.
-New JavaScript features (ES2015) are "enabled" for all modern browsers with [Babel](https://babeljs.io/).
+⭐ Star us on GitHub — it motivates us a lot!
 
 ## How It Works
 
@@ -22,6 +21,9 @@ This application is like a digital hub for all things related to orienteering ev
 - XML Processing: The app can handle IOF-XML v3 data, which is a standard format for organizing data. This is useful for uploading and downloading data about entries or results from different systems that use [IOF-XML](https://github.com/international-orienteering-federation/datastandard-v3).
 
 ## Development
+
+We will be using [Node.js](https://nodejs.org/) v22.1.0.
+New JavaScript features (ES2015) are "enabled" for all modern browsers with [Babel](https://babeljs.io/).
 
 ### NodeJS Express
 
