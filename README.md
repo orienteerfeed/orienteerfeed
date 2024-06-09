@@ -25,7 +25,7 @@ This application is like a digital hub for all things related to orienteering ev
 ## Development
 
 We will be using [Node.js](https://nodejs.org/) v22.1.0.
-New JavaScript features (ES2015) are "enabled" for all modern browsers with [Babel](https://babeljs.io/).
+New JavaScript features (ES2015) are "enabled". Can be used with promises, ES6 generators and async/await using [Babel](https://babeljs.io/).
 
 ### NodeJS Express
 
