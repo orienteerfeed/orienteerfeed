@@ -1,4 +1,5 @@
 export { Button } from './Button';
+export { Checkbox } from './Checkbox';
 export { FlagIcon } from './FlagIcon';
 export { Input } from './Input';
 export { Label } from './Label';

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { MdClose } from 'react-icons/md';
 
-import { Button } from 'src/atoms';
+import { Button } from '../atoms';
 import { cn } from '../utils';
 
 const Dialog = DialogPrimitive.Root;
@@ -96,7 +96,7 @@ const DialogDescription = forwardRef(({ className, ...props }, ref) => (
 const SimpleDialog = ({ trigger, title, description, children }) => {
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button>{trigger}</Button>
       </DialogTrigger>
       <DialogContent title={title} description={description}>

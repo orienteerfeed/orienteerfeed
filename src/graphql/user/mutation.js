@@ -15,6 +15,7 @@ export const signin = async (_, { input }, context) => {
         id: loginSuccessPayload.user.userId,
         firstname: loginSuccessPayload.user.firstName,
         lastname: loginSuccessPayload.user.lastName,
+        email: username,
       },
     };
   } catch (error) {
@@ -28,7 +29,7 @@ export const signup = async (_, { input }, context) => {
   const { email, password, firstname, lastname } = input;
 
   try {
-    await signupUser(
+    const token = await signupUser(
       email,
       password,
       firstname,
@@ -36,6 +37,7 @@ export const signup = async (_, { input }, context) => {
       context.activationUrl,
     );
     return {
+      token: token,
       message: 'User successfuly created',
     };
   } catch (error) {

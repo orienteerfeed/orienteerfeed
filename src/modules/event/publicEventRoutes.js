@@ -14,6 +14,8 @@ const router = Router();
  *  get:
  *    summary: All event in the app
  *    description: Get all available events
+ *    tags:
+ *       - Events
  *    responses:
  *      200:
  *        description: Array of events

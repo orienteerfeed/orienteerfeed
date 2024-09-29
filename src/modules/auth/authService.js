@@ -123,7 +123,7 @@ export const signupUser = async (
 
     sendEmail({
       html: emailTemplate,
-      text: 'Oricloud',
+      text: 'OrienteerFeed',
       subject: 'Orienteering Cloud Data Hub - registration',
       emailTo: email,
       onSuccess: () => console.log('Email sent successfully!'),
@@ -131,6 +131,7 @@ export const signupUser = async (
         throw new Error('Failed to send email:' + error);
       },
     });
+    return token;
   } catch (error) {
     if (error instanceof ValidationError) {
       throw error; // rethrow to be handled by the caller

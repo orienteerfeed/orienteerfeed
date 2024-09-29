@@ -23,6 +23,15 @@ export const formatDate = (dateOrStringDate) => {
   return format(parsedDate, DATE_FORMAT);
 };
 
+export const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString('cs-CZ', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
 export const formatDateTime = (dateOrStringDate) => {
   let parsedDate = dateOrStringDate;
   if (
@@ -100,4 +109,22 @@ export const secondsToHms = (seconds, format) => {
   return hms.replace(/^(\d+)/, (h) =>
     `${Number(h) + days * HOURS_PER_DAY}`.padStart(2, '0'),
   );
+};
+
+// Function to format Date object to YYYY-MM-DD string
+export const formatDateForInput = (dateObj) => {
+  const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based, so we add 1
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+// Function to format Date object to YYYY-MM-DDTHH:MM string
+export const formatDateTimeForInput = (dateObj) => {
+  const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  const hours = dateObj.getHours().toString().padStart(2, '0');
+  const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 };

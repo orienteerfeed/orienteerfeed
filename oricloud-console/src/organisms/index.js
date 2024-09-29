@@ -1,6 +1,11 @@
 export { Alert } from './Alert';
+export { AutoCompleteField } from './AutoCompleteField';
+export { Card } from './Card';
+export { CountdownTimer } from './CountdownTimer';
+export { DragDropFile } from './DragDropFile';
 export { Field } from './Field';
-export { NotLoggedInNavbar } from './NotLoggedInNavbar';
+export { Navbar } from './Navbar';
 export { SideNavigation } from './SideNavigation';
 export { SubmitButton } from './SubmitButton';
 export { SimpleDialog } from './Dialog';
+export { SportIdentReader } from './SportIdentReader';

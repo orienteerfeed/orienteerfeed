@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 
-const LOCAL_STORAGE_AUTH_KEY = 'oricloud-auth';
+const LOCAL_STORAGE_AUTH_KEY = 'orienteerfeed-auth';
 
 const initialState = {
   token: null,
@@ -72,7 +72,14 @@ function getStorageState(defaultState) {
   try {
     const { user, token } = JSON.parse(rawData);
 
-    if (token && user && user.userName && user.id && user.name) {
+    if (
+      token &&
+      user &&
+      user.email &&
+      user.id &&
+      user.lastname &&
+      user.firstname
+    ) {
       return { token, user };
     }
   } catch {}

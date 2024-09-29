@@ -15,6 +15,10 @@ services:
     build: .
     ports:
       - '${PORT}:3001'
+    environment:
+      - NODE_ENV=production
+      - ENCRYPTION_SECRET_KEY=${ENCRYPTION_SECRET_KEY}
+      - JWT_TOKEN_SECRET_KEY=${JWT_TOKEN_SECRET_KEY}
     restart: unless-stopped
     networks:
       - app-network

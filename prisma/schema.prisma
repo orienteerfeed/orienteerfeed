@@ -50,6 +50,10 @@ model User {
   updatedAt DateTime @updatedAt
   events    Event[]
   protocols Protocol[]
+  oAuthClients OAuthClient[]
+  oAuthAccessToken OAuthAccessToken[]
+  oAuthAuthorizationCode OAuthAuthorizationCode[]
+  oAuthRefreshToken OAuthRefreshToken[]
 }
 
 model Event {
@@ -74,6 +78,7 @@ model Event {
   updatedAt DateTime @updatedAt
   classes   Class[]
   protocols Protocol[]
+  eventPasswords EventPassword[]
 }
 
 model Class {
@@ -148,6 +153,83 @@ model Protocol {
   author        User         @relation(fields: [authorId], references: [id])
   authorId      Int          @db.UnsignedInt
   createdAt     DateTime     @default(now())
+}
+
+model EventPassword {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String   @unique
+  password  String   @db.VarChar(255)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OAuthClient {
+  id                 String       @id @default(cuid())
+  clientId           String       @unique @db.VarChar(255)
+  clientSecret       String       @db.VarChar(255)
+  createdAt          DateTime     @default(now())
+  user               User         @relation(fields: [userId], references: [id])
+  userId             Int          @db.UnsignedInt
+  accessTokens       OAuthAccessToken[]
+  authorizationCodes OAuthAuthorizationCode[]
+  grants             OAuthGrant[]
+  redirectUris       OAuthRedirectUri[]
+  refreshTokens      OAuthRefreshToken[]
+  scopes             OAuthScope[]
+}
+
+model OAuthGrant {
+  id        String       @id @default(cuid())
+  client    OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId  String
+  grantType String       @db.VarChar(255)
+}
+
+model OAuthScope {
+  id       String       @id @default(cuid())
+  client   OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId String
+  scope    String       @db.VarChar(255)
+}
+
+model OAuthRedirectUri {
+  id       String       @id @default(cuid())
+  client   OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId String
+  uri      String       @db.VarChar(255)
+}
+
+model OAuthAccessToken {
+  id        String       @id @default(cuid())
+  token     String       @unique @db.VarChar(1024)
+  client    OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId  String
+  user      User?        @relation(fields: [userId], references: [id])
+  userId    Int?         @db.UnsignedInt
+  expiresAt DateTime
+}
+
+model OAuthAuthorizationCode {
+  id          String       @id @default(cuid())
+  code        String       @unique @db.VarChar(255)
+  client      OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId    String
+  user        User?        @relation(fields: [userId], references: [id])
+  userId      Int?         @db.UnsignedInt
+  expiresAt   DateTime
+  redirectUri String       @db.VarChar(255)
+}
+
+model OAuthRefreshToken {
+  id        String       @id @default(cuid())
+  token     String       @unique @db.VarChar(1024)
+  client    OAuthClient  @relation(fields: [clientId], references: [id])
+  clientId  String
+  user      User?        @relation(fields: [userId], references: [id])
+  userId    Int?         @db.UnsignedInt
+  expiresAt DateTime
 }
 
 enum Sex {

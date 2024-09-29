@@ -2,15 +2,27 @@ import {
   changeCompetitorStatus,
   updateCompetitor,
 } from '../../modules/event/eventService.js';
-import { verifyToken } from '../../utils/jwtToken.js';
+import { verifyToken, verifyBasicAuth } from '../../utils/jwtToken.js';
 
 export const competitorStatusChange = async (_, { input }, context) => {
-  if (!context.token) {
+  if (!context.token && !context.basicAuthCredentials) {
     throw new Error('Unauthorized: No token provided');
   }
-  const jwtDecoded = verifyToken(context.token);
-  if (!jwtDecoded) {
-    throw new Error('Unauthorized: Invalid or expired token');
+  let jwtDecoded;
+  if (context.token) {
+    jwtDecoded = verifyToken(context.token);
+    if (!jwtDecoded) {
+      throw new Error('Unauthorized: Invalid or expired token');
+    }
+  } else if (context.basicAuthCredentials) {
+    jwtDecoded = await verifyBasicAuth(
+      context.basicAuthCredentials.username,
+      context.basicAuthCredentials.password,
+      input.eventId,
+    );
+    if (!jwtDecoded) {
+      throw new Error('Unauthorized: Invalid or expired password');
+    }
   }
   // Implement signin logic here
   const { eventId, competitorId, origin, status } = input;

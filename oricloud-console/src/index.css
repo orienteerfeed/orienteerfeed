@@ -36,5 +36,11 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    --warning: 36, 95%, 50%;
+    --warning-foreground: 0, 0%, 100%;
+
+    --success: 96 49% 36%;
+    --success-foreground: 210 40% 98%;
   }
 }

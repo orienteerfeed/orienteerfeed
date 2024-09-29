@@ -79,9 +79,14 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of cond
 
 ## Changelog
 
-In separate file [CHANGELOG.md](CHANGELOG.md). Please [keep a CHANGELOG](http://keepachangelog.com/).
+In separate file [CHANGELOG.md](CHANGELOG.md). Please [keep a CHANGELOG](https://keepachangelog.com/).
 
 This project adheres to [Semantic Versioning](https://semver.org/).
+
+## Credits
+
+- [Martin Křivda](https://github.com/martinkrivda)
+- [All Contributors](https://github.com/martinkrivda/orienteerfeed/graphs/contributors)
 
 ## License
 

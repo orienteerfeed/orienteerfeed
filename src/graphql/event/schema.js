@@ -25,5 +25,6 @@ export const typeDef = /* GraphQL */ `
     classes: [Class!]
     sport: Sport!
     country: Country
+    eventPassword: EventPassword
   }
 `;

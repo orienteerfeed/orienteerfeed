@@ -1,32 +1,69 @@
 import { verifyJwtToken } from '../src/utils/jwtToken.js';
+import { expect } from 'chai';
+import sinon from 'sinon';
+import jwt from 'jsonwebtoken';
+import { oauth2Model } from '../src/modules/auth/oauth2Model.js';
 
 describe('verifyJwtToken', () => {
-  it('should return a 401 status code if no authorization header is present', () => {
-    const req = { headers: {} };
-    const res = { status: jest.fn().mockReturnValue({ json: jest.fn() }) };
+  let req;
+  let res;
+  let next;
 
-    verifyJwtToken(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
+  beforeEach(() => {
+    req = { headers: {} };
+    res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
+    next = sinon.spy();
   });
 
-  it('should return a 401 status code if the token is invalid', () => {
-    const req = { headers: { authorization: 'Bearer invalid' } };
-    const res = { status: jest.fn().mockReturnValue({ json: jest.fn() }) };
-
-    verifyJwtToken(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
+  afterEach(() => {
+    sinon.restore();
   });
 
-  it('should set the decoded JWT on the request object and call next if the token is valid', () => {
-    const req = { headers: { authorization: 'Bearer valid' } };
-    const res = {};
-    const next = jest.fn();
+  it('should return a 401 status code if no authorization header is present', async () => {
+    await verifyJwtToken(req, res, next);
+    expect(res.status.calledWith(401)).to.be.true;
+    expect(res.json.calledOnce).to.be.true;
+  });
 
-    verifyJwtToken(req, res, next);
+  it('should return a 401 status code if the token is invalid', async () => {
+    req.headers.authorization = 'Bearer invalid';
+    sinon.stub(jwt, 'verify').throws(new Error('Invalid token'));
 
-    expect(req.jwtDecoded).toEqual({}); // mock value for valid token; replace with actual value in production code
-    expect(next).toHaveBeenCalled();
+    await verifyJwtToken(req, res, next);
+    expect(res.status.calledWith(401)).to.be.true;
+    expect(res.json.calledOnce).to.be.true;
+  });
+
+  it('should set the decoded JWT on the request object and call next if the token is valid', async () => {
+    const decoded = { id: 'userId' };
+    req.headers.authorization = 'Bearer valid';
+    sinon.stub(jwt, 'verify').returns(decoded);
+    sinon.stub(oauth2Model, 'getAccessToken').resolves(true);
+
+    await verifyJwtToken(req, res, next);
+    expect(req.jwtDecoded).to.deep.equal(decoded);
+    expect(next.calledOnce).to.be.true;
+  });
+
+  it('should return a 401 status code if the token is valid but clientId token details are missing', async () => {
+    const decoded = { clientId: 'clientId' };
+    req.headers.authorization = 'Bearer valid';
+    sinon.stub(jwt, 'verify').returns(decoded);
+    sinon.stub(oauth2Model, 'getAccessToken').resolves(null);
+
+    await verifyJwtToken(req, res, next);
+    expect(res.status.calledWith(401)).to.be.true;
+    expect(res.json.calledOnce).to.be.true;
+  });
+
+  it('should call next if the token is valid and clientId token details are present', async () => {
+    const decoded = { clientId: 'clientId' };
+    req.headers.authorization = 'Bearer valid';
+    sinon.stub(jwt, 'verify').returns(decoded);
+    sinon.stub(oauth2Model, 'getAccessToken').resolves(true);
+
+    await verifyJwtToken(req, res, next);
+    expect(req.jwtDecoded).to.deep.equal(decoded);
+    expect(next.calledOnce).to.be.true;
   });
 });

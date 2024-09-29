@@ -40,6 +40,12 @@ import {
   resolvers as countryResolvers,
 } from './country/index.js';
 
+// Import type definitions and resolvers for Country.
+import {
+  typeDef as EventPassword,
+  resolvers as eventPasswordResolvers,
+} from './eventPassword/index.js';
+
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 // Basic query and mutation typeDefs
 const Query = /* GraphQL */ `
@@ -70,6 +76,7 @@ const schema = makeExecutableSchema({
     User,
     Changelog,
     Country,
+    EventPassword,
   ],
   resolvers: merge(
     {}, // Start with an empty object to avoid mutating the original resolvers
@@ -82,6 +89,7 @@ const schema = makeExecutableSchema({
     userResolvers,
     changelogResolvers,
     countryResolvers,
+    eventPasswordResolvers,
   ),
 });
 

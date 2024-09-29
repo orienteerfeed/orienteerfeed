@@ -1,17 +1,25 @@
-FROM node:18-slim
+# Use the official Node.js image.
+# https://hub.docker.com/_/node
+FROM node:20.14-slim
 
+# Create and change to the app directory.
 WORKDIR /usr/src/app
 
+# Copy application dependency manifests to the container image.
 COPY package*.json ./
 COPY prisma ./prisma/
 
+# Install production dependencies.
 RUN npm install
 
+# Copy local code to the container image.
 COPY . .
 
-EXPOSE 3001
-
+# Run the web service on container startup.
 CMD ["npm", "run", "start:prod"]
+
+# Expose the port the app runs on
+EXPOSE 3001
 
 
 #

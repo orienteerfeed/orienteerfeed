@@ -1,1 +1,1 @@
-export { NotLoggedInPageLayout } from './NotLoggedInPageLayout';
+export { EventPageLayout } from './EventPageLayout';

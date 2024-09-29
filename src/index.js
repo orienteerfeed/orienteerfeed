@@ -31,12 +31,15 @@ app.use('/mrb/assets', express.static('mrb/assets', { fallthrough: false }));
 
 const swaggerOptions = {
   swaggerDefinition: {
-    openapi: '3.0.1',
+    openapi: '3.0.3',
     info: {
-      title: 'OriCloud API',
+      title: 'OrienteerFeed API',
       version: '1.1.0',
       description:
         'This is a REST API application made with Express. It retrieves data from JSONPlaceholder.',
+        contact: {
+          email: 'martin.krivda@kobchocen.cz',
+        },
     },
     components: {
       securitySchemes: {
@@ -78,52 +81,6 @@ app.get('/mrb*', (req, res) => {
   res.sendFile(path.join('mrb', 'index.html'), { root: '.' });
 });
 
-app.post(
-  '/demoEvent',
-  [
-    check('name').not().isEmpty().isString(),
-    check('date').not().isEmpty(),
-    check('organizer').not().isEmpty().isString(),
-    check('location').not().isEmpty().isString(),
-    check('zeroTime').not().isEmpty(),
-    check('published').isBoolean(),
-    check('sportId').not().isEmpty().isNumeric(),
-    check('relay').isBoolean(),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
-    }
-    const {
-      body: {
-        name,
-        date,
-        organizer,
-        location,
-        zeroTime,
-        published,
-        sportId,
-        relay,
-      },
-    } = req;
-    const dateTime = new Date(date);
-    await prisma.event.create({
-      data: {
-        name,
-        date: dateTime,
-        organizer,
-        location,
-        zeroTime: new Date(zeroTime),
-        published,
-        sportId,
-        relay,
-      },
-    });
-    res.send('Hello World!');
-  },
-);
-
 // Set up Apollo Server
 const gplServer = new ApolloServer({
   schema: schemaWithDirectives,
@@ -144,14 +101,30 @@ app.use(
   '/graphql',
   expressMiddleware(gplServer, {
     context: ({ req }) => {
-      // context setup as before
-      const token = (req.headers.authorization || '').replace(/^Bearer\s/, '');
+      // Get the Authorization header
+      const authHeader = req.headers.authorization || '';
+      
+      let token = null;
+      let basicAuthCredentials = null;
+
+      // Check if it's a Bearer token
+      if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.replace(/^Bearer\s/, '');
+      } 
+      // Check if it's Basic Auth
+      else if (authHeader.startsWith('Basic ')) {
+        const base64Credentials = authHeader.replace(/^Basic\s/, '');
+        const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+        const [username, password] = credentials.split(':');
+        basicAuthCredentials = { username, password };
+      }
 
       return {
         prisma: prisma,
         activationUrl:
-          req.headers['x-oricloud-app-activate-user-url'] || 'localhost',
-        token: token,
+          req.headers['x-orienteerfeed-app-activate-user-url'] || 'localhost',
+          token: token,
+          basicAuthCredentials: basicAuthCredentials,
       };
     },
   }),
@@ -173,6 +146,6 @@ app.use((req, res) => {
 const server = app.listen(PORT, () =>
   console.log(`
 🚀 Server ready at: http://localhost:${PORT}
-⭐️ See sample requests: http://pris.ly/e/js/rest-express#3-using-the-rest-api
+⭐️ See sample requests: http://localhost:${PORT}/api-docs
 🔢 Running version: ${packageJson.version}`),
 );
