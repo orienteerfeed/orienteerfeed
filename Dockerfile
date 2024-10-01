@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install production dependencies.
-RUN npm install
+RUN npm install --production
 
 # Copy local code to the container image.
 COPY . .
