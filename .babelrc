@@ -22,6 +22,7 @@
         "async": false
       }
     ],
-    ["@babel/plugin-transform-parameters"]
+    ["@babel/plugin-transform-parameters"],
+    ["@babel/plugin-syntax-import-attributes"]
   ]
 }
