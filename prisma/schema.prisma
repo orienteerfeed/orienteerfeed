@@ -203,7 +203,7 @@ model OAuthRedirectUri {
 
 model OAuthAccessToken {
   id        String       @id @default(cuid())
-  token     String       @unique @db.VarChar(1024)
+  token     String       @db.VarChar(1024)
   client    OAuthClient  @relation(fields: [clientId], references: [id])
   clientId  String
   user      User?        @relation(fields: [userId], references: [id])
@@ -224,7 +224,7 @@ model OAuthAuthorizationCode {
 
 model OAuthRefreshToken {
   id        String       @id @default(cuid())
-  token     String       @unique @db.VarChar(1024)
+  token     String       @db.VarChar(1024)
   client    OAuthClient  @relation(fields: [clientId], references: [id])
   clientId  String
   user      User?        @relation(fields: [userId], references: [id])

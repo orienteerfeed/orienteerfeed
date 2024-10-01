@@ -92,6 +92,7 @@ export const signupUser = async (
         password: hashedPassword,
         firstname,
         lastname,
+        active: true,
       },
     });
 

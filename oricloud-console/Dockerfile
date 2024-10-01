@@ -24,6 +24,9 @@ FROM nginx:alpine
 # Copy the built app to the Nginx server's default public folder
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
+# Copy custom Nginx config file
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose the port for the frontend app
 EXPOSE 80
 
