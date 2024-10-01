@@ -66,7 +66,7 @@ CREATE TABLE `OAuthAccessToken` (
     `userId` INTEGER UNSIGNED NULL,
     `expiresAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `OAuthAccessToken_token_key`(`token`),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -91,7 +91,6 @@ CREATE TABLE `OAuthRefreshToken` (
     `userId` INTEGER UNSIGNED NULL,
     `expiresAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `OAuthRefreshToken_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

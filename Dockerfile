@@ -1,6 +1,9 @@
 # Use the official Node.js image.
 # https://hub.docker.com/_/node
-FROM node:20.14-slim
+FROM node:20.17-slim
+
+RUN apt-get update -y
+RUN apt-get install -y openssl
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -10,7 +13,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install production dependencies.
-RUN npm install --production
+RUN npm install --omit-dev
 
 # Copy local code to the container image.
 COPY . .

@@ -24,6 +24,17 @@ services:
       - app-network
     depends_on:
       - mysql
+  frontend:
+    image: orinteerfeed-console
+    env_file: ./oricloud-console/.env
+    build: ./oricloud-console
+    ports:
+      - '80:80'
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+      - api
 networks:
   app-network:
     driver: bridge

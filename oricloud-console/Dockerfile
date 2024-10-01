@@ -1,7 +1,7 @@
 #Dockerfile for React frontend (orienteerfeed-console)
 
 # Use the official Node.js image to build the frontend
-FROM node:20.14-slim as build
+FROM node:20.17-slim as build
 
 # Set working directory
 WORKDIR /usr/src/app

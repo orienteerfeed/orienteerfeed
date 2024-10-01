@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "start:prod": "prisma migrate deploy && prisma generate && prisma db seed && npm run start:dev",
-    "start": "node ./build/index.js",
+    "start:prod": "prisma migrate deploy && prisma generate && prisma db seed && npm run start",
+    "start": "node ./src/index.js",
     "build": "babel ./src --out-dir build",
     "prettier": "prettier --write \"src/**/*.js\" README.md",
     "test": "mocha"
