@@ -29,7 +29,7 @@ export const signup = async (_, { input }, context) => {
   const { email, password, firstname, lastname } = input;
 
   try {
-    const token = await signupUser(
+    const signUpPayload = await signupUser(
       email,
       password,
       firstname,
@@ -37,7 +37,13 @@ export const signup = async (_, { input }, context) => {
       context.activationUrl,
     );
     return {
-      token: token,
+      token: signUpPayload.token,
+      user: {
+        id: signUpPayload.user.id,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+      },
       message: 'User successfuly created',
     };
   } catch (error) {

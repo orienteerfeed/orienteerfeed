@@ -60,14 +60,11 @@ function usePersistedAuth(defaultState) {
 }
 
 function getStorageState(defaultState) {
-  console.log('Getting from localStorage');
   if (!window.localStorage) {
-    console.log('LocalStorage not available');
     return defaultState;
   }
 
   const rawData = window.localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
-  console.log(rawData);
   if (!rawData) {
     return defaultState;
   }

@@ -15,6 +15,9 @@ const SIGNUP_MUTATION = gql`
   mutation Signup($input: UserInput!) {
     signup(input: $input) {
       token
+      user {
+        id
+      }
       message
     }
   }
@@ -50,9 +53,10 @@ export const UserRegisterForm = ({ t }) => {
         },
       });
       const user = {
-        username: values.email,
+        email: values.email,
         firstname: values.firstname,
         lastname: values.lastname,
+        id: response.data.signup.user.id,
       };
 
       const token = response.data.signup.token;

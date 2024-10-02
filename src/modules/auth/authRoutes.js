@@ -179,7 +179,7 @@ router.post(
     } = req;
 
     try {
-      const token = await signupUser(
+      const signUpPayload = await signupUser(
         email,
         password,
         firstname,
@@ -191,7 +191,7 @@ router.post(
         .json(
           successResponse(
             'OK',
-            { data: token, message: 'User successfuly created' },
+            { data: signUpPayload, message: 'User successfuly created' },
             res.statusCode,
           ),
         );

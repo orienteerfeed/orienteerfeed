@@ -9,6 +9,7 @@ export const typeDef = /* GraphQL */ `
   }
   type ResponseMessage {
     token: String!
+    user: User!
     message: String!
   }
   type AuthPayload {

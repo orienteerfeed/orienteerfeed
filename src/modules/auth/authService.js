@@ -132,7 +132,8 @@ export const signupUser = async (
         throw new Error('Failed to send email:' + error);
       },
     });
-    return token;
+    // Return both the token and the user object
+    return { token, user };
   } catch (error) {
     if (error instanceof ValidationError) {
       throw error; // rethrow to be handled by the caller
