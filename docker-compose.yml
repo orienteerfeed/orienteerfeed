@@ -29,7 +29,7 @@ services:
     env_file: ./oricloud-console/.env
     build: ./oricloud-console
     ports:
-      - '3000:3000'
+      - '80:80'
     networks:
       - app-network
     depends_on:
