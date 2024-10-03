@@ -972,6 +972,7 @@ router.get(
       return res.status(422).json(validationResponse(formatErrors(errors)));
     }
     const { eventId } = req.params;
+    const { userId } = req.jwtDecoded;
 
     //TODO: Check user permissions
     const event = await prisma.event.findUnique({
