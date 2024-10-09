@@ -179,7 +179,11 @@ export const updateCompetitor = async (
     //TODO: implement logic, to check if is it possible to make status change, what if the competitor has status NotCompeting??
     change_type = 'si_card_change';
     // It is forbidden to change the state of the runner after he has finished
-    if (!['Inactive', 'DNS', 'Active'].includes(dbResponseCompetitor.status)) {
+    if (
+      !['Inactive', 'DidNotStart', 'Active'].includes(
+        dbResponseCompetitor.status,
+      )
+    ) {
       throw new ValidationError(
         `Could not change status of runner that has already finished`,
       );
