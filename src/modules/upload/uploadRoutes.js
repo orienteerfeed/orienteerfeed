@@ -99,7 +99,7 @@ router.post(
         .json(
           error(
             `Post with ID ${eventId} does not exist in the database` +
-              err.message,
+            err.message,
           ),
         );
     }
@@ -202,7 +202,7 @@ router.post(
                   const result = competitorResult.Result.shift();
                   const competitorRegistration = person.Id[0].ATTR
                     ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')
-                        ._
+                      ._
                     : person.Id[0];
                   //const tempRegistration = createShortHash();
                   const registration = competitorRegistration;
@@ -333,8 +333,8 @@ router.post(
                         const leg = result.Leg.shift();
                         const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
-                              (sourceId) => sourceId.ATTR.type === 'CZE',
-                            )._
+                            (sourceId) => sourceId.ATTR.type === 'CZE',
+                          )._
                           : person.Id[0];
                         const tempRegistration = createShortHash(
                           parseInt(bibNumber) + '.' + parseInt(leg),
@@ -421,6 +421,7 @@ router.post(
                 let classId;
                 let length,
                   climb,
+                  startName,
                   controlsCount = null;
                 let sex;
                 const classDetails = classStart.Class.shift();
@@ -444,6 +445,8 @@ router.post(
                     classStart.Course[0].NumberOfControls &&
                     parseInt(classStart.Course[0].NumberOfControls);
                 }
+                if (classStart.StartName)
+                  startName = classStart.StartName[0]
                 if (!existingClass) {
                   const dbClassInsert = await prisma.class.create({
                     data: {
@@ -453,6 +456,7 @@ router.post(
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
+                      startName: startName,
                       sex:
                         classDetails.ATTR && classDetails.ATTR.sex !== ''
                           ? classDetails.ATTR.sex
@@ -484,8 +488,8 @@ router.post(
                     const start = competitorStart.Start.shift();
                     const competitorRegistration = person.Id[0].ATTR
                       ? person.Id.find(
-                          (sourceId) => sourceId.ATTR.type === 'CZE',
-                        )._
+                        (sourceId) => sourceId.ATTR.type === 'CZE',
+                      )._
                       : person.Id[0];
                     //const tempRegistration = createShortHash();
                     const registration = competitorRegistration;
@@ -524,6 +528,7 @@ router.post(
                             card:
                               start.ControlCard &&
                               parseInt(start.ControlCard.shift()),
+                            bibNumber: person.bibNumber && parseInt(person.bibNumber),
                             // TODO: Check status in QE start list export
                           },
                         },
@@ -552,6 +557,7 @@ router.post(
                           card:
                             start.ControlCard &&
                             parseInt(start.ControlCard.shift()),
+                          bibNumber: bibNumber && parseInt(bibNumber),
                         },
                       });
                     }
@@ -616,8 +622,8 @@ router.post(
                         const leg = start.Leg.shift();
                         const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
-                              (sourceId) => sourceId.ATTR.type === 'CZE',
-                            )._
+                            (sourceId) => sourceId.ATTR.type === 'CZE',
+                          )._
                           : person.Id[0];
                         const tempRegistration = createShortHash(
                           parseInt(bibNumber) + '.' + parseInt(leg),

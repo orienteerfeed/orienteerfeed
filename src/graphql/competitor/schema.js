@@ -20,6 +20,7 @@ export const typeDef = /* GraphQL */ `
     leg: Int
     firstname: String!
     lastname: String!
+    bibNumber: Int
     nationality: String
     registration: String!
     license: String

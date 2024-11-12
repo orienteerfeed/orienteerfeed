@@ -87,6 +87,7 @@ model Class {
   eventId          String
   externalId       String?
   name             String
+  startName        String?
   length           Int?
   climb            Int?
   controlsCount    Int?
@@ -108,6 +109,7 @@ model Competitor {
   classId       Int          @db.UnsignedInt
   firstname     String
   lastname      String
+  bibNumber     Int?
   nationality   String?      @db.Char(3)
   registration  String       @db.VarChar(10)
   license       String?      @db.Char(1)
