@@ -130,6 +130,7 @@ export const getDecryptedEventPassword = async (eventId) => {
       eventPassword && new Date(eventPassword.expiresAt) > new Date()
         ? decrypt(decodeBase64(eventPassword.password)) // Decrypt the password if valid
         : undefined;
+    if (!decryptedPassword) return; // return null if password is expired
     return { ...eventPassword, password: decryptedPassword }; // Return the decrypted password or undefined
   } catch (error) {
     console.error('Error fetching event or event password:', error);
