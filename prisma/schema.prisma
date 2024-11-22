@@ -148,7 +148,7 @@ model Protocol {
   competitorId  Int          @db.UnsignedInt
   origin        Origin
   type          ProtocolType
-  previousValue String       @db.VarChar(32)
+  previousValue String?      @db.VarChar(32)
   newValue      String       @db.VarChar(32)
   author        User         @relation(fields: [authorId], references: [id])
   authorId      Int          @db.UnsignedInt
@@ -269,8 +269,10 @@ enum Origin {
 }
 
 enum ProtocolType {
+  competitor_update
   status_change
   si_card_change
+  note_change
 }
 
 enum StartMode {

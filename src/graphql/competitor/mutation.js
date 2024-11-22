@@ -56,13 +56,21 @@ export const competitorUpdate = async (_, { input }, context) => {
   const { eventId, competitorId, origin, card, note } = input;
   const { userId } = jwtDecoded;
 
+  // Build update object conditionally
+  const updateData = {};
+  if (typeof card !== 'undefined') {
+    updateData.card = parseInt(card);
+  }
+  if (typeof note !== 'undefined') {
+    updateData.note = note;
+  }
+
   try {
     const updateCompetitorMessage = await updateCompetitor(
       eventId,
       competitorId,
       origin,
-      card,
-      note,
+      updateData,
       userId,
     );
     return {

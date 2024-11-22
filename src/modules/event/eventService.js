@@ -148,8 +148,7 @@ export const updateCompetitor = async (
   eventId,
   competitorId,
   origin,
-  card,
-  note,
+  updateData,
   userId,
 ) => {
   let dbResponseCompetitor;
@@ -160,6 +159,7 @@ export const updateCompetitor = async (
         id: true,
         status: true,
         card: true,
+        note: true,
       },
     });
   } catch (err) {
@@ -177,7 +177,11 @@ export const updateCompetitor = async (
   let change_type = 'competitor_update';
   if (origin === 'START') {
     //TODO: implement logic, to check if is it possible to make status change, what if the competitor has status NotCompeting??
-    change_type = 'si_card_change';
+    if (updateData.hasOwnProperty('card')) {
+      change_type = 'si_card_change';
+    } else if (updateData.hasOwnProperty('note')) {
+      change_type = 'note_change';
+    }
     // It is forbidden to change the state of the runner after he has finished
     if (
       !['Inactive', 'DidNotStart', 'Active'].includes(
@@ -192,7 +196,7 @@ export const updateCompetitor = async (
   try {
     await prisma.competitor.update({
       where: { id: parseInt(competitorId) },
-      data: { card: card, note: note },
+      data: { ...updateData },
     });
   } catch (err) {
     console.error('Failed to update competitor:', err);
@@ -201,17 +205,33 @@ export const updateCompetitor = async (
 
   // Add record to protocol
   try {
-    await prisma.protocol.create({
-      data: {
-        eventId: eventId,
-        competitorId: parseInt(competitorId),
-        origin: origin,
-        type: change_type,
-        previousValue: dbResponseCompetitor.card.toString(),
-        newValue: card.toString(),
-        authorId: userId,
-      },
-    });
+    if (updateData.hasOwnProperty('card')) {
+      await prisma.protocol.create({
+        data: {
+          eventId: eventId,
+          competitorId: parseInt(competitorId),
+          origin: origin,
+          type: change_type,
+          previousValue: dbResponseCompetitor.card?.toString() || null,
+          newValue: updateData.card.toString(),
+          authorId: userId,
+        },
+      });
+    }
+
+    if (updateData.hasOwnProperty('note')) {
+      await prisma.protocol.create({
+        data: {
+          eventId: eventId,
+          competitorId: parseInt(competitorId),
+          origin: origin,
+          type: 'note_change',
+          previousValue: dbResponseCompetitor.note || null,
+          newValue: updateData.note,
+          authorId: userId,
+        },
+      });
+    }
   } catch (err) {
     console.error('Failed to update competitor:', err);
     throw new DatabaseError('Error creating protocol record');
