@@ -81,7 +81,7 @@ export const changeCompetitorStatus = async (
     throw new DatabaseError('Error creating protocol record');
   }
 
-  return 'Competitor status has been successfully changed';
+  return `Competitor's status has been successfully changed to ${competitorStatus}`;
 };
 
 /**
@@ -174,14 +174,8 @@ export const updateCompetitor = async (
     );
   }
 
-  let change_type = 'competitor_update';
   if (origin === 'START') {
     //TODO: implement logic, to check if is it possible to make status change, what if the competitor has status NotCompeting??
-    if (updateData.hasOwnProperty('card')) {
-      change_type = 'si_card_change';
-    } else if (updateData.hasOwnProperty('note')) {
-      change_type = 'note_change';
-    }
     // It is forbidden to change the state of the runner after he has finished
     if (
       !['Inactive', 'DidNotStart', 'Active'].includes(
@@ -193,6 +187,27 @@ export const updateCompetitor = async (
       );
     }
   }
+
+  // Collect changes to be added to the protocol
+  const changes = [];
+
+  // Define a mapping of updateData keys to their corresponding protocol types
+  const keyToTypeMap = {
+    card: 'si_card_change',
+    note: 'note_change',
+  };
+
+  // Iterate over keys in updateData
+  Object.keys(updateData).forEach((key) => {
+    if (keyToTypeMap[key]) {
+      changes.push({
+        type: keyToTypeMap[key],
+        previousValue: dbResponseCompetitor[key]?.toString() || null,
+        newValue: updateData[key].toString(),
+      });
+    }
+  });
+
   try {
     await prisma.competitor.update({
       where: { id: parseInt(competitorId) },
@@ -205,29 +220,15 @@ export const updateCompetitor = async (
 
   // Add record to protocol
   try {
-    if (updateData.hasOwnProperty('card')) {
+    for (const change of changes) {
       await prisma.protocol.create({
         data: {
           eventId: eventId,
           competitorId: parseInt(competitorId),
           origin: origin,
-          type: change_type,
-          previousValue: dbResponseCompetitor.card?.toString() || null,
-          newValue: updateData.card.toString(),
-          authorId: userId,
-        },
-      });
-    }
-
-    if (updateData.hasOwnProperty('note')) {
-      await prisma.protocol.create({
-        data: {
-          eventId: eventId,
-          competitorId: parseInt(competitorId),
-          origin: origin,
-          type: 'note_change',
-          previousValue: dbResponseCompetitor.note || null,
-          newValue: updateData.note,
+          type: change.type,
+          previousValue: change.previousValue,
+          newValue: change.newValue,
           authorId: userId,
         },
       });
@@ -237,5 +238,8 @@ export const updateCompetitor = async (
     throw new DatabaseError('Error creating protocol record');
   }
 
-  return 'Competitor has been successfully updated';
+  return {
+    message: 'Competitor has been successfully updated',
+    updatedFields: updateData,
+  };
 };
