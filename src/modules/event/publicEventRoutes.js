@@ -99,7 +99,7 @@ router.get(
         .json(
           error(
             `Event with ID ${eventId} does not exist in the database` +
-            err.message,
+              err.message,
           ),
         );
     }
@@ -178,7 +178,7 @@ router.get(
         .json(
           error(
             `Event with ID ${eventId} does not exist in the database` +
-            err.message,
+              err.message,
           ),
         );
     }
@@ -220,6 +220,7 @@ router.get(
                     organisation: true,
                     shortName: true,
                     registration: true,
+                    bibNumber: true,
                     license: true,
                     ranking: true,
                     rankPointsAvg: true,
@@ -228,7 +229,6 @@ router.get(
                     finishTime: true,
                     time: true,
                     status: true,
-                    bibNumber: true,
                     lateStart: true,
                     note: true,
                   },
@@ -273,7 +273,6 @@ router.get(
                         leg: true,
                         lastname: true,
                         firstname: true,
-                        bibNumber: true,
                         registration: true,
                         license: true,
                         card: true,
@@ -299,7 +298,7 @@ router.get(
           .json(
             error(
               `Event with ID ${eventId} does not exist in the database` +
-              err.message,
+                err.message,
             ),
           );
       }
@@ -315,10 +314,10 @@ router.get(
               (competitor) => competitor.status !== 'OK',
             )
               ? team.competitors.find(
-                (competitor) =>
-                  competitor.status !== 'OK' ||
-                  competitor.status !== 'Inactive',
-              ).status
+                  (competitor) =>
+                    competitor.status !== 'OK' ||
+                    competitor.status !== 'Inactive',
+                ).status
               : 'OK';
           } else {
             status = 'Inactive';
@@ -474,7 +473,7 @@ router.get(
           .json(
             error(
               `Competitor with ID ${competitorId} in the event with ID ${eventId} does not exist in the database` +
-              err.message,
+                err.message,
             ),
           );
       }
@@ -537,7 +536,7 @@ router.get(
           .json(
             error(
               `Competitor with ID ${competitorId} in the event with ID ${eventId} does not exist in the database` +
-              err.message,
+                err.message,
             ),
           );
       }

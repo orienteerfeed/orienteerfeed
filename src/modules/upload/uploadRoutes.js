@@ -99,7 +99,7 @@ router.post(
         .json(
           error(
             `Post with ID ${eventId} does not exist in the database` +
-            err.message,
+              err.message,
           ),
         );
     }
@@ -202,7 +202,7 @@ router.post(
                   const result = competitorResult.Result.shift();
                   const competitorRegistration = person.Id[0].ATTR
                     ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')
-                      ._
+                        ._
                     : person.Id[0];
                   //const tempRegistration = createShortHash();
                   const registration = competitorRegistration;
@@ -230,6 +230,9 @@ router.post(
                           person.Nationality && person.Nationality[0].ATTR.code,
                         registration: registration,
                         organisation: organisation.Name[0],
+                        bibNumber:
+                          result.BibNumber &&
+                          parseInt(result.BibNumber.shift()),
                         startTime: result.StartTime.shift(),
                         finishTime: result.FinishTime.shift(),
                         time: result.Time && parseInt(result.Time[0]),
@@ -253,6 +256,9 @@ router.post(
                           person.Nationality && person.Nationality[0].ATTR.code,
                         registration: registration,
                         organisation: organisation.Name[0],
+                        bibNumber:
+                          result.BibNumber &&
+                          parseInt(result.BibNumber.shift()),
                         startTime: result.StartTime.shift(),
                         finishTime: result.FinishTime.shift(),
                         time: result.Time && parseInt(result.Time[0]),
@@ -333,8 +339,8 @@ router.post(
                         const leg = result.Leg.shift();
                         const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
-                            (sourceId) => sourceId.ATTR.type === 'CZE',
-                          )._
+                              (sourceId) => sourceId.ATTR.type === 'CZE',
+                            )._
                           : person.Id[0];
                         const tempRegistration = createShortHash(
                           parseInt(bibNumber) + '.' + parseInt(leg),
@@ -445,8 +451,7 @@ router.post(
                     classStart.Course[0].NumberOfControls &&
                     parseInt(classStart.Course[0].NumberOfControls);
                 }
-                if (classStart.StartName)
-                  startName = classStart.StartName[0]
+                if (classStart.StartName) startName = classStart.StartName[0];
                 if (!existingClass) {
                   const dbClassInsert = await prisma.class.create({
                     data: {
@@ -472,6 +477,7 @@ router.post(
                       length: length,
                       climb: climb,
                       controlsCount: controlsCount,
+                      startName: startName,
                       sex:
                         classDetails.ATTR && classDetails.ATTR.sex !== ''
                           ? classDetails.ATTR.sex
@@ -488,8 +494,8 @@ router.post(
                     const start = competitorStart.Start.shift();
                     const competitorRegistration = person.Id[0].ATTR
                       ? person.Id.find(
-                        (sourceId) => sourceId.ATTR.type === 'CZE',
-                      )._
+                          (sourceId) => sourceId.ATTR.type === 'CZE',
+                        )._
                       : person.Id[0];
                     //const tempRegistration = createShortHash();
                     const registration = competitorRegistration;
@@ -528,7 +534,9 @@ router.post(
                             card:
                               start.ControlCard &&
                               parseInt(start.ControlCard.shift()),
-                            bibNumber: person.bibNumber && parseInt(person.bibNumber),
+                            bibNumber:
+                              start.BibNumber &&
+                              parseInt(start.BibNumber.shift()),
                             // TODO: Check status in QE start list export
                           },
                         },
@@ -557,7 +565,9 @@ router.post(
                           card:
                             start.ControlCard &&
                             parseInt(start.ControlCard.shift()),
-                          bibNumber: bibNumber && parseInt(bibNumber),
+                          bibNumber:
+                            start.BibNumber &&
+                            parseInt(start.BibNumber.shift()),
                         },
                       });
                     }
@@ -622,8 +632,8 @@ router.post(
                         const leg = start.Leg.shift();
                         const competitorRegistration = person.Id[0].ATTR
                           ? person.Id.find(
-                            (sourceId) => sourceId.ATTR.type === 'CZE',
-                          )._
+                              (sourceId) => sourceId.ATTR.type === 'CZE',
+                            )._
                           : person.Id[0];
                         const tempRegistration = createShortHash(
                           parseInt(bibNumber) + '.' + parseInt(leg),
