@@ -143,6 +143,8 @@ router.get(
  *    responses:
  *      200:
  *        description: Event with array of classes and competitors
+ *      422:
+ *        description: Validation Error
  *      500:
  *        description: Internal server error
  */
@@ -227,6 +229,8 @@ router.get(
                     time: true,
                     status: true,
                     bibNumber: true,
+                    lateStart: true,
+                    note: true,
                   },
                 },
               },
@@ -277,6 +281,8 @@ router.get(
                         finishTime: true,
                         time: true,
                         status: true,
+                        lateStart: true,
+                        note: true,
                       },
                     },
                   },

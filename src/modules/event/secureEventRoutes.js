@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { check, validationResult } from 'express-validator';
+import { check, oneOf, validationResult } from 'express-validator';
 
 import {
   AuthenticationError,
@@ -825,8 +825,21 @@ const validateUpdateCompetitorInputs = [
     }
     return true; // Indicate that the validation succeeded
   }),
-  check('card').not().isEmpty().isNumeric().isLength({ min: 4, max: 7 }),
-  check('note').isString().trim().optional().isLength({ max: 255 }),
+  oneOf(
+    [
+      check('card')
+        .exists()
+        .withMessage('card is required if note is not provided')
+        .isNumeric(),
+      check('note')
+        .exists()
+        .withMessage('note is required if card is not provided')
+        .isString()
+        .trim()
+        .isLength({ max: 255 }),
+    ],
+    'Either card or note must be provided',
+  ),
 ];
 
 /**
@@ -856,14 +869,14 @@ const validateUpdateCompetitorInputs = [
  *           type: string
  *       - in: body
  *         name: card
- *         required: true
+ *         required: false
  *         description: New compoetitor SI card number.
  *         schema:
  *           type: integer
  *       - in: body
  *         name: note
  *         required: false
- *         description: Add note for competitor.
+ *         description: Note for competitor.
  *         schema:
  *           type: string
  *    responses:
@@ -901,12 +914,20 @@ router.put(
 
     // Everything went fine.
     try {
+      // Build update object conditionally
+      const updateData = {};
+      if (typeof card !== 'undefined') {
+        updateData.card = parseInt(card);
+      }
+      if (typeof note !== 'undefined') {
+        updateData.note = note;
+      }
+
       const updateCompetitorMessage = await updateCompetitor(
         eventId,
         competitorId,
         origin,
-        card,
-        note,
+        updateData,
         userId,
       );
       return res

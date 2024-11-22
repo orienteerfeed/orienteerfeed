@@ -50,7 +50,7 @@ export const typeDef = /* GraphQL */ `
     eventId: ID!
     competitorId: Int!
     origin: String! @constraint(pattern: "^START$", maxLength: 32)
-    card: Int!
+    card: Int
     note: String
   }
 `;

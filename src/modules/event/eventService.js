@@ -81,7 +81,7 @@ export const changeCompetitorStatus = async (
     throw new DatabaseError('Error creating protocol record');
   }
 
-  return 'Competitor status has been successfully changed';
+  return `Competitor's status has been successfully changed to ${competitorStatus}`;
 };
 
 /**
@@ -130,6 +130,7 @@ export const getDecryptedEventPassword = async (eventId) => {
       eventPassword && new Date(eventPassword.expiresAt) > new Date()
         ? decrypt(decodeBase64(eventPassword.password)) // Decrypt the password if valid
         : undefined;
+    if (!decryptedPassword) return; // return null if password is expired
     return { ...eventPassword, password: decryptedPassword }; // Return the decrypted password or undefined
   } catch (error) {
     console.error('Error fetching event or event password:', error);
@@ -148,8 +149,7 @@ export const updateCompetitor = async (
   eventId,
   competitorId,
   origin,
-  card,
-  note,
+  updateData,
   userId,
 ) => {
   let dbResponseCompetitor;
@@ -160,6 +160,7 @@ export const updateCompetitor = async (
         id: true,
         status: true,
         card: true,
+        note: true,
       },
     });
   } catch (err) {
@@ -174,10 +175,8 @@ export const updateCompetitor = async (
     );
   }
 
-  let change_type = 'competitor_update';
   if (origin === 'START') {
     //TODO: implement logic, to check if is it possible to make status change, what if the competitor has status NotCompeting??
-    change_type = 'si_card_change';
     // It is forbidden to change the state of the runner after he has finished
     if (
       !['Inactive', 'DidNotStart', 'Active'].includes(
@@ -189,10 +188,31 @@ export const updateCompetitor = async (
       );
     }
   }
+
+  // Collect changes to be added to the protocol
+  const changes = [];
+
+  // Define a mapping of updateData keys to their corresponding protocol types
+  const keyToTypeMap = {
+    card: 'si_card_change',
+    note: 'note_change',
+  };
+
+  // Iterate over keys in updateData
+  Object.keys(updateData).forEach((key) => {
+    if (keyToTypeMap[key]) {
+      changes.push({
+        type: keyToTypeMap[key],
+        previousValue: dbResponseCompetitor[key]?.toString() || null,
+        newValue: updateData[key].toString(),
+      });
+    }
+  });
+
   try {
     await prisma.competitor.update({
       where: { id: parseInt(competitorId) },
-      data: { card: card, note: note },
+      data: { ...updateData },
     });
   } catch (err) {
     console.error('Failed to update competitor:', err);
@@ -201,21 +221,26 @@ export const updateCompetitor = async (
 
   // Add record to protocol
   try {
-    await prisma.protocol.create({
-      data: {
-        eventId: eventId,
-        competitorId: parseInt(competitorId),
-        origin: origin,
-        type: change_type,
-        previousValue: dbResponseCompetitor.card.toString(),
-        newValue: card.toString(),
-        authorId: userId,
-      },
-    });
+    for (const change of changes) {
+      await prisma.protocol.create({
+        data: {
+          eventId: eventId,
+          competitorId: parseInt(competitorId),
+          origin: origin,
+          type: change.type,
+          previousValue: change.previousValue,
+          newValue: change.newValue,
+          authorId: userId,
+        },
+      });
+    }
   } catch (err) {
     console.error('Failed to update competitor:', err);
     throw new DatabaseError('Error creating protocol record');
   }
 
-  return 'Competitor has been successfully updated';
+  return {
+    message: 'Competitor has been successfully updated',
+    updatedFields: updateData,
+  };
 };
