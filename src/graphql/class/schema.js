@@ -9,6 +9,7 @@ export const typeDef = /* GraphQL */ `
     eventId: String!
     externalId: String
     name: String!
+    startName: String
     length: Int
     climb: Int
     controlsCount: Int
