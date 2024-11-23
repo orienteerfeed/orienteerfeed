@@ -493,7 +493,6 @@ router.post(
                       : person.Id[0];
                     //const tempRegistration = createShortHash();
                     const registration = competitorRegistration;
-                    //console.log(start);
                     //TODO: check if registration is unique per competition
                     const dbCompetitorResponse =
                       await prisma.competitor.findFirst({
@@ -528,7 +527,7 @@ router.post(
                             card:
                               start.ControlCard &&
                               parseInt(start.ControlCard.shift()),
-                            bibNumber: person.bibNumber && parseInt(person.bibNumber),
+                            bibNumber: start.BibNumber && parseInt(start.BibNumber),
                             // TODO: Check status in QE start list export
                           },
                         },
@@ -557,7 +556,7 @@ router.post(
                           card:
                             start.ControlCard &&
                             parseInt(start.ControlCard.shift()),
-                          bibNumber: bibNumber && parseInt(bibNumber),
+                          bibNumber: start.BibNumber && parseInt(start.BibNumber),
                         },
                       });
                     }
