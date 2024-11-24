@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `competitor` ADD COLUMN `bibNumber` INTEGER NULL;
+ALTER TABLE `Competitor` ADD COLUMN `bibNumber` INTEGER NULL;
 
 -- AlterTable
-ALTER TABLE `event` MODIFY `zeroTime` DATETIME NOT NULL;
+ALTER TABLE `Event` MODIFY `zeroTime` DATETIME NOT NULL;
