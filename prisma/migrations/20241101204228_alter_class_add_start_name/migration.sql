@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `class` ADD COLUMN `startName` VARCHAR(191) NULL;
+ALTER TABLE `Class` ADD COLUMN `startName` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `event` MODIFY `zeroTime` DATETIME NOT NULL;
+ALTER TABLE `Event` MODIFY `zeroTime` DATETIME NOT NULL;
