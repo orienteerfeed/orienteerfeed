@@ -4,10 +4,12 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { LanguageSelector, ThemeToggleButton } from '../molecules';
 import { useAuth } from '../utils';
 import PATHNAMES from '../pathnames';
+import { useTranslation } from 'react-i18next';
 
 export const Navbar = () => {
   const { token, user, signout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   // Function to handle clicking outside the menu to close it
   useEffect(() => {
@@ -36,7 +38,7 @@ export const Navbar = () => {
           <input
             type="text"
             className="w-full bg-transparent pr-4 text-black focus:outline-none xl:w-125"
-            placeholder="Type to search..."
+            placeholder={t('Organism.Navbar.Placeholder')}
           />
         </div>
         <div className="justify-start items-center gap-4 flex">
@@ -89,7 +91,7 @@ export const Navbar = () => {
                         className="flex items-center gap-4 font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                         to={PATHNAMES.profile()}
                       >
-                        My Profile
+                        {t('Organism.Navbar.MyProfile')}
                       </Link>
                     </li>
                   </ul>
@@ -97,7 +99,7 @@ export const Navbar = () => {
                     onClick={signout}
                     className="flex flex-col gap-5 border-b border-stroke px-6 py-6 dark:border-strokedark"
                   >
-                    Log out
+                    {t('Organism.Navbar.LogOut')}
                   </button>
                 </div>
               )}
@@ -108,13 +110,13 @@ export const Navbar = () => {
                 className="px-2 sm:px-4 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transparent transition-colors duration-500"
                 to={PATHNAMES.signIn()}
               >
-                SignIn
+                {t('Organism.Navbar.SignIn')}
               </Link>
               <Link
                 className="px-2 sm:px-4 py-2 rounded-md bg-amber-300	hover:text-accent-foreground transparent transition-colors duration-500"
                 to={PATHNAMES.signUp()}
               >
-                SignUp
+                {t('Organism.Navbar.SignUp')}
               </Link>
             </>
           )}

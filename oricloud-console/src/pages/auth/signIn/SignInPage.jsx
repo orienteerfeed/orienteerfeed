@@ -24,10 +24,10 @@ export const SignInPage = () => {
           </div>
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              {t('Page.Auth.SignInPage.WelcomeBack')}
+              {t('Page.Auth.SignInUpPage.WelcomeBack')}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {t('Page.Auth.SignInPage.EnterYourEmailToSignIn')}
+              {t('Page.Auth.SignInUpPage.EnterYourEmailToSignIn')}
             </p>
             <div className="grid gap-6">
               <UserLoginForm t={t} />
@@ -48,8 +48,8 @@ export const SignInPage = () => {
               to={PATHNAMES.signUp()}
               className="hover:text-brand underline underline-offset-4"
             >
-              {t('Page.Auth.SignInPage.DontHaveAnAccount')}{' '}
-              {t('Page.Auth.SignInPage.SignUp')}
+              {t('Page.Auth.SignInUpPage.DontHaveAnAccount')}{' '}
+              {t('Page.Auth.SignInUpPage.SignUp')}
             </Link>
           </p>
         </div>

@@ -14,34 +14,34 @@ export const SignUpPage = () => {
           to={PATHNAMES.signIn()}
           className="absolute right-4 top-4 md:right-8 md:top-8"
         >
-          Login
+          {t('Page.Auth.SignInUpPage.Login')}
         </Link>
         <div className="hidden h-full bg-muted lg:block" />
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
+                {t('Page.Auth.SignInUpPage.CreateAnAccount')}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Enter your email below to create your account
+                {t('Page.Auth.SignInUpPage.EnterYourEmailToSignIn')}
               </p>
             </div>
             <UserRegisterForm t={t} />
             <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{' '}
+              {t('Page.Auth.SignInUpPage.ClickConsent')}{' '}
               <Link
                 href="/terms"
                 className="hover:text-brand underline underline-offset-4"
               >
-                Terms of Service
+                {t('Page.Auth.SignInUpPage.TermsOfService')}
               </Link>{' '}
-              and{' '}
+              {t('And', { ns: 'common' })}{' '}
               <Link
                 href="/privacy"
                 className="hover:text-brand underline underline-offset-4"
               >
-                Privacy Policy
+                {t('Page.Auth.SignInUpPage.PrivacyPolicy')}
               </Link>
               .
             </p>

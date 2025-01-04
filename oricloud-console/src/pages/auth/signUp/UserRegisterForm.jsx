@@ -101,7 +101,7 @@ export const UserRegisterForm = ({ t }) => {
               <Field
                 id="firstname"
                 name="firstname"
-                placeholder="Jan"
+                placeholder={t('Page.Auth.User.Placeholder.Firstname')}
                 type="text"
                 autoCapitalize="on"
                 autoComplete="given-name"
@@ -115,7 +115,7 @@ export const UserRegisterForm = ({ t }) => {
               <Field
                 id="lastname"
                 name="lastname"
-                placeholder="Novák"
+                placeholder={t('Page.Auth.User.Placeholder.Lastname')}
                 type="text"
                 autoCapitalize="on"
                 autoComplete="family-name"
@@ -129,7 +129,7 @@ export const UserRegisterForm = ({ t }) => {
               <AutoCompleteField
                 id="club"
                 name="club"
-                placeholder={t('Page.Auth.User.Club')}
+                placeholder={t('Page.Auth.User.Placeholder.Club')}
                 type="text"
                 autoCapitalize="none"
                 autoComplete="off"
@@ -143,7 +143,7 @@ export const UserRegisterForm = ({ t }) => {
               <Field
                 id="email"
                 name="email"
-                placeholder="name@example.com"
+                placeholder={t('Page.Auth.User.Placeholder.Email')}
                 type="email"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -157,7 +157,7 @@ export const UserRegisterForm = ({ t }) => {
               <Field
                 id="password"
                 name="password"
-                placeholder={t('Page.Auth.SignInPage.SecretPassword')}
+                placeholder={t('Page.Auth.User.Placeholder.Password')}
                 type="password"
                 autoCapitalize="none"
                 autoComplete="new-password"

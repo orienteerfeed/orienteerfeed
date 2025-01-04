@@ -1,24 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { TableFetchState } from '../../molecules';
 import { useFetchRequest, formatDate } from '../../utils';
 
 import ENDPOINTS from '../../endpoints';
 
 const EventTable = ({ navigate, data, isLoading, error }) => {
+  const { t } = useTranslation('translation');
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
       <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
         <thead className="bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              Name
+              {t('Page.Event.Tables.Name')}
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              Organizer
+              {t('Page.Event.Tables.Organiser')}
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              Date
+              {t('Page.Event.Tables.Date')}
             </th>
           </tr>
         </thead>
@@ -56,6 +58,7 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
 };
 
 export const EventList = () => {
+  const { t } = useTranslation('translation');
   const navigate = useNavigate();
   const { data, isLoading, error } = useFetchRequest(ENDPOINTS.events());
 
@@ -87,21 +90,21 @@ export const EventList = () => {
     }) || [];
   return (
     <>
-      <h2>Today</h2>
+      <h2>{t('Page.Event.Tables.Today')}</h2>
       <EventTable
         navigate={navigate}
         data={todaysEvents}
         isLoading={isLoading}
         error={error}
       />
-      <h2>Recent</h2>
+      <h2>{t('Page.Event.Tables.Recent')}</h2>
       <EventTable
         navigate={navigate}
         data={recentEvents}
         isLoading={isLoading}
         error={error}
       />
-      <h2>Upcoming</h2>
+      <h2>{t('Page.Event.Tables.Upcoming')}</h2>
       <EventTable
         navigate={navigate}
         data={upcomingEvents}

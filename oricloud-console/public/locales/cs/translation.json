@@ -1,13 +1,159 @@
 {
   "Page": {
     "Auth": {
-      "SignInPage": {
-        "DontHaveAnAccount": "Ještě nemáš svůj účet?",
-        "EnterYourEmailToSignIn": "Vlož svůj e-mail pro přihlášení do svého účtu",
+      "User": {
+        "Firstname": "Jméno",
+        "Lastname": "Příjmení",
+        "Club": "Klub",
+        "Email": "Email",
         "Password": "Heslo",
+        "Placeholder": {
+          "Firstname": "Jan",
+          "Lastname": "Novák",
+          "Club": "Můj klub",
+          "Email": "novak@priklad.cz",
+          "Password": "Tvoje tajné heslo"
+        }
+      },
+      "SignInUpPage": {
+        "Login": "Přihlásit",
+        "DontHaveAnAccount": "Ještě nemáš svůj účet?",
+        "CreateAnAccount": "Vytvořit účet",
+        "EnterYourEmailToSignIn": "Vlož svůj e-mail pro přihlášení do svého účtu",
+        "ClickConsent": "Kliknutím na tlačítko souhlasíte s",
+        "TermsOfService": "Podmínkami služby",
+        "PrivacyPolicy": "Zásadami ochrany osobních údajů",
         "SignUp": "Zaregistruj se",
         "SignInWithEmail": "Přihlásit se přes e-mail",
         "WelcomeBack": "Vítej zpět"
+      }
+    },
+    "Event": {
+      "Description": "Přehled všech událostí",
+      "CompetitorsList": "Seznam závodníků",
+      "NoCompetitorsFound": "Kategorie neobsahuje žádné závodníky.",
+      "Oprations": {
+        "EditEvent": "Upravit závod",
+        "EditDescription": "Upravit detaily závodu",
+        "CreateEvent": "Přidat závod",
+        "CreateDescription": "Vyplň formulář daty nového závodu ",
+        "DeleteEvent": "Odstranit závod"
+      },
+      "Tables": {
+        "Name": "Název",
+        "Organiser": "Pořadatel",
+        "Date": "Datum",
+        "Today": "Dnes",
+        "Recent": "Nedávné",
+        "Upcoming": "Plánované"
+      },
+      "Alert": {
+        "DemoTitle": "Zkušební provoz",
+        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reporování v Githubu."
+      },
+      "Form": {
+        "EventName": "Název závodu",
+        "Sport": "Sport",
+        "Date": "Datum konání",
+        "Organiser": "Pořadatel",
+        "Location": "Lokalita",
+        "Country": "Země",
+        "ZeroTime": "Čas startu",
+        "Ranking": "Ranking",
+        "CoefRanking": "Rankingový koeficient",
+        "Relay": "Štafety",
+        "Published": "Zveřejněno",
+        "Placeholders": {
+          "EventName": "Můj první závod"
+        },
+        "Toast": {
+          "EditSuccess": "Závod byl úspěšně aktualizován!"
+        }
+      },
+      "Card": {
+        "Title": "Parametry závodu",
+        "Description": "Vyplň jednotlivé detaily závodu"
+      },
+      "Password": {
+        "GeneratePassword": "Generovat heslo",
+        "RegeneratePassword": "Přegenerovat heslo",
+        "PassportExpiration": "Expirace hesla",
+        "NoExpirationSet": "Není nastavena expirace",
+        "Revoke": "Zneplatnit",
+        "Card": {
+          "Title": "Heslo závodu",
+          "Description": "Nastav si heslo, které zabezpečuje poskytování dat přes API"
+        },
+        "Field": {
+          "Name": "Heslo",
+          "Placeholders": {
+            "Name": "Tvoje heslo"
+          }
+        },
+        "Toast": {
+          "UpdateSuccessDescription": "Heslo úspěšně aktualizováno!",
+          "UpdateFailTitle": "Něco se pokazilo, zkus operaci opakovat.",
+          "RevokeSuccessDescription": "Heslo úspěšně zneplatněno!",
+          "RevokeFailTitle": "Něco se pokazilo, zkus operaci opakovat."
+        }
+      }
+    },
+    "Profile": {
+      "OAuth2CredentialsForm": {
+        "Card": {
+          "Title": "OAuth2 Credentials",
+          "Description": "Vygeneruj credentials a ulož si je na bezpečné místo. Jelikož jde o citlivou informaci, nebude možné si je znovu zobrazit."
+        },
+        "Regenerate": "Přegenerovat Secret",
+        "Revoke": "Zneplatnit",
+        "ClientId": "ID klienta",
+        "ClientSecret": "Secret klienta",
+        "Toast": {
+          "GenerateSuccessDescription": "OAuth2 credentials byly úspěšně vygenerované!",
+          "GenerateFailTitle": "Něco se pokazilo, zkus operaci opakovat.",
+          "RevokeSuccessDescription": "Zneplatení credentials bylo úspěšné!",
+          "RevokeFailTitle": "Nezdařilo se zneplatnit credentials"
+        }
+      }
+    }
+  },
+  "Organism": {
+    "DragDrop": {
+      "UploadIofXml": {
+        "Title": "Nahrát IOF XML"
+      },
+      "Toast": {
+        "UploadSuccess": "Soubory úspěšně nahrány!",
+        "UploadFail": "Něco se pokazilo, zkus operaci opakovat."
+      }
+    },
+    "Navbar": {
+      "Placeholder": "Napiš co chceš hledat...",
+      "SignIn": "Přihlásit",
+      "SignUp": "Registrovat",
+      "LogOut": "Odhlásit",
+      "MyProfile": "Můj profil"
+    }
+  },
+  "Molecule": {
+    "DragDrop": {
+      "ClickToUpload": "Pro nahrání klikni",
+      "OrdDragAndDrop": "nebo drag & drop",
+      "SupportedFormats": "Podporované formáty:",
+      "Done": "Hotovo",
+      "Toast": {
+        "MaximumFiles": {
+          "Title": "Maximální počet souborů",
+          "Description": "Pouze ${count} souborů je možné nahrát"
+        },
+        "InvalidFileFormat": {
+          "Title": "Špatný formát souboru",
+          "Description": "Nahrávej prosím pouze"
+        },
+        "Error": {
+          "DescriptionSingle": "`Pouze ${count} soubor může být nahrán současně`",
+          "DescriptionPlural": "`Pouze ${count} souborů může být nahráno současně`"
+        }
       }
     }
   },

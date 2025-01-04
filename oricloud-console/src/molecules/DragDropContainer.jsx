@@ -1,5 +1,6 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { AiOutlineUpload } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 
 import { toast } from '../utils';
 
@@ -13,6 +14,7 @@ export const DragDropContainer = ({
   const dropContainer = useRef(null);
   const [dragging, setDragging] = useState(false);
   const fileRef = useRef(null);
+  const { t } = useTranslation();
 
   // Handles both drag-and-drop and file input
   const handleDrop = useCallback(
@@ -35,8 +37,8 @@ export const DragDropContainer = ({
       // Check for maximum file count
       if (ownerLicense.length >= count) {
         toast({
-          title: 'Maximum Files.',
-          description: `Only ${count} files can be uploaded`,
+          title: t('Molecule.DragDrop.Toast.MAximumFiles.Title'),
+          description: t('Molecule.DragDrop.Toast.MaximumFiles.Description'),
           variant: 'warning',
         });
         return;
@@ -45,8 +47,8 @@ export const DragDropContainer = ({
       // Check if files have valid formats
       if (!allFilesValid) {
         toast({
-          title: 'Invalid file format.',
-          description: `Please only upload ${formats.join(', ').toUpperCase()}`,
+          title: t('Molecule.DragDrop.Toast.InvalidFileFormat.Title'),
+          description: t('Molecule.DragDrop.Toast.InvalidFileFormat.Description') + ` ${formats.join(', ').toUpperCase()}`,
           variant: 'warning',
         });
         return;
@@ -55,10 +57,8 @@ export const DragDropContainer = ({
       // Check if the count of selected files exceeds the limit
       if (count && count < files.length) {
         toast({
-          title: 'Ooh! Something went wrong.',
-          description: `Only ${count} file${
-            count !== 1 ? 's' : ''
-          } can be uploaded at a time`,
+          title: t('ErrorMessage', { ns: 'common' }),
+          description: count !== 1 ? t('Molecule.DragDrop.Toast.Error.DescriptionPlural') : t('Molecule.DragDrop.Toast.Error.DescriptionSingle'),
           variant: 'destructive',
         });
         return;
@@ -162,12 +162,12 @@ export const DragDropContainer = ({
                 fileRef.current.click();
               }}
             >
-              Click to upload
+              {t('Molecule.DragDrop.ClickToUpload')}
             </span>{' '}
-            or drag and drop
+            {t('Molecule.DragDrop.OrdDragAndDrop')}
           </div>
           <div className="text-[10px] font-normal text-gray-500">
-            Supported formats: {formats.join(', ').toUpperCase()}
+            {t('Molecule.DragDrop.SupportedFormats')} {formats.join(', ').toUpperCase()}
           </div>
         </div>
       </div>
@@ -202,7 +202,7 @@ export const DragDropContainer = ({
                       &#x2715;
                     </div>
                     <div className="text-[10px] font-medium text-gray-400">
-                      Done
+                      {t('Molecule.DragDrop.Done')}
                     </div>
                   </div>
                 </div>

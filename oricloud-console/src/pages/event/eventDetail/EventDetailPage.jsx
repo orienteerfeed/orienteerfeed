@@ -108,8 +108,8 @@ export const EventDetailPage = () => {
   }, [selectedClass, data]); // This effect runs whenever data changes
 
   // Handle loading and error states
-  if (loading || competitorsLoading) return <p>Loading...</p>;
-  if (error || competitorsError) return <p>Error: {error.message}</p>;
+  if (loading || competitorsLoading) return <p>{t('Loading', { ns: 'common' })}</p>;
+  if (error || competitorsError) return <p>{t('Error', { ns: 'common' })}: {error.message}</p>;
 
   return (
     <EventPageLayout t={t}>
@@ -135,13 +135,13 @@ export const EventDetailPage = () => {
                 to={PATHNAMES.getEventSettings(eventId)}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block text-center"
               >
-                Settings
+                {t('Settings', { ns: 'common' })}
               </Link>
             </div>
           )}
         <div className="flex gap-8">
           <div>
-            <h2>Competitors List</h2>
+            <h2>{t('Page.Event.CompetitorsList')}</h2>
             {competitorsData?.competitorsByClass?.length > 0 ? (
               competitorsData.competitorsByClass.map((competitor) => (
                 <div key={competitor.id}>
@@ -152,11 +152,11 @@ export const EventDetailPage = () => {
                 </div>
               ))
             ) : (
-              <p>No competitors found for the selected class.</p>
+              <p> {t('Page.Event.NoCompetitorsFound')}</p>
             )}
           </div>
           <aside className="hidden md:flex flex-col gap-4">
-            <p>Class</p>
+            <p>{t('Orienteering.Class', { ns: 'common' })}</p>
             <nav className="flex flex-wrap gap-4 justify-start w-[20em] md:w-[20em] lg:w-[30em]">
               {data?.event?.classes?.length > 0 &&
                 [...data.event.classes]
