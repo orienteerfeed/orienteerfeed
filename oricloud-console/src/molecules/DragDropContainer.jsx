@@ -38,7 +38,9 @@ export const DragDropContainer = ({
       if (ownerLicense.length >= count) {
         toast({
           title: t('Molecule.DragDrop.Toast.MAximumFiles.Title'),
-          description: t('Molecule.DragDrop.Toast.MaximumFiles.Description'),
+          description: t('Molecule.DragDrop.Toast.MaximumFiles.Description', {
+            count,
+          }),
           variant: 'warning',
         });
         return;
@@ -48,7 +50,9 @@ export const DragDropContainer = ({
       if (!allFilesValid) {
         toast({
           title: t('Molecule.DragDrop.Toast.InvalidFileFormat.Title'),
-          description: t('Molecule.DragDrop.Toast.InvalidFileFormat.Description') + ` ${formats.join(', ').toUpperCase()}`,
+          description:
+            t('Molecule.DragDrop.Toast.InvalidFileFormat.Description') +
+            ` ${formats.join(', ').toUpperCase()}`,
           variant: 'warning',
         });
         return;
@@ -58,7 +62,10 @@ export const DragDropContainer = ({
       if (count && count < files.length) {
         toast({
           title: t('ErrorMessage', { ns: 'common' }),
-          description: count !== 1 ? t('Molecule.DragDrop.Toast.Error.DescriptionPlural') : t('Molecule.DragDrop.Toast.Error.DescriptionSingle'),
+          description:
+            count !== 1
+              ? t('Molecule.DragDrop.Toast.Error.DescriptionPlural', { count })
+              : t('Molecule.DragDrop.Toast.Error.DescriptionSingle', { count }),
           variant: 'destructive',
         });
         return;
@@ -167,7 +174,8 @@ export const DragDropContainer = ({
             {t('Molecule.DragDrop.OrdDragAndDrop')}
           </div>
           <div className="text-[10px] font-normal text-gray-500">
-            {t('Molecule.DragDrop.SupportedFormats')} {formats.join(', ').toUpperCase()}
+            {t('Molecule.DragDrop.SupportedFormats')}{' '}
+            {formats.join(', ').toUpperCase()}
           </div>
         </div>
       </div>

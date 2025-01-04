@@ -144,15 +144,15 @@
       "Toast": {
         "MaximumFiles": {
           "Title": "Maximum Files",
-          "Description": "Only ${count} files can be uploaded"
+          "Description": "Only {{count}} files can be uploaded"
         },
         "InvalidFileFormat": {
           "Title": "Invalid file format",
           "Description": "Please upload only"
         },
         "Error": {
-          "DescriptionSingle": "`Only ${count} file can be uploaded at a time`",
-          "DescriptionPlural": "`Only ${count} files can be uploaded at a time`"
+          "DescriptionSingle": "Only {{count}} file can be uploaded at a time",
+          "DescriptionPlural": "Only {{count}} files can be uploaded at a time"
         }
       }
     }

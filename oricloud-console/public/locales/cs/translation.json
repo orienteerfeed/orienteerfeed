@@ -144,15 +144,15 @@
       "Toast": {
         "MaximumFiles": {
           "Title": "Maximální počet souborů",
-          "Description": "Pouze ${count} souborů je možné nahrát"
+          "Description": "Pouze {{count}} souborů je možné nahrát"
         },
         "InvalidFileFormat": {
           "Title": "Špatný formát souboru",
           "Description": "Nahrávej prosím pouze"
         },
         "Error": {
-          "DescriptionSingle": "`Pouze ${count} soubor může být nahrán současně`",
-          "DescriptionPlural": "`Pouze ${count} souborů může být nahráno současně`"
+          "DescriptionSingle": "Pouze {{count}} soubor může být nahrán současně",
+          "DescriptionPlural": "Pouze {{count}} souborů může být nahráno současně"
         }
       }
     }
