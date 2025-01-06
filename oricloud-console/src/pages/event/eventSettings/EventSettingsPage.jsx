@@ -12,7 +12,7 @@ import {
 } from '../../../utils';
 
 import { DragDropFile } from '../../../organisms';
-import { EventInfoCard, EventPasswordCard } from '.';
+import { EventInfoCard, EventPasswordCard, QrCodeCredentialsCard } from '.';
 import { NotAuthorizedPage } from 'src/pages/notAuthorized';
 
 const GET_EVENT = gql`
@@ -55,6 +55,10 @@ export const EventSettingsPage = () => {
   const { loading, error, data } = useQuery(GET_EVENT, {
     variables: { eventId }, // Pass eventId as a variable
   });
+
+  const protocol = window.location.protocol; // "https:" or "http:"
+  const domain = window.location.hostname;
+  const apiEventsEndpoint = protocol + '//api.' + domain + '/rest/v1/events';
 
   // Create initialData for EventInfoCard
   const initialData = data?.event
@@ -107,6 +111,14 @@ export const EventSettingsPage = () => {
               eventId={initialData.id}
               password={data?.event.eventPassword?.password}
               expiresAt={data?.event.eventPassword?.expiresAt}
+            />
+          </div>
+          <div className="flex flex-col">
+            <QrCodeCredentialsCard
+              t={t}
+              eventId={eventId}
+              eventPassword={data?.event.eventPassword?.password}
+              url={apiEventsEndpoint}
             />
           </div>
         </div>

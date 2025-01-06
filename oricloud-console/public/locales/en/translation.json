@@ -9,6 +9,140 @@
         "SignInWithEmail": "Sign In With Email",
         "WelcomeBack": "Welcome back"
       }
+    },
+    "Event": {
+      "Description": "Events overview",
+      "CompetitorsList": "Competitors List",
+      "NoCompetitorsFound": "No competitors found for the selected class.",
+      "Oprations": {
+        "EditEvent": "Edit event",
+        "EditDescription": "Edit existing event details",
+        "CreateEvent": "Create event",
+        "CreateDescription": "Fill out the form to create a new event",
+        "DeleteEvent": "Delete event"
+      },
+      "Tables": {
+        "Name": "Name",
+        "Organiser": "Organiser",
+        "Date": "Date",
+        "Today": "Today",
+        "Recent": "Recent",
+        "Upcoming": "Upcoming"
+      },
+      "Alert": {
+        "DemoTitle": "This is a demo app",
+        "DemoDescription": "OrienteerFeed console app is a demo app. If you face an issue please report it to Github issues, thanks."
+      },
+      "Form": {
+        "EventName": "Event name",
+        "Sport": "Sport",
+        "Date": "Date",
+        "Organiser": "Organiser",
+        "Location": "Location",
+        "Country": "Country",
+        "ZeroTime": "Zero time",
+        "Ranking": "Ranking",
+        "CoefRanking": "Ranking coeficient",
+        "Relay": "Relay",
+        "Published": "Published",
+        "Placeholders": {
+          "EventName": "My first event"
+        },
+        "Toast": {
+          "EditSuccess": "The event was updated successfully!"
+        }
+      },
+      "Card": {
+        "Title": "Event Information",
+        "Description": "Please fill out the form below to update the event details"
+      },
+      "Password": {
+        "GeneratePassword": "Generate Password",
+        "RegeneratePassword": "Regenerate Password",
+        "PassportExpiration": "Password Expiration",
+        "NoExpirationSet": "No expiration set",
+        "Revoke": "Revoke",
+        "Card": {
+          "Title": "Event Password",
+          "Description": "Enter event password that secures event details requested via API"
+        },
+        "Field": {
+          "Name": "Event Password",
+          "Placeholders": {
+            "Name": "Event password"
+          }
+        },
+        "Toast": {
+          "UpdateSuccessDescription": "Password was updated successfully!",
+          "UpdateFailTitle": "Something went wrong, please try again.",
+          "RevokeSuccessDescription": "Password was revoked successfully!",
+          "RevokeFailTitle": "Something went wrong, please try again."
+        }
+      },
+      "QrCode": {
+        "Card": {
+          "Title": "O Checklist connection",
+          "Description": "Used for smoother setting in the mobile app that support qr code reading"
+        }
+      }
+    },
+    "Profile": {
+      "OAuth2CredentialsForm": {
+        "Card": {
+          "Title": "OAuth2 Credentials",
+          "Description": "Please generate the credentials and make sure to save them, as the secret is confidential and cannot be displayed again."
+        },
+        "Regenerate": "Regenerate Secret",
+        "Revoke": "Revoke",
+        "ClientId": "Client ID",
+        "ClientSecret": "Client Secret",
+        "Toast": {
+          "GenerateSuccessDescription": "OAuth2 credentials generated successfully!",
+          "GenerateFailTitle": "Something went wrong, please try again.",
+          "RevokeSuccessDescription": "Credentials revoked successfully!",
+          "RevokeFailTitle": "Failed to revoke credentials"
+        }
+      }
+    }
+  },
+  "Organism": {
+    "DragDrop": {
+      "UploadIofXml": {
+        "Title": "Upload IOF XML"
+      },
+      "Toast": {
+        "UploadSuccess": "Files uploaded successfully!",
+        "UploadFail": "Something went wrong during the file upload. Please try again."
+      }
+    },
+    "Navbar": {
+      "Placeholder": "Type to search...",
+      "SignIn": "Sign In",
+      "SignUp": "Sign Up",
+      "LogOut": "Log out",
+      "MyProfile": "My Profile"
+    }
+  },
+  "Molecule": {
+    "DragDrop": {
+      "ClickToUpload": "Click to upload",
+      "OrdDragAndDrop": "or drag and drop",
+      "SupportedFormats": "Supported formats:",
+      "Done": "Done",
+      "Toast": {
+        "MaximumFiles": {
+          "Title": "Maximum Files",
+          "Description": "Only {{count}} files can be uploaded"
+        },
+        "InvalidFileFormat": {
+          "Title": "Invalid file format",
+          "Description": "Please upload only"
+        },
+        "Error": {
+          "DescriptionSingle": "Only {{count}} file can be uploaded at a time",
+          "DescriptionPlural": "Only {{count}} files can be uploaded at a time"
+        }
+      }
     }
   },
   "Route": {
