@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { config } from 'src/config';
+import apiEndpoints from 'src/endpoints';
 
 import { useTranslation } from 'react-i18next';
 import { EventPageLayout } from '../../../templates';
@@ -57,7 +58,8 @@ export const EventSettingsPage = () => {
     variables: { eventId }, // Pass eventId as a variable
   });
 
-  const apiEventsEndpoint = `${config.BASE_API_URL}/rest/v1/events`;
+  const apiEventsEndpoint = new URL(apiEndpoints.events(), config.BASE_API_URL)
+    .href;
 
   // Create initialData for EventInfoCard
   const initialData = data?.event

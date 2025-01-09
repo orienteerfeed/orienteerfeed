@@ -82,7 +82,7 @@
       "QrCode": {
         "Card": {
           "Title": "O Checklist connection",
-          "Description": "Used for smoother setting in the mobile app that support qr code reading"
+          "Description": "Scan the QR code to set url, event id and password into the settings of O Feed connection. Click on the qr code icon in the settings in the app to launch the camera."
         }
       }
     },
