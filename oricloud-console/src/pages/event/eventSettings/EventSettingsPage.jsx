@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
+import { config } from 'src/config';
 
 import { useTranslation } from 'react-i18next';
 import { EventPageLayout } from '../../../templates';
@@ -56,9 +57,7 @@ export const EventSettingsPage = () => {
     variables: { eventId }, // Pass eventId as a variable
   });
 
-  const protocol = window.location.protocol; // "https:" or "http:"
-  const domain = window.location.hostname;
-  const apiEventsEndpoint = protocol + '//api.' + domain + '/rest/v1/events';
+  const apiEventsEndpoint = `${config.BASE_API_URL}/rest/v1/events`;
 
   // Create initialData for EventInfoCard
   const initialData = data?.event
