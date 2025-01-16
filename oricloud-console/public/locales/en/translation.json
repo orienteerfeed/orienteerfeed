@@ -1,5 +1,5 @@
 {
-  "Page": {
+  "Pages": {
     "Auth": {
       "User": {
         "Firstname": "First name",
@@ -117,7 +117,7 @@
       }
     }
   },
-  "Organism": {
+  "Organisms": {
     "DragDrop": {
       "UploadIofXml": {
         "Title": "Upload IOF XML"
@@ -135,7 +135,7 @@
       "MyProfile": "My Profile"
     }
   },
-  "Molecule": {
+  "Molecules": {
     "DragDrop": {
       "ClickToUpload": "Click to upload",
       "OrdDragAndDrop": "or drag and drop",

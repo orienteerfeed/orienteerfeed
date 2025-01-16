@@ -49,7 +49,9 @@ export const OAuth2CredentialsForm = () => {
         // Optional success notification
         toast({
           title: t('Operations.Success', { ns: 'common' }),
-          description: t('Page.Profile.OAuth2CredentialsForm.Toast.GenerateSuccessDescription'),
+          description: t(
+            'Pages.Profile.OAuth2CredentialsForm.Toast.GenerateSuccessDescription',
+          ),
           variant: 'success',
         });
       },
@@ -59,14 +61,18 @@ export const OAuth2CredentialsForm = () => {
         if (err.errors && Array.isArray(err.errors)) {
           err.errors.forEach((error) => {
             toast({
-              title: t('Page.Profile.OAuth2CredentialsForm.Toast.GenerateFailTitle'),
+              title: t(
+                'Pages.Profile.OAuth2CredentialsForm.Toast.GenerateFailTitle',
+              ),
               description: `${error.param}: ${error.msg}`,
               variant: 'destructive',
             });
           });
         } else {
           toast({
-            title: t('Page.Profile.OAuth2CredentialsForm.Toast.GenerateFailTitle'),
+            title: t(
+              'Pages.Profile.OAuth2CredentialsForm.Toast.GenerateFailTitle',
+            ),
             description: '',
             variant: 'destructive',
           });
@@ -83,13 +89,15 @@ export const OAuth2CredentialsForm = () => {
       setClientSecret('');
       toast({
         title: t('Operations.Success', { ns: 'common' }),
-        description: t('Page.Profile.OAuth2CredentialsForm.Toast.RevokeSuccessDescription'),
+        description: t(
+          'Pages.Profile.OAuth2CredentialsForm.Toast.RevokeSuccessDescription',
+        ),
         variant: 'success',
       });
     } catch (error) {
       console.error('Error revoking credentials', error);
       toast({
-        title: t('Page.Profile.OAuth2CredentialsForm.Toast.RevokeFailTitle'),
+        title: t('Pages.Profile.OAuth2CredentialsForm.Toast.RevokeFailTitle'),
         description: `${error.param}: ${error.msg}`,
         variant: 'destructive',
       });
@@ -120,7 +128,9 @@ export const OAuth2CredentialsForm = () => {
           <div className="grid gap-4">
             {/* Client ID */}
             <div className="grid gap-1">
-              <Label htmlFor="client-id">{t('Page.Profile.OAuth2CredentialsForm.ClientId')}</Label>
+              <Label htmlFor="client-id">
+                {t('Pages.Profile.OAuth2CredentialsForm.ClientId')}
+              </Label>
               <Field
                 id="client-id"
                 name="client-id"
@@ -136,7 +146,9 @@ export const OAuth2CredentialsForm = () => {
 
             {/* Client Secret */}
             <div className="grid gap-1">
-              <Label htmlFor="client-secret">{t('Page.Profile.OAuth2CredentialsForm.ClientSecret')}</Label>
+              <Label htmlFor="client-secret">
+                {t('Pages.Profile.OAuth2CredentialsForm.ClientSecret')}
+              </Label>
               <div className="relative">
                 <Field
                   id="client-secret"
@@ -172,7 +184,7 @@ export const OAuth2CredentialsForm = () => {
             {/* Regenerate Client Secret Button */}
             <div className="grid gap-1">
               <Button type="button" onClick={handleRegenerateSecret}>
-                {t('Page.Profile.OAuth2CredentialsForm.Regenerate')}
+                {t('Pages.Profile.OAuth2CredentialsForm.Regenerate')}
               </Button>
             </div>
 
@@ -184,7 +196,7 @@ export const OAuth2CredentialsForm = () => {
                   className="bg-red-500 text-white flex-grow-1 basis-1/5"
                   onClick={handleDeleteCredentials}
                 >
-                  {t('Page.Profile.OAuth2CredentialsForm.Revoke')}
+                  {t('Pages.Profile.OAuth2CredentialsForm.Revoke')}
                 </Button>
               )}
             </div>
@@ -201,8 +213,8 @@ export const Oauth2CredentialsCard = () => {
     <>
       {/* <!-- Event Form --> */}
       <Card
-        title={t('Page.Profile.OAuth2CredentialsForm.Card.Title')}
-        description={t('Page.Profile.OAuth2CredentialsForm.Card.Description')}
+        title={t('Pages.Profile.OAuth2CredentialsForm.Card.Title')}
+        description={t('Pages.Profile.OAuth2CredentialsForm.Card.Description')}
       >
         <OAuth2CredentialsForm />
       </Card>

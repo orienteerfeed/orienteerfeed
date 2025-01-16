@@ -21,15 +21,19 @@ const CreateEventDialog = ({ t, initialData = null }) => {
       <DialogTrigger asChild>
         <Button>
           <AiOutlinePlus className="mr-2" />
-          {t('Page.Event.Oprations.CreateEvent')}
+          {t('Pages.Event.Oprations.CreateEvent')}
         </Button>
       </DialogTrigger>
       <DialogContent
-        title={initialData ? t('Page.Event.Oprations.EditEvent') : t('Page.Event.Oprations.CreateEvent')}
+        title={
+          initialData
+            ? t('Pages.Event.Oprations.EditEvent')
+            : t('Pages.Event.Oprations.CreateEvent')
+        }
         description={
           initialData
-            ? t('Page.Event.Oprations.EditDescription')
-            : t('Page.Event.Oprations.CreateDescription')
+            ? t('Pages.Event.Oprations.EditDescription')
+            : t('Pages.Event.Oprations.CreateDescription')
         }
       >
         <EventForm
@@ -37,7 +41,9 @@ const CreateEventDialog = ({ t, initialData = null }) => {
           initialData={initialData}
           renderSubmitButton={({ isSubmitting }) => (
             <DialogFooter>
-              <SubmitButton isSubmitting={isSubmitting}>{t('Operations.Submit', { ns: 'common' })}</SubmitButton>
+              <SubmitButton isSubmitting={isSubmitting}>
+                {t('Operations.Submit', { ns: 'common' })}
+              </SubmitButton>
             </DialogFooter>
           )}
         />
@@ -56,16 +62,16 @@ export const EventPage = () => {
         <div className="flex flex-col gap-1 items-center">
           <h1 className="text-3xl md:text-4xl">{t('Route.Events')}</h1>
           <p className="text-lg text-muted-foreground">
-            {t('Page.Event.Description')}
+            {t('Pages.Event.Description')}
           </p>
         </div>
         <hr />
         <Alert
           severity="warning"
-          title={t('Page.Event.Alert.DemoTitle')}
+          title={t('Pages.Event.Alert.DemoTitle')}
           className="!pl-14"
         >
-          {t('Page.Event.Alert.DemoDescription')}
+          {t('Pages.Event.Alert.DemoDescription')}
         </Alert>
         {typeof token !== 'undefined' && token && (
           <div className="flex justify-end">

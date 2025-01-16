@@ -108,8 +108,14 @@ export const EventDetailPage = () => {
   }, [selectedClass, data]); // This effect runs whenever data changes
 
   // Handle loading and error states
-  if (loading || competitorsLoading) return <p>{t('Loading', { ns: 'common' })}</p>;
-  if (error || competitorsError) return <p>{t('Error', { ns: 'common' })}: {error.message}</p>;
+  if (loading || competitorsLoading)
+    return <p>{t('Loading', { ns: 'common' })}</p>;
+  if (error || competitorsError)
+    return (
+      <p>
+        {t('Error', { ns: 'common' })}: {error.message}
+      </p>
+    );
 
   return (
     <EventPageLayout t={t}>
@@ -141,7 +147,7 @@ export const EventDetailPage = () => {
           )}
         <div className="flex gap-8">
           <div>
-            <h2>{t('Page.Event.CompetitorsList')}</h2>
+            <h2>{t('Pages.Event.CompetitorsList')}</h2>
             {competitorsData?.competitorsByClass?.length > 0 ? (
               competitorsData.competitorsByClass.map((competitor) => (
                 <div key={competitor.id}>
@@ -152,7 +158,7 @@ export const EventDetailPage = () => {
                 </div>
               ))
             ) : (
-              <p> {t('Page.Event.NoCompetitorsFound')}</p>
+              <p> {t('Pages.Event.NoCompetitorsFound')}</p>
             )}
           </div>
           <aside className="hidden md:flex flex-col gap-4">

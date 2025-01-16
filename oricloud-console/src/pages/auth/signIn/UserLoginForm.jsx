@@ -83,12 +83,12 @@ export const UserLoginForm = ({ t }) => {
           <div className="grid gap-4">
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="email">
-                {t('Page.Auth.User.Email')}
+                {t('Pages.Auth.User.Email')}
               </Label>
               <Field
                 id="email"
                 name="email"
-                placeholder={t('Page.Auth.User.Placeholder.Email')}
+                placeholder={t('Pages.Auth.User.Placeholder.Email')}
                 type="email"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -98,12 +98,12 @@ export const UserLoginForm = ({ t }) => {
             {values && values.email && (
               <div className="grid gap-1">
                 <Label className="sr-only" htmlFor="password">
-                  {t('Page.Auth.User.Password')}
+                  {t('Pages.Auth.User.Password')}
                 </Label>
                 <Field
                   id="password"
                   name="password"
-                  placeholder={t('Page.Auth.User.Placeholder.Password')}
+                  placeholder={t('Pages.Auth.User.Placeholder.Password')}
                   type="password"
                   autoCapitalize="none"
                   autoCorrect="off"
@@ -111,7 +111,7 @@ export const UserLoginForm = ({ t }) => {
               </div>
             )}
             <SubmitButton variant="default">
-              {t('Page.Auth.SignInUpPage.SignInWithEmail')}
+              {t('Pages.Auth.SignInUpPage.SignInWithEmail')}
             </SubmitButton>
           </div>
         </form>

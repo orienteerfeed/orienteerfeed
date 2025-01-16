@@ -37,8 +37,8 @@ export const DragDropContainer = ({
       // Check for maximum file count
       if (ownerLicense.length >= count) {
         toast({
-          title: t('Molecule.DragDrop.Toast.MAximumFiles.Title'),
-          description: t('Molecule.DragDrop.Toast.MaximumFiles.Description', {
+          title: t('Molecules.DragDrop.Toast.MAximumFiles.Title'),
+          description: t('Molecules.DragDrop.Toast.MaximumFiles.Description', {
             count,
           }),
           variant: 'warning',
@@ -49,9 +49,9 @@ export const DragDropContainer = ({
       // Check if files have valid formats
       if (!allFilesValid) {
         toast({
-          title: t('Molecule.DragDrop.Toast.InvalidFileFormat.Title'),
+          title: t('Molecules.DragDrop.Toast.InvalidFileFormat.Title'),
           description:
-            t('Molecule.DragDrop.Toast.InvalidFileFormat.Description') +
+            t('Molecules.DragDrop.Toast.InvalidFileFormat.Description') +
             ` ${formats.join(', ').toUpperCase()}`,
           variant: 'warning',
         });
@@ -64,8 +64,10 @@ export const DragDropContainer = ({
           title: t('ErrorMessage', { ns: 'common' }),
           description:
             count !== 1
-              ? t('Molecule.DragDrop.Toast.Error.DescriptionPlural', { count })
-              : t('Molecule.DragDrop.Toast.Error.DescriptionSingle', { count }),
+              ? t('Molecules.DragDrop.Toast.Error.DescriptionPlural', { count })
+              : t('Molecules.DragDrop.Toast.Error.DescriptionSingle', {
+                  count,
+                }),
           variant: 'destructive',
         });
         return;
@@ -169,12 +171,12 @@ export const DragDropContainer = ({
                 fileRef.current.click();
               }}
             >
-              {t('Molecule.DragDrop.ClickToUpload')}
+              {t('Molecules.DragDrop.ClickToUpload')}
             </span>{' '}
-            {t('Molecule.DragDrop.OrdDragAndDrop')}
+            {t('Molecules.DragDrop.OrdDragAndDrop')}
           </div>
           <div className="text-[10px] font-normal text-gray-500">
-            {t('Molecule.DragDrop.SupportedFormats')}{' '}
+            {t('Molecules.DragDrop.SupportedFormats')}{' '}
             {formats.join(', ').toUpperCase()}
           </div>
         </div>
@@ -210,7 +212,7 @@ export const DragDropContainer = ({
                       &#x2715;
                     </div>
                     <div className="text-[10px] font-medium text-gray-400">
-                      {t('Molecule.DragDrop.Done')}
+                      {t('Molecules.DragDrop.Done')}
                     </div>
                   </div>
                 </div>

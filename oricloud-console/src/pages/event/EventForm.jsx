@@ -104,7 +104,7 @@ export const EventForm = ({
         setSubmitting(false);
         toast({
           title: t('Operations.Success', { ns: 'common' }),
-          description: t('Page.Event.Form.Toast.EditSuccess'),
+          description: t('Pages.Event.Form.Toast.EditSuccess'),
           variant: 'success',
         });
         // Navigate to the detail page of the event
@@ -207,12 +207,12 @@ export const EventForm = ({
           <div className="grid gap-4">
             <div className="grid gap-1">
               <Label htmlFor="eventName">
-                {t('Page.Event.Form.EventName')}
+                {t('Pages.Event.Form.EventName')}
               </Label>
               <Field
                 id="eventName"
                 name="eventName"
-                placeholder={t('Page.Event.Form.Placeholders.EventName')}
+                placeholder={t('Pages.Event.Form.Placeholders.EventName')}
                 type="text"
                 autoCapitalize="none"
                 autoComplete="none"
@@ -221,7 +221,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="sport">{t('Page.Event.Form.Sport')}</Label>
+              <Label htmlFor="sport">{t('Pages.Event.Form.Sport')}</Label>
               <Field
                 id="sport"
                 name="sport"
@@ -233,12 +233,12 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="date">{t('Page.Event.Form.Date')}</Label>
+              <Label htmlFor="date">{t('Pages.Event.Form.Date')}</Label>
               <Field id="date" name="date" type="date" required />
             </div>
             <div className="grid gap-1">
               <Label htmlFor="organizer">
-                {t('Page.Event.Form.Organiser')}
+                {t('Pages.Event.Form.Organiser')}
               </Label>
               <Field
                 id="organizer"
@@ -252,7 +252,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="location">{t('Page.Event.Form.Location')}</Label>
+              <Label htmlFor="location">{t('Pages.Event.Form.Location')}</Label>
               <Field
                 id="location"
                 name="location"
@@ -265,7 +265,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="country">{t('Page.Event.Form.Country')}</Label>
+              <Label htmlFor="country">{t('Pages.Event.Form.Country')}</Label>
               <Field
                 id="country"
                 name="country"
@@ -276,7 +276,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="zeroTime">{t('Page.Event.Form.ZeroTime')}</Label>
+              <Label htmlFor="zeroTime">{t('Pages.Event.Form.ZeroTime')}</Label>
               <Field
                 id="zeroTime"
                 name="zeroTime"
@@ -291,13 +291,13 @@ export const EventForm = ({
               <div className="flex flex-row gap-4">
                 <div className="flex-none">
                   <Label htmlFor="ranking">
-                    {t('Page.Event.Form.Ranking')}
+                    {t('Pages.Event.Form.Ranking')}
                   </Label>
                   <Field id="ranking" name="ranking" type="checkbox" />
                 </div>
                 <div className="flex-grow">
                   <Label htmlFor="coefRanking">
-                    {t('Page.Event.Form.CoefRanking')}
+                    {t('Pages.Event.Form.CoefRanking')}
                   </Label>
                   <Field
                     id="coefRanking"
@@ -312,12 +312,12 @@ export const EventForm = ({
               </div>
             </div>
             <div className="grid gap-1 justify-start">
-              <Label htmlFor="relay">{t('Page.Event.Form.Relay')}</Label>
+              <Label htmlFor="relay">{t('Pages.Event.Form.Relay')}</Label>
               <Field id="relay" name="relay" type="checkbox" />
             </div>
             <div className="grid gap-1 justify-start">
               <Label htmlFor="published">
-                {t('Page.Event.Form.Published')}
+                {t('Pages.Event.Form.Published')}
               </Label>
               <Field id="published" name="published" type="checkbox" />
             </div>

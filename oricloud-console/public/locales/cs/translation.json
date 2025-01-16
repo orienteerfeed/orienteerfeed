@@ -1,5 +1,5 @@
 {
-  "Page": {
+  "Pages": {
     "Auth": {
       "User": {
         "Firstname": "Jméno",
@@ -49,7 +49,7 @@
       },
       "Alert": {
         "DemoTitle": "Zkušební provoz",
-        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reporování v Githubu."
+        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reportování v Githubu."
       },
       "Form": {
         "EventName": "Název závodu",
@@ -117,7 +117,7 @@
       }
     }
   },
-  "Organism": {
+  "Organisms": {
     "DragDrop": {
       "UploadIofXml": {
         "Title": "Nahrát IOF XML"
@@ -135,7 +135,7 @@
       "MyProfile": "Můj profil"
     }
   },
-  "Molecule": {
+  "Molecules": {
     "DragDrop": {
       "ClickToUpload": "Pro nahrání klikni",
       "OrdDragAndDrop": "nebo drag & drop",

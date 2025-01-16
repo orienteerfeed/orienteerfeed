@@ -38,7 +38,7 @@ export const Navbar = () => {
           <input
             type="text"
             className="w-full bg-transparent pr-4 text-black focus:outline-none xl:w-125"
-            placeholder={t('Organism.Navbar.Placeholder')}
+            placeholder={t('Organisms.Navbar.Placeholder')}
           />
         </div>
         <div className="justify-start items-center gap-4 flex">
@@ -91,7 +91,7 @@ export const Navbar = () => {
                         className="flex items-center gap-4 font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
                         to={PATHNAMES.profile()}
                       >
-                        {t('Organism.Navbar.MyProfile')}
+                        {t('Organisms.Navbar.MyProfile')}
                       </Link>
                     </li>
                   </ul>
@@ -99,7 +99,7 @@ export const Navbar = () => {
                     onClick={signout}
                     className="flex flex-col gap-5 border-b border-stroke px-6 py-6 dark:border-strokedark"
                   >
-                    {t('Organism.Navbar.LogOut')}
+                    {t('Organisms.Navbar.LogOut')}
                   </button>
                 </div>
               )}
@@ -110,13 +110,13 @@ export const Navbar = () => {
                 className="px-2 sm:px-4 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transparent transition-colors duration-500"
                 to={PATHNAMES.signIn()}
               >
-                {t('Organism.Navbar.SignIn')}
+                {t('Organisms.Navbar.SignIn')}
               </Link>
               <Link
                 className="px-2 sm:px-4 py-2 rounded-md bg-amber-300	hover:text-accent-foreground transparent transition-colors duration-500"
                 to={PATHNAMES.signUp()}
               >
-                {t('Organism.Navbar.SignUp')}
+                {t('Organisms.Navbar.SignUp')}
               </Link>
             </>
           )}

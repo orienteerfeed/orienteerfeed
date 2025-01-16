@@ -32,7 +32,7 @@ export const DragDropFile = ({ eventId }) => {
         // Optional success notification
         toast({
           title: t('Operations.Success', { ns: 'common' }),
-          description: t('Organism.DragDrop.Toast.UploadSuccess'),
+          description: t('Organisms.DragDrop.Toast.UploadSuccess'),
           variant: 'success',
         });
 
@@ -45,7 +45,7 @@ export const DragDropFile = ({ eventId }) => {
 
         toast({
           title: t('UploadFail', { ns: 'common' }),
-          description: t('Organism.DragDrop.Toast.UploadFail'),
+          description: t('Organisms.DragDrop.Toast.UploadFail'),
           variant: 'destructive',
         });
       },
@@ -59,7 +59,9 @@ export const DragDropFile = ({ eventId }) => {
   return (
     <div className="w-full">
       <div className="pb-2 border-b border-input">
-        <h2 className="text-black font-semibold">{t('Organism.DragDrop.UploadIofXml.Title')}</h2>
+        <h2 className="text-black font-semibold">
+          {t('Organisms.DragDrop.UploadIofXml.Title')}
+        </h2>
       </div>
       <DragDropContainer
         ownerLicense={ownerLicense}

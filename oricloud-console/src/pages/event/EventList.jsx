@@ -14,13 +14,13 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
         <thead className="bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              {t('Page.Event.Tables.Name')}
+              {t('Pages.Event.Tables.Name')}
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              {t('Page.Event.Tables.Organiser')}
+              {t('Pages.Event.Tables.Organiser')}
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              {t('Page.Event.Tables.Date')}
+              {t('Pages.Event.Tables.Date')}
             </th>
           </tr>
         </thead>
@@ -90,21 +90,21 @@ export const EventList = () => {
     }) || [];
   return (
     <>
-      <h2>{t('Page.Event.Tables.Today')}</h2>
+      <h2>{t('Pages.Event.Tables.Today')}</h2>
       <EventTable
         navigate={navigate}
         data={todaysEvents}
         isLoading={isLoading}
         error={error}
       />
-      <h2>{t('Page.Event.Tables.Recent')}</h2>
+      <h2>{t('Pages.Event.Tables.Recent')}</h2>
       <EventTable
         navigate={navigate}
         data={recentEvents}
         isLoading={isLoading}
         error={error}
       />
-      <h2>{t('Page.Event.Tables.Upcoming')}</h2>
+      <h2>{t('Pages.Event.Tables.Upcoming')}</h2>
       <EventTable
         navigate={navigate}
         data={upcomingEvents}

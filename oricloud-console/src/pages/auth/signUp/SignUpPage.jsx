@@ -14,34 +14,34 @@ export const SignUpPage = () => {
           to={PATHNAMES.signIn()}
           className="absolute right-4 top-4 md:right-8 md:top-8"
         >
-          {t('Page.Auth.SignInUpPage.Login')}
+          {t('Pages.Auth.SignInUpPage.Login')}
         </Link>
         <div className="hidden h-full bg-muted lg:block" />
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                {t('Page.Auth.SignInUpPage.CreateAnAccount')}
+                {t('Pages.Auth.SignInUpPage.CreateAnAccount')}
               </h1>
               <p className="text-sm text-muted-foreground">
-                {t('Page.Auth.SignInUpPage.EnterYourEmailToSignIn')}
+                {t('Pages.Auth.SignInUpPage.EnterYourEmailToSignIn')}
               </p>
             </div>
             <UserRegisterForm t={t} />
             <p className="px-8 text-center text-sm text-muted-foreground">
-              {t('Page.Auth.SignInUpPage.ClickConsent')}{' '}
+              {t('Pages.Auth.SignInUpPage.ClickConsent')}{' '}
               <Link
                 href="/terms"
                 className="hover:text-brand underline underline-offset-4"
               >
-                {t('Page.Auth.SignInUpPage.TermsOfService')}
+                {t('Pages.Auth.SignInUpPage.TermsOfService')}
               </Link>{' '}
               {t('And', { ns: 'common' })}{' '}
               <Link
                 href="/privacy"
                 className="hover:text-brand underline underline-offset-4"
               >
-                {t('Page.Auth.SignInUpPage.PrivacyPolicy')}
+                {t('Pages.Auth.SignInUpPage.PrivacyPolicy')}
               </Link>
               .
             </p>

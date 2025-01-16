@@ -7,8 +7,8 @@ export const EventInfoCard = ({ t, initialData = null }) => {
     <>
       {/* <!-- Event Form --> */}
       <Card
-        title={t('Page.Event.Card.Title')}
-        description={t('Page.Event.Card.Description')}
+        title={t('Pages.Event.Card.Title')}
+        description={t('Pages.Event.Card.Description')}
       >
         <EventForm t={t} initialData={initialData} />
       </Card>
