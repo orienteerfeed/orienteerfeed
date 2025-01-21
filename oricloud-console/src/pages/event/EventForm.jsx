@@ -103,8 +103,8 @@ export const EventForm = ({
         console.log('Form submitted successfully');
         setSubmitting(false);
         toast({
-          title: 'Success',
-          description: 'The event was updated successfully!',
+          title: t('Operations.Success', { ns: 'common' }),
+          description: t('Pages.Event.Form.Toast.EditSuccess'),
           variant: 'success',
         });
         // Navigate to the detail page of the event
@@ -153,7 +153,7 @@ export const EventForm = ({
   useEffect(() => {
     if (error) {
       toast({
-        title: 'Ooh! Something went wrong.',
+        title: t('ErrorMessage', { ns: 'common' }),
         description: error.message,
         variant: 'destructive',
       });
@@ -206,11 +206,13 @@ export const EventForm = ({
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4">
             <div className="grid gap-1">
-              <Label htmlFor="eventName">Event name</Label>
+              <Label htmlFor="eventName">
+                {t('Pages.Event.Form.EventName')}
+              </Label>
               <Field
                 id="eventName"
                 name="eventName"
-                placeholder="Můj první závod"
+                placeholder={t('Pages.Event.Form.Placeholders.EventName')}
                 type="text"
                 autoCapitalize="none"
                 autoComplete="none"
@@ -219,7 +221,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="sport">Sport</Label>
+              <Label htmlFor="sport">{t('Pages.Event.Form.Sport')}</Label>
               <Field
                 id="sport"
                 name="sport"
@@ -231,11 +233,13 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="date">Datum konání</Label>
+              <Label htmlFor="date">{t('Pages.Event.Form.Date')}</Label>
               <Field id="date" name="date" type="date" required />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="organizer">Organizer</Label>
+              <Label htmlFor="organizer">
+                {t('Pages.Event.Form.Organiser')}
+              </Label>
               <Field
                 id="organizer"
                 name="organizer"
@@ -248,7 +252,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">{t('Pages.Event.Form.Location')}</Label>
               <Field
                 id="location"
                 name="location"
@@ -261,7 +265,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t('Pages.Event.Form.Country')}</Label>
               <Field
                 id="country"
                 name="country"
@@ -272,7 +276,7 @@ export const EventForm = ({
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="zeroTime">Zero time</Label>
+              <Label htmlFor="zeroTime">{t('Pages.Event.Form.ZeroTime')}</Label>
               <Field
                 id="zeroTime"
                 name="zeroTime"
@@ -286,11 +290,15 @@ export const EventForm = ({
             <div className="grid gap-1">
               <div className="flex flex-row gap-4">
                 <div className="flex-none">
-                  <Label htmlFor="ranking">Ranking</Label>
+                  <Label htmlFor="ranking">
+                    {t('Pages.Event.Form.Ranking')}
+                  </Label>
                   <Field id="ranking" name="ranking" type="checkbox" />
                 </div>
                 <div className="flex-grow">
-                  <Label htmlFor="coefRanking">Ranking coeficient</Label>
+                  <Label htmlFor="coefRanking">
+                    {t('Pages.Event.Form.CoefRanking')}
+                  </Label>
                   <Field
                     id="coefRanking"
                     name="coefRanking"
@@ -304,17 +312,21 @@ export const EventForm = ({
               </div>
             </div>
             <div className="grid gap-1 justify-start">
-              <Label htmlFor="relay">Relay</Label>
+              <Label htmlFor="relay">{t('Pages.Event.Form.Relay')}</Label>
               <Field id="relay" name="relay" type="checkbox" />
             </div>
             <div className="grid gap-1 justify-start">
-              <Label htmlFor="published">Published</Label>
+              <Label htmlFor="published">
+                {t('Pages.Event.Form.Published')}
+              </Label>
               <Field id="published" name="published" type="checkbox" />
             </div>
             {!renderSubmitButton && (
               <div className="grid gap-1">
                 <SubmitButton variant="default" disabled={isSubmitting}>
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                  {isSubmitting
+                    ? t('Operations.Submitting', { ns: 'common' })
+                    : t('Operations.Submit', { ns: 'common' })}
                 </SubmitButton>
               </div>
             )}

@@ -21,15 +21,19 @@ const CreateEventDialog = ({ t, initialData = null }) => {
       <DialogTrigger asChild>
         <Button>
           <AiOutlinePlus className="mr-2" />
-          Přidat závod
+          {t('Pages.Event.Oprations.CreateEvent')}
         </Button>
       </DialogTrigger>
       <DialogContent
-        title={initialData ? 'Edit Event' : 'Create Event'}
+        title={
+          initialData
+            ? t('Pages.Event.Oprations.EditEvent')
+            : t('Pages.Event.Oprations.CreateEvent')
+        }
         description={
           initialData
-            ? 'Edit existing event details'
-            : 'Fill out the form to create a new event'
+            ? t('Pages.Event.Oprations.EditDescription')
+            : t('Pages.Event.Oprations.CreateDescription')
         }
       >
         <EventForm
@@ -37,7 +41,9 @@ const CreateEventDialog = ({ t, initialData = null }) => {
           initialData={initialData}
           renderSubmitButton={({ isSubmitting }) => (
             <DialogFooter>
-              <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
+              <SubmitButton isSubmitting={isSubmitting}>
+                {t('Operations.Submit', { ns: 'common' })}
+              </SubmitButton>
             </DialogFooter>
           )}
         />
@@ -56,16 +62,16 @@ export const EventPage = () => {
         <div className="flex flex-col gap-1 items-center">
           <h1 className="text-3xl md:text-4xl">{t('Route.Events')}</h1>
           <p className="text-lg text-muted-foreground">
-            Manage account and website settings.
+            {t('Pages.Event.Description')}
           </p>
         </div>
         <hr />
         <Alert
           severity="warning"
-          title="This is a demo app."
+          title={t('Pages.Event.Alert.DemoTitle')}
           className="!pl-14"
         >
-          OrienteerFeed console app is a demo app.
+          {t('Pages.Event.Alert.DemoDescription')}
         </Alert>
         {typeof token !== 'undefined' && token && (
           <div className="flex justify-end">

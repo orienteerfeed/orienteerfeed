@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Function to calculate time left
 const calculateTimeLeft = (expiryDate) => {
@@ -20,6 +21,7 @@ const calculateTimeLeft = (expiryDate) => {
 };
 
 export const CountdownTimer = ({ expiryDate }) => {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -38,10 +40,10 @@ export const CountdownTimer = ({ expiryDate }) => {
 
   return (
     <div className="flex items-center w-full gap-2">
-      <TimerElement label="days" value={timeLeft.days} />
-      <TimerElement label="hours" value={timeLeft.hours} />
-      <TimerElement label="minutes" value={timeLeft.minutes} />
-      <TimerElement label="seconds" value={timeLeft.seconds} />
+      <TimerElement label={t('Timer.Days', { ns: 'common' })} value={timeLeft.days} />
+      <TimerElement label={t('Timer.Hours', { ns: 'common' })} value={timeLeft.hours} />
+      <TimerElement label={t('Timer.Minutes', { ns: 'common' })} value={timeLeft.minutes} />
+      <TimerElement label={t('Timer.Seconds', { ns: 'common' })} value={timeLeft.seconds} />
     </div>
   );
 };

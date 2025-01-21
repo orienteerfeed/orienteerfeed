@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { DragDropContainer } from '../molecules';
 import { useRequest, toast } from '../utils';
+import { useTranslation } from 'react-i18next';
 import ENDPOINTS from '../endpoints';
 export const DragDropFile = ({ eventId }) => {
   const [ownerLicense, setOwnerLicense] = useState([]);
   const request = useRequest();
+  const { t } = useTranslation();
   const uploadFiles = (f) => {
     console.log('uploading');
     setOwnerLicense([...ownerLicense, ...f]);
@@ -29,8 +31,8 @@ export const DragDropFile = ({ eventId }) => {
 
         // Optional success notification
         toast({
-          title: 'Success',
-          description: 'Files uploaded successfully!',
+          title: t('Operations.Success', { ns: 'common' }),
+          description: t('Organisms.DragDrop.Toast.UploadSuccess'),
           variant: 'success',
         });
 
@@ -42,9 +44,8 @@ export const DragDropFile = ({ eventId }) => {
         console.error('Error uploading files:', err);
 
         toast({
-          title: 'Upload failed',
-          description:
-            'Something went wrong during the file upload. Please try again.',
+          title: t('UploadFail', { ns: 'common' }),
+          description: t('Organisms.DragDrop.Toast.UploadFail'),
           variant: 'destructive',
         });
       },
@@ -58,7 +59,9 @@ export const DragDropFile = ({ eventId }) => {
   return (
     <div className="w-full">
       <div className="pb-2 border-b border-input">
-        <h2 className="text-black font-semibold">Upload IOF XML</h2>
+        <h2 className="text-black font-semibold">
+          {t('Organisms.DragDrop.UploadIofXml.Title')}
+        </h2>
       </div>
       <DragDropContainer
         ownerLicense={ownerLicense}

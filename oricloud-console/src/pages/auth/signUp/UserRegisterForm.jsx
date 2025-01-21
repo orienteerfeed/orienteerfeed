@@ -96,12 +96,12 @@ export const UserRegisterForm = ({ t }) => {
           <div className="grid gap-4">
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="firstname">
-                {t('Page.Auth.User.Firstname')}
+                {t('Pages.Auth.User.Firstname')}
               </Label>
               <Field
                 id="firstname"
                 name="firstname"
-                placeholder="Jan"
+                placeholder={t('Pages.Auth.User.Placeholder.Firstname')}
                 type="text"
                 autoCapitalize="on"
                 autoComplete="given-name"
@@ -110,12 +110,12 @@ export const UserRegisterForm = ({ t }) => {
             </div>
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="lastname">
-                {t('Page.Auth.User.Lastname')}
+                {t('Pages.Auth.User.Lastname')}
               </Label>
               <Field
                 id="lastname"
                 name="lastname"
-                placeholder="Novák"
+                placeholder={t('Pages.Auth.User.Placeholder.Lastname')}
                 type="text"
                 autoCapitalize="on"
                 autoComplete="family-name"
@@ -124,12 +124,12 @@ export const UserRegisterForm = ({ t }) => {
             </div>
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="club">
-                {t('Page.Auth.User.Club')}
+                {t('Pages.Auth.User.Club')}
               </Label>
               <AutoCompleteField
                 id="club"
                 name="club"
-                placeholder={t('Page.Auth.User.Club')}
+                placeholder={t('Pages.Auth.User.Placeholder.Club')}
                 type="text"
                 autoCapitalize="none"
                 autoComplete="off"
@@ -138,12 +138,12 @@ export const UserRegisterForm = ({ t }) => {
             </div>
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="email">
-                {t('Page.Auth.User.Email')}
+                {t('Pages.Auth.User.Email')}
               </Label>
               <Field
                 id="email"
                 name="email"
-                placeholder="name@example.com"
+                placeholder={t('Pages.Auth.User.Placeholder.Email')}
                 type="email"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -152,12 +152,12 @@ export const UserRegisterForm = ({ t }) => {
             </div>
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="password">
-                {t('Page.Auth.User.Password')}
+                {t('Pages.Auth.User.Password')}
               </Label>
               <Field
                 id="password"
                 name="password"
-                placeholder={t('Page.Auth.SignInPage.SecretPassword')}
+                placeholder={t('Pages.Auth.User.Placeholder.Password')}
                 type="password"
                 autoCapitalize="none"
                 autoComplete="new-password"
@@ -165,7 +165,7 @@ export const UserRegisterForm = ({ t }) => {
               />
             </div>
             <SubmitButton variant="default">
-              {t('Page.Auth.SignInPage.SignInWithEmail')}
+              {t('Pages.Auth.SignInPage.SignInWithEmail')}
             </SubmitButton>
           </div>
         </form>
