@@ -7,8 +7,8 @@ export const EventPasswordCard = ({ t, eventId, ...otherProps }) => {
     <>
       {/* <!-- Event Form --> */}
       <Card
-        title="Event Password"
-        description="Please fill out the form below to update the event details."
+        title={t('Pages.Event.Password.Card.Title')}
+        description={t('Pages.Event.Password.Card.Description')}
       >
         {/* Spread otherProps to EventPasswordForm */}
         <EventPasswordForm t={t} eventId={eventId} {...otherProps} />

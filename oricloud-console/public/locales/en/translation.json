@@ -1,10 +1,28 @@
 {
-  "Page": {
+  "Pages": {
     "Auth": {
-      "SignInPage": {
-        "DontHaveAnAccount": "Don't have an account?",
-        "EnterYourEmailToSignIn": "Enter your email to sign in to your account",
+      "User": {
+        "Firstname": "First name",
+        "Lastname": "Last name",
+        "Club": "Club",
+        "Email": "Email",
         "Password": "Password",
+        "Placeholder": {
+          "Firstname": "John",
+          "Lastname": "Newman",
+          "Club": "My Club",
+          "Email": "newman@example.com",
+          "Password": "Your secret password"
+        }
+      },
+      "SignInUpPage": {
+        "Login": "Login",
+        "DontHaveAnAccount": "Don't have an account?",
+        "CreateAnAccount": "Create an account",
+        "EnterYourEmailToSignIn": "Enter your email to sign in to your account",
+        "ClickConsent": "By clicking continue, you agree to our",
+        "TermsOfService": "Terms Of Service",
+        "PrivacyPolicy": "Privacy Policy",
         "SignUp": "Sign Up",
         "SignInWithEmail": "Sign In With Email",
         "WelcomeBack": "Welcome back"
@@ -105,7 +123,7 @@
       }
     }
   },
-  "Organism": {
+  "Organisms": {
     "DragDrop": {
       "UploadIofXml": {
         "Title": "Upload IOF XML"
@@ -123,7 +141,7 @@
       "MyProfile": "My Profile"
     }
   },
-  "Molecule": {
+  "Molecules": {
     "DragDrop": {
       "ClickToUpload": "Click to upload",
       "OrdDragAndDrop": "or drag and drop",

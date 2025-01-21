@@ -1,5 +1,4 @@
 import express from 'express';
-import { check, validationResult } from 'express-validator';
 import cors from 'cors';
 import morgan from 'morgan';
 import { ApolloServer } from '@apollo/server';

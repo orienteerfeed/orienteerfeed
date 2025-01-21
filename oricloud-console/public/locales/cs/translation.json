@@ -1,10 +1,28 @@
 {
-  "Page": {
+  "Pages": {
     "Auth": {
-      "SignInPage": {
-        "DontHaveAnAccount": "Ještě nemáš svůj účet?",
-        "EnterYourEmailToSignIn": "Vlož svůj e-mail pro přihlášení do svého účtu",
+      "User": {
+        "Firstname": "Jméno",
+        "Lastname": "Příjmení",
+        "Club": "Klub",
+        "Email": "Email",
         "Password": "Heslo",
+        "Placeholder": {
+          "Firstname": "Jan",
+          "Lastname": "Novák",
+          "Club": "Můj klub",
+          "Email": "novak@priklad.cz",
+          "Password": "Tvoje tajné heslo"
+        }
+      },
+      "SignInUpPage": {
+        "Login": "Přihlásit",
+        "DontHaveAnAccount": "Ještě nemáš svůj účet?",
+        "CreateAnAccount": "Vytvořit účet",
+        "EnterYourEmailToSignIn": "Vlož svůj e-mail pro přihlášení do svého účtu",
+        "ClickConsent": "Kliknutím na tlačítko souhlasíte s",
+        "TermsOfService": "Podmínkami služby",
+        "PrivacyPolicy": "Zásadami ochrany osobních údajů",
         "SignUp": "Zaregistruj se",
         "SignInWithEmail": "Přihlásit se přes e-mail",
         "WelcomeBack": "Vítej zpět"
@@ -31,7 +49,7 @@
       },
       "Alert": {
         "DemoTitle": "Zkušební provoz",
-        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reporování v Githubu."
+        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reportování v Githubu."
       },
       "Form": {
         "EventName": "Název závodu",
@@ -105,7 +123,7 @@
       }
     }
   },
-  "Organism": {
+  "Organisms": {
     "DragDrop": {
       "UploadIofXml": {
         "Title": "Nahrát IOF XML"
@@ -123,7 +141,7 @@
       "MyProfile": "Můj profil"
     }
   },
-  "Molecule": {
+  "Molecules": {
     "DragDrop": {
       "ClickToUpload": "Pro nahrání klikni",
       "OrdDragAndDrop": "nebo drag & drop",

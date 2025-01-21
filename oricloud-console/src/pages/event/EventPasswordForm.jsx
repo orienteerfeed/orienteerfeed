@@ -49,8 +49,8 @@ export const EventPasswordForm = ({
 
         // Optional success notification
         toast({
-          title: 'Success',
-          description: 'Password was updated successfully!',
+          title: t('Operations.Success', { ns: 'common' }),
+          description: t('Pages.Event.Password.Toast.UpdateSuccessDescription'),
           variant: 'success',
         });
       },
@@ -60,14 +60,14 @@ export const EventPasswordForm = ({
         if (err.errors && Array.isArray(err.errors)) {
           err.errors.forEach((error) => {
             toast({
-              title: 'Something went wrong, please try again.',
+              title: t('Pages.Event.Password.Toast.UpdateFailTitle'),
               description: `${error.param}: ${error.msg}`,
               variant: 'destructive',
             });
           });
         } else {
           toast({
-            title: 'Something went wrong, please try again.',
+            title: t('Pages.Event.Password.Toast.UpdateFailTitle'),
             description: '',
             variant: 'destructive',
           });
@@ -96,8 +96,8 @@ export const EventPasswordForm = ({
 
         // Optional success notification
         toast({
-          title: 'Success',
-          description: 'Password was revoked successfully!',
+          title: t('Operations.Success', { ns: 'common' }),
+          description: t('Pages.Event.Password.Toast.RevokeSuccessDescription'),
           variant: 'success',
         });
         onPasswordUpdate && onPasswordUpdate(''); // Notify parent component that the password is removed
@@ -108,14 +108,14 @@ export const EventPasswordForm = ({
         if (err.errors && Array.isArray(err.errors)) {
           err.errors.forEach((error) => {
             toast({
-              title: 'Something went wrong, please try again.',
+              title: t('Pages.Event.Password.Toast.RevokeFailTitle'),
               description: `${error.param}: ${error.msg}`,
               variant: 'destructive',
             });
           });
         } else {
           toast({
-            title: 'Something went wrong, please try again.',
+            title: t('Pages.Event.Password.Toast.RevokeFailTitle'),
             description: '',
             variant: 'destructive',
           });
@@ -136,14 +136,18 @@ export const EventPasswordForm = ({
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4">
             <div className="grid gap-1">
-              <Label htmlFor="event-password">Event Password</Label>
+              <Label htmlFor="event-password">
+                {t('Pages.Event.Password.Field.Name')}
+              </Label>
               <div className="relative">
                 <Field
                   id="event-password"
                   name="event-password"
                   type={passwordVisible ? 'text' : 'password'}
                   value={password || ''} // Ensure it's never undefined
-                  placeholder="Enter password"
+                  placeholder={t(
+                    'Pages.Event.Password.Field.Placeholders.Name',
+                  )}
                   autoCapitalize="off"
                   autoComplete="off"
                   autoCorrect="off"
@@ -165,18 +169,20 @@ export const EventPasswordForm = ({
 
             <div className="grid gap-1">
               <Button type="button" onClick={handleGeneratePassword}>
-                {password ? 'Regenerate Password' : 'Generate Password'}
+                {password
+                  ? t('Pages.Event.Password.RegeneratePassword')
+                  : t('Pages.Event.Password.GeneratePassword')}
               </Button>
             </div>
 
             <div className="flex flex-row items-center">
               <div className="grid gap-1 flex-grow-0 basis-4/5">
-                <Label>Password Expiration</Label>
+                <Label>{t('Pages.Event.Password.PassportExpiration')}</Label>
                 {/* Pass the expiration state to CountdownTimer */}
                 {expiration ? (
                   <CountdownTimer expiryDate={new Date(expiration)} />
                 ) : (
-                  <p>No expiration set.</p>
+                  <p>{t('Pages.Event.Password.NoExpirationSet')}</p>
                 )}
               </div>
               {/* Delete/Disable Password Button */}
@@ -186,7 +192,7 @@ export const EventPasswordForm = ({
                   className="bg-red-500 text-white flex-grow-1 basis-1/5"
                   onClick={handleDeletePassword}
                 >
-                  Revoke
+                  {t('Pages.Event.Password.Revoke')}
                 </Button>
               )}
             </div>

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { check, oneOf, validationResult } from 'express-validator';
+import { body, check, oneOf, validationResult } from 'express-validator';
 
 import {
   AuthenticationError,
@@ -22,7 +22,6 @@ import {
   updateCompetitor,
   getDecryptedEventPassword,
 } from './eventService.js';
-import { event } from '../../graphql/event/query.js';
 
 const router = Router();
 
@@ -38,9 +37,9 @@ const validInputStatus = [
 const validateStateChangeInputs = [
   check('eventId').not().isEmpty().isString(),
   check('competitorId').not().isEmpty().isNumeric(),
-  check('origin').not().isEmpty().isString(),
+  body('origin').not().isEmpty().isString(),
   check('status').not().isEmpty(),
-  check('origin').custom((value) => {
+  body('origin').custom((value) => {
     if (!validInputOrigin.includes(value)) {
       throw new Error('Invalid origin');
     }
@@ -818,8 +817,8 @@ router.post(
 const validateUpdateCompetitorInputs = [
   check('eventId').not().isEmpty().isString(),
   check('competitorId').not().isEmpty().isNumeric(),
-  check('origin').not().isEmpty().isString(),
-  check('origin').custom((value) => {
+  body('origin').not().isEmpty().isString(),
+  body('origin').custom((value) => {
     if (!validInputOrigin.includes(value)) {
       throw new Error('Invalid origin');
     }
