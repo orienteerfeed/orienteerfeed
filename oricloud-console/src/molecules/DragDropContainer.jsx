@@ -92,7 +92,7 @@ export const DragDropContainer = ({
         });
       }
     },
-    [formats, ownerLicense, count, onUpload], // Memoize to avoid re-creating it on each render
+    [formats, ownerLicense, count, onUpload, t], // Memoize to avoid re-creating it on each render
   );
 
   // Convert file to base64

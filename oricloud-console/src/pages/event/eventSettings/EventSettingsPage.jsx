@@ -10,7 +10,7 @@ import {
   formatDateTimeForInput,
   useAuth,
 } from '../../../utils';
-import CONFIG from '../../../config';
+import { config } from '../../../config';
 import ENDPOINTS from '../../../endpoints';
 
 import { DragDropFile } from '../../../organisms';
@@ -58,7 +58,7 @@ export const EventSettingsPage = () => {
     variables: { eventId }, // Pass eventId as a variable
   });
 
-  const apiEventsEndpoint = new URL(ENDPOINTS.events(), CONFIG.BASE_API_URL)
+  const apiEventsEndpoint = new URL(ENDPOINTS.events(), config.BASE_API_URL)
     .href;
 
   // Create initialData for EventInfoCard

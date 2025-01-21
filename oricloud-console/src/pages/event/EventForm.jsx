@@ -158,7 +158,7 @@ export const EventForm = ({
         variant: 'destructive',
       });
     }
-  }, [error, errorCountries]);
+  }, [error, errorCountries, t]);
 
   // Pre-fill form with initial data for editing
   const initialValues = initialData

@@ -15,8 +15,8 @@ export const QrCodeCredentialsCard = ({ t, eventId, eventPassword, url }) => {
 
   return (
     <Card
-      title={t('Page.Event.QrCode.Card.Title')}
-      description={t('Page.Event.QrCode.Card.Description')}
+      title={t('Pages.Event.QrCode.Card.Title')}
+      description={t('Pages.Event.QrCode.Card.Description')}
     >
       <div className="flex justify-center items-center">
         <QRCodeCanvas
