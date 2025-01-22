@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 
@@ -11,11 +11,13 @@ import {
   useAuth,
 } from '../../../utils';
 import { config } from '../../../config';
-import ENDPOINTS from '../../../endpoints';
 
+import { BackButton } from '../../../molecules';
 import { DragDropFile } from '../../../organisms';
 import { EventInfoCard, EventPasswordCard, QrCodeCredentialsCard } from '.';
 import { NotAuthorizedPage } from 'src/pages/notAuthorized';
+
+import PATHNAMES from '../../../pathnames';
 
 const GET_EVENT = gql`
   query Event($eventId: String!) {
@@ -53,13 +55,21 @@ export const EventSettingsPage = () => {
   const { eventId } = useParams();
   const { user } = useAuth();
 
+  const [password, setPassword] = useState(''); // Shared state for password
+
   // Use the eventId as a variable in the query
   const { loading, error, data } = useQuery(GET_EVENT, {
     variables: { eventId }, // Pass eventId as a variable
   });
 
-  const apiEventsEndpoint = new URL(ENDPOINTS.events(), config.BASE_API_URL)
-    .href;
+  const apiEndpoint = config.BASE_API_URL;
+
+  // Set password state when data is fetched
+  useEffect(() => {
+    if (data?.event?.eventPassword?.password) {
+      setPassword(data.event.eventPassword.password);
+    }
+  }, [data]); // Re-run when `data` changes
 
   // Create initialData for EventInfoCard
   const initialData = data?.event
@@ -103,6 +113,7 @@ export const EventSettingsPage = () => {
           </p>
         </div>
         <hr />
+        <BackButton t={t} path={PATHNAMES.getEventDetail(eventId)} />
         <DragDropFile eventId={eventId} />
         <div className="flex flex-row flex-wrap gap-4">
           <EventInfoCard t={t} initialData={initialData} />
@@ -112,16 +123,19 @@ export const EventSettingsPage = () => {
               eventId={initialData.id}
               password={data?.event.eventPassword?.password}
               expiresAt={data?.event.eventPassword?.expiresAt}
+              onPasswordUpdate={setPassword} // Pass the callback to update password
             />
           </div>
-          <div className="flex flex-col">
-            <QrCodeCredentialsCard
-              t={t}
-              eventId={eventId}
-              eventPassword={data?.event.eventPassword?.password}
-              url={apiEventsEndpoint}
-            />
-          </div>
+          {password && (
+            <div className="flex flex-col">
+              <QrCodeCredentialsCard
+                t={t}
+                eventId={eventId}
+                eventPassword={password} // Pass updated password
+                url={apiEndpoint}
+              />
+            </div>
+          )}
         </div>
       </div>
     </EventPageLayout>

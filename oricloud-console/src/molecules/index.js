@@ -1,5 +1,6 @@
 export { AlertDescription } from './AlertDescription';
 export { AlertTitle } from './AlertTitle';
+export { BackButton } from './BackButton';
 export { ButtonWithSpinner } from './ButtonWithSpinner';
 export { DragDropContainer } from './DragDropContainer';
 export { InputWithHelper } from './InputWithHelper';

@@ -41,9 +41,11 @@ export const EventPasswordForm = ({
         eventId,
       }),
       onSuccess: (response) => {
+        const newPassword = response.results.data.password;
         // Update the local state with the new password and expiration from the response
-        setPassword(response.results.data.password);
+        setPassword(newPassword);
         setExpiration(new Date(response.results.data.expiresAt).getTime());
+        onPasswordUpdate(newPassword); // Notify parent of updated password
 
         console.log('Password updated successfully');
 

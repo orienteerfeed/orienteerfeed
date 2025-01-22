@@ -23,5 +23,7 @@
     "Hours": "hours",
     "Minutes": "minutes",
     "Seconds": "seconds"
-  }
+  },
+  "Share": "Share",
+  "Print": "Print"
 }
