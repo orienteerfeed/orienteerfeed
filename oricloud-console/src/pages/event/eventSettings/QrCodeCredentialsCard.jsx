@@ -3,7 +3,13 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { Button } from '../../../atoms';
 import { Card } from '../../../organisms';
 
-export const QrCodeCredentialsCard = ({ t, eventId, eventPassword, url }) => {
+export const QrCodeCredentialsCard = ({
+  t,
+  eventId,
+  eventPassword,
+  url,
+  host,
+}) => {
   const qrCodeRef = useRef(null); // Reference to the QR code canvas
   // Format the service credentials
   const serviceCredentials = `ORIENTEERFEED:U:${url};T:BASIC;EVENT:${eventId};PASSWORD:${eventPassword};;`;
@@ -25,8 +31,8 @@ export const QrCodeCredentialsCard = ({ t, eventId, eventPassword, url }) => {
 
         await navigator.share({
           files: [file], // Share the QR code image
-          title: 'QR Code',
-          text: 'Here is the QR code for the event!',
+          title: 'OrienteerFeed QR Code',
+          text: 'Here is the QR code for the O-Feed event to pair your mobile app O-Checklist!',
         });
         console.log('QR code shared successfully!');
       } catch (error) {
@@ -97,7 +103,7 @@ export const QrCodeCredentialsCard = ({ t, eventId, eventPassword, url }) => {
               <div class="subheader">Scan this QR code to pair your mobile app O-Checklist with the event.</div>
               <img src="${dataUrl}" class="qr-code" alt="QR Code" />
               <div class="details">
-                <span><strong>Host:</strong> ${url}</span>
+                <span><strong>Host:</strong> ${host}</span>
                 <span><strong>Event ID:</strong> ${eventId}</span>
                 <span><strong>Event Password:</strong> ${eventPassword}</span>
               </div>
@@ -148,7 +154,7 @@ export const QrCodeCredentialsCard = ({ t, eventId, eventPassword, url }) => {
         <div className="flex justify-center">
           <ul>
             <li>
-              <b>{t('Pages.Event.QrCode.Card.Host')}: </b> {url}
+              <b>{t('Pages.Event.QrCode.Card.Host')}: </b> {host}
             </li>
             <li>
               <b>{t('Pages.Event.QrCode.Card.EventId')}: </b> {eventId}

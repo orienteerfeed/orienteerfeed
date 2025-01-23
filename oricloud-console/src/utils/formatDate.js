@@ -23,6 +23,14 @@ export const formatDate = (dateOrStringDate) => {
   return format(parsedDate, DATE_FORMAT);
 };
 
+export const formatTimeToHms = (dateObj) => {
+  if (dateObj instanceof Date && !isNaN(dateObj)) {
+    return format(dateObj, TIME_FORMAT); // TIME_FORMAT is 'HH:mm:ss'
+  } else {
+    return 'undefined';
+  }
+};
+
 export const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString('cs-CZ', {
@@ -76,10 +84,22 @@ export const formatDurationTime = (duration) => {
 };
 
 export const formatSecondsToTime = (seconds) => {
-  if (typeof seconds === 'number' && seconds !== 'undefined') {
-    return format(subHours(addSeconds(new Date(0), seconds), 1), TIME_FORMAT);
+  if (typeof seconds !== 'number' || seconds < 0) {
+    return 'undefined';
+  }
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours >= 3) {
+    // Format as HH:MM:SS
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   } else {
-    return '';
+    // Format as MMM:SS
+    const totalMinutes = Math.floor(seconds / 60);
+    return `${totalMinutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 };
 

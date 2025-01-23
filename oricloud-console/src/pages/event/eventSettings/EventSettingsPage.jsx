@@ -17,6 +17,7 @@ import { DragDropFile } from '../../../organisms';
 import { EventInfoCard, EventPasswordCard, QrCodeCredentialsCard } from '.';
 import { NotAuthorizedPage } from 'src/pages/notAuthorized';
 
+import ENDPOINTS from '../../../endpoints';
 import PATHNAMES from '../../../pathnames';
 
 const GET_EVENT = gql`
@@ -62,7 +63,8 @@ export const EventSettingsPage = () => {
     variables: { eventId }, // Pass eventId as a variable
   });
 
-  const apiEndpoint = config.BASE_API_URL;
+  const apiEventsEndpoint = new URL(ENDPOINTS.events(), config.BASE_API_URL)
+    .href;
 
   // Set password state when data is fetched
   useEffect(() => {
@@ -132,7 +134,8 @@ export const EventSettingsPage = () => {
                 t={t}
                 eventId={eventId}
                 eventPassword={password} // Pass updated password
-                url={apiEndpoint}
+                url={apiEventsEndpoint}
+                host={config.BASE_API_URL}
               />
             </div>
           )}
