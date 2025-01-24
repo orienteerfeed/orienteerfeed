@@ -205,7 +205,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
               }}
               className={`transition-colors duration-500 ${
                 highlightedRows.includes(competitor.id)
-                  ? 'bg-yellow-100'
+                  ? 'bg-orange-200'
                   : index % 2 === 0
                   ? 'bg-gray-100'
                   : 'bg-white'
