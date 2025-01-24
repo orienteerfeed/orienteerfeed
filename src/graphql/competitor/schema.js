@@ -8,6 +8,9 @@ export const typeDef = /* GraphQL */ `
     competitorStatusChange(input: StatusChange): ResponseMessage
     competitorUpdate(input: UpdateCompetitorInput): ResponseMessage
   }
+  extend type Subscription {
+    competitorsByClassUpdated(classId: Int!): [Competitor!]
+  }
   type ResponseMessage {
     message: String!
   }

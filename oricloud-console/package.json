@@ -19,6 +19,7 @@
     "formik": "^2.4.0",
     "framer-motion": "^11.5.4",
     "graphql": "^16.9.0",
+    "graphql-ws": "^5.16.2",
     "i18next": "^22.5.0",
     "i18next-browser-languagedetector": "^7.0.2",
     "i18next-http-backend": "^2.2.1",

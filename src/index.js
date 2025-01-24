@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/use/ws';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -148,3 +150,43 @@ const server = app.listen(PORT, () =>
 ⭐️ See sample requests: http://localhost:${PORT}/api-docs
 🔢 Running version: ${packageJson.version}`),
 );
+
+// Attach WebSocket server for subscriptions
+const wsServer = new WebSocketServer({
+  server, // Attach the WebSocket server to the existing HTTP server
+  path: '/graphql', // Same path as GraphQL endpoint
+});
+
+wsServer.on('listening', () => {
+  console.log('WebSocket server is running on ws://localhost:3001/graphql');
+});
+
+wsServer.on('connection', () => {
+  console.log('New WebSocket connection established');
+});
+
+wsServer.on('error', (err) => {
+  console.error('WebSocket server error:', err);
+});
+
+wsServer.on('close', () => {
+  console.log('WebSocket server closed');
+});
+
+// Set up GraphQL WebSocket server
+const serverCleanup = useServer(
+  {
+    schema: schemaWithDirectives,
+    context: async (ctx) => {
+      console.log('WebSocket context initialized');
+      return { prisma };
+    },
+  },
+  wsServer
+);
+
+server.on('close', async () => {
+  console.log('HTTP server shutting down...');
+  await serverCleanup.dispose();
+  console.log('WebSocket server cleanup completed');
+});

@@ -60,6 +60,12 @@ const Mutation = /* GraphQL */ `
   }
 `;
 
+const Subscription = /* GraphQL */ `
+  type Subscription {
+    _empty(nothing: String): String
+  }
+`;
+
 const resolvers = {};
 
 // Create the schema using makeExecutableSchema
@@ -68,6 +74,7 @@ const schema = makeExecutableSchema({
     constraintDirectiveTypeDefs,
     Query,
     Mutation,
+    Subscription,
     Event,
     Class,
     Sport,

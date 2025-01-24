@@ -1,23 +1,32 @@
+import React from 'react';
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  split,
   createHttpLink,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import React from 'react';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { useAuth } from './auth'; // Import your useAuth hook
 import { config } from '../config';
 
-// Create an http link for Apollo Client
-const httpLink = createHttpLink({
-  uri: `${config.BASE_API_URL}/graphql`, // Replace with your GraphQL endpoint
-});
+const baseApiUrl = config.BASE_API_URL;
+
+// Generate the WebSocket URL by replacing the protocol
+const wsUrl = baseApiUrl.replace(/^http/, 'ws');
 
 export const ApolloWrapper = ({ children }) => {
-  const { token } = useAuth(); // Get the token from your hook
+  const { token } = useAuth(); // Use the hook here
 
-  // Set the context to add the Authorization header
+  // HTTP link for queries and mutations
+  const httpLink = createHttpLink({
+    uri: `${baseApiUrl}/graphql`,
+  });
+
+  // Set up authLink to add Authorization header to HTTP requests
   const authLink = setContext((_, { headers }) => {
     return {
       headers: {
@@ -27,9 +36,34 @@ export const ApolloWrapper = ({ children }) => {
     };
   });
 
-  // Create the Apollo Client and combine the authLink with httpLink
+  // WebSocket link for subscriptions
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: `${wsUrl}/graphql`,
+      connectionParams: {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      },
+    }),
+  );
+
+  // Use split for directing operations to either HTTP or WebSocket link
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      );
+    },
+    wsLink,
+    authLink.concat(httpLink), // Combine authLink and httpLink
+  );
+
+  // Apollo Client instance
   const client = new ApolloClient({
-    link: authLink.concat(httpLink), // Combine authLink and httpLink
+    link: splitLink,
     cache: new InMemoryCache(),
   });
 

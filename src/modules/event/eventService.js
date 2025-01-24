@@ -1,6 +1,7 @@
 import { DatabaseError, ValidationError } from '../../exceptions/index.js';
 import prisma from '../../utils/context.js';
 import { decrypt, decodeBase64 } from '../../utils/cryptoUtils.js';
+import { publishUpdatedCompetitors } from '../../utils/subscriptionUtils.js';
 
 export const changeCompetitorStatus = async (
   eventId,
@@ -15,6 +16,7 @@ export const changeCompetitorStatus = async (
       where: { id: competitorId },
       select: {
         id: true,
+        classId: true,
         status: true,
         card: true,
       },
@@ -79,6 +81,13 @@ export const changeCompetitorStatus = async (
   } catch (err) {
     console.error('Failed to update competitor:', err);
     throw new DatabaseError('Error creating protocol record');
+  }
+
+  // Publish changes to subscribers
+  try {
+    await publishUpdatedCompetitors(dbResponseCompetitor.classId);
+  } catch (err) {
+    console.error('Error publishing competitors update:', err);
   }
 
   return `Competitor's status has been successfully changed to ${competitorStatus}`;
@@ -158,6 +167,7 @@ export const updateCompetitor = async (
       where: { id: parseInt(competitorId) },
       select: {
         id: true,
+        classId: true,
         status: true,
         card: true,
         note: true,
@@ -237,6 +247,13 @@ export const updateCompetitor = async (
   } catch (err) {
     console.error('Failed to update competitor:', err);
     throw new DatabaseError('Error creating protocol record');
+  }
+
+  // Publish changes to subscribers
+  try {
+    await publishUpdatedCompetitors(dbResponseCompetitor.classId);
+  } catch (err) {
+    console.error('Error publishing competitors update:', err);
   }
 
   return {
