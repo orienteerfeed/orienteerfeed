@@ -8,16 +8,18 @@
       "name": "Launch server.js via nodemon",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start:dev"],
-      "program": "${workspaceFolder}/src/index.js",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nodemon", "--inspect"],
+      "program": "${workspaceFolder}/src/index.js", // Adjust to your entry file
+      "restart": true,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "env": {
         "NODE_ENV": "development"
       },
       "outFiles": ["${workspaceFolder}/**/*.js"],
-      "sourceMaps": true
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

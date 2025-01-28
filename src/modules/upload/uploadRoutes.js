@@ -8,6 +8,7 @@ import fetch from 'node-fetch';
 
 import { validation, error, success } from '../../utils/responseApi.js';
 import { formatErrors } from '../../utils/errors.js';
+import { createShortCompetitorHash } from '../../utils/hashUtils.js';
 import { calculateCompetitorRankingPoints } from '../../utils/ranking.js';
 
 import { storeCzechRankingData } from './uploadService.js';
@@ -152,10 +153,16 @@ router.post(
               // Do something with each classResult
               const classDetails = classResult.Class.shift();
               //const sourceClassId = classDetails.Id.shift()._;
-              const sourceClassId = classDetails.Id.shift();
+              // Attempt to shift the `Id` if it exists, otherwise fallback to undefined
+              const sourceClassId = classDetails.Id?.shift();
               const className = classDetails.Name.shift();
+
+              // Determine the identifier to use for comparison
+              const classIdentifier = sourceClassId || className;
+
+              // Find the class in the database using the identifier
               const existingClass = dbClassLists.find(
-                (existingClass) => existingClass.externalId === sourceClassId,
+                (existingClass) => existingClass.externalId === classIdentifier,
               );
               let classId;
               let sex;
@@ -171,7 +178,7 @@ router.post(
                 const dbClassInsert = await prisma.class.create({
                   data: {
                     eventId: eventId,
-                    externalId: sourceClassId,
+                    externalId: classIdentifier,
                     name: className,
                     sex:
                       classDetails.ATTR && classDetails.ATTR.sex !== ''
@@ -200,10 +207,10 @@ router.post(
                   const person = competitorResult.Person.shift();
                   const organisation = competitorResult.Organisation.shift();
                   const result = competitorResult.Result.shift();
-                  const competitorRegistration = person.Id[0].ATTR
-                    ? person.Id.find((sourceId) => sourceId.ATTR.type === 'CZE')
-                        ._
-                    : person.Id[0];
+                  const competitorRegistration = getCompetitorKey(
+                    classId,
+                    person,
+                  );
                   //const tempRegistration = createShortHash();
                   const registration = competitorRegistration;
                   //TODO: check if registration is unique per competition
@@ -420,18 +427,26 @@ router.post(
           if (classStart && classStart.length > 0) {
             await Promise.all(
               classStart.map(async (classStart) => {
+                const classDetails = classStart.Class.shift();
+                // Attempt to shift the `Id` if it exists, otherwise fallback to undefined
+                const sourceClassId = classDetails.Id?.shift();
+                const className = classDetails.Name.shift();
+
+                // Determine the identifier to use for comparison
+                const classIdentifier = sourceClassId || className;
+
+                // Find the class in the database using the identifier
                 const existingClass = dbClassLists.find(
                   (existingClass) =>
-                    existingClass.externalId === classStart.Class[0].Id[0],
+                    existingClass.externalId === classIdentifier,
                 );
+
                 let classId;
                 let length,
                   climb,
                   startName,
                   controlsCount = null;
                 let sex;
-                const classDetails = classStart.Class.shift();
-                const className = classDetails.Name.shift();
                 const firstLetter = className.charAt(0);
                 if (firstLetter === 'H') {
                   sex = 'M';
@@ -456,7 +471,7 @@ router.post(
                   const dbClassInsert = await prisma.class.create({
                     data: {
                       eventId: eventId,
-                      externalId: classDetails.Id && classDetails.Id[0],
+                      externalId: classIdentifier,
                       name: className,
                       length: length,
                       climb: climb,
@@ -492,11 +507,10 @@ router.post(
                     const person = competitorStart.Person.shift();
                     const organisation = competitorStart.Organisation.shift();
                     const start = competitorStart.Start.shift();
-                    const competitorRegistration = person.Id[0].ATTR
-                      ? person.Id.find(
-                          (sourceId) => sourceId.ATTR.type === 'CZE',
-                        )._
-                      : person.Id[0];
+                    const competitorRegistration = getCompetitorKey(
+                      classId,
+                      person,
+                    );
                     //const tempRegistration = createShortHash();
                     const registration = competitorRegistration;
                     //console.log(start);
@@ -937,6 +951,24 @@ export const parseXmlForTesting = {
   parseXml,
   checkXmlType,
   getIOFXmlSchema,
+};
+
+const getCompetitorKey = (classId, person) => {
+  if (Array.isArray(person.Id) && person.Id.length > 0) {
+    // Use the first valid ID or specific ID with type "CZE"
+    const id =
+      person.Id.find((sourceId) => sourceId.ATTR?.type === 'CZE')?._ ||
+      person.Id[0];
+    if (id) {
+      return id; // Use ID if available
+    }
+  }
+
+  // Fallback to concatenation of Family and Given names if ID is not present
+  const familyName = person?.Name[0]?.Family[0] || '';
+  const givenName = person?.Name[0]?.Given[0] || '';
+
+  return createShortCompetitorHash(classId, familyName, givenName);
 };
 
 export default router;
