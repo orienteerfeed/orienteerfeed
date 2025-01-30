@@ -9,6 +9,7 @@ import { SignInPage, SignUpPage } from './pages/auth';
 import { EventDetailPage, EventPage, EventSettingsPage } from './pages/event';
 import { ProfilePage } from './pages/profile';
 import { NotFoundPage } from './pages/notFound';
+import { LandingPageLayout } from './templates/LandingPageLayout';
 
 import { useAuth } from './utils';
 
@@ -20,6 +21,7 @@ export const AppRouter = () => {
         <Route path={PATHNAMES.signIn()} element={<SignInPage />} />
         <Route path={PATHNAMES.signUp()} element={<SignUpPage />} />
         <Route path={PATHNAMES.eventDetail()} element={<EventDetailPage />} />
+        <Route path={PATHNAMES.landing()} element={<LandingPageLayout />} />
         <Route
           path={PATHNAMES.eventSettings()}
           element={<PrivateRoute component={<EventSettingsPage />} />}

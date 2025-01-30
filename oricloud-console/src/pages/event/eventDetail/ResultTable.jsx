@@ -163,8 +163,8 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full border-collapse text-sm">
-        <thead className="bg-gray-800 text-white">
-          <tr>
+        <thead className="text-gray-600 dark:text-white">
+          <tr className="border-b dark:border-gray-700">
             <th className="px-4 py-1 text-left">#</th>
             <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden">
               Name
@@ -203,7 +203,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
                 stiffness: 100,
                 damping: 15,
               }}
-              className={`transition-colors duration-500 ${
+              className={`transition-colors duration-500 border-b dark:border-gray-700 ${
                 highlightedRows.includes(competitor.id)
                   ? 'bg-orange-200'
                   : index % 2 === 0

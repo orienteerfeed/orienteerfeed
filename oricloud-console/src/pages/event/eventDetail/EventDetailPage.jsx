@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { EventPageLayout } from '../../../templates';
-import { formatDate, useAuth } from '../../../utils';
+import { useAuth } from '../../../utils';
 import PATHNAMES from '../../../pathnames';
 import { ResultTable } from './ResultTable';
 
@@ -112,29 +112,26 @@ export const EventDetailPage = () => {
     );
 
   return (
-    <EventPageLayout t={t}>
+    <EventPageLayout t={t} pageName={data?.event?.name}>
       <div className="grid items-start gap-8">
-        <div className="flex flex-col gap-1 items-center">
-          <h1 className="text-3xl md:text-4xl">{data?.event?.name}</h1>
-          <p className="text-lg text-muted-foreground">
-            {data?.event?.organizer} |{' '}
-            {formatDate(new Date(parseInt(data.event.date, 10)))} |{' '}
-            {data?.event?.location}
-          </p>
-        </div>
-        <hr />
         {user?.id === data.event.authorId && (
           <div>
             <Link
               to={PATHNAMES.getEventSettings(eventId)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block text-center"
+              className="bg-zinc-800 dark:bg-zinc-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block text-center"
             >
               {t('Settings', { ns: 'common' })}
             </Link>
           </div>
         )}
-        <div className="flex gap-8">
-          <div>
+        <div className="flex gap-6">
+          <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:!bg-zinc-900 dark:text-white">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                {data?.event?.classes.find((c) => c.id === selectedClass)?.name}
+              </h2>
+            </div>
             {competitors.length > 0 ? (
               <ResultTable
                 competitors={competitors}
@@ -148,22 +145,26 @@ export const EventDetailPage = () => {
             )}
           </div>
           <aside className="hidden md:flex flex-col gap-4">
-            <p>{t('Orienteering.Class', { ns: 'common' })}</p>
-            <nav className="flex flex-wrap gap-4 justify-start w-[20em] md:w-[20em] lg:w-[30em]">
-              {[...data?.event?.classes]
-                ?.sort((a, b) => a.name.localeCompare(b.name))
-                .map((classItem) => (
-                  <button
-                    key={classItem.id}
-                    onClick={() => onClickClass(classItem.id)}
-                    className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
-                      selectedClass === classItem.id && 'bg-accent'
-                    }`}
-                  >
-                    <span>{classItem.name}</span>
-                  </button>
-                ))}
-            </nav>
+            <div className="relative flex flex-col w-full rounded-2xl bg-white shadow-lg p-4 dark:!bg-zinc-900 dark:text-white">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                {t('Orienteering.Class', { ns: 'common' })}
+              </h2>
+              <nav className="flex flex-wrap gap-4 justify-start md:max-w-[20em] lg:max-w-[30em]">
+                {[...data?.event?.classes]
+                  ?.sort((a, b) => a.name.localeCompare(b.name))
+                  .map((classItem) => (
+                    <button
+                      key={classItem.id}
+                      onClick={() => onClickClass(classItem.id)}
+                      className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
+                        selectedClass === classItem.id && 'bg-accent'
+                      }`}
+                    >
+                      <span>{classItem.name}</span>
+                    </button>
+                  ))}
+              </nav>
+            </div>
           </aside>
         </div>
       </div>

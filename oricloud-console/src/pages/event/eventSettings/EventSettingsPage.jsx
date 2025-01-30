@@ -100,7 +100,7 @@ export const EventSettingsPage = () => {
     return <NotAuthorizedPage />;
 
   return (
-    <EventPageLayout t={t}>
+    <EventPageLayout t={t} pageName={data?.event?.name}>
       <div className="grid items-start gap-8">
         <div className="flex flex-col gap-1 items-center">
           <h1 className="text-3xl md:text-4xl">

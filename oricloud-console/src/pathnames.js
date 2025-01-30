@@ -13,6 +13,7 @@ const routes = {
   settings: () => '/settings',
   signIn: () => '/signin',
   signUp: () => `${registrationBase}`,
+  landing: () => '/landing',
 };
 
 export default routes;

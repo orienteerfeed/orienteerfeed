@@ -9,17 +9,17 @@ import ENDPOINTS from '../../endpoints';
 const EventTable = ({ navigate, data, isLoading, error }) => {
   const { t } = useTranslation('translation');
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-      <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+    <div className="overflow-x-auto">
+      <table className="table-auto w-full border-collapse text-sm text-left">
+        <thead className="text-gray-600 dark:text-white">
+          <tr className="border-b dark:border-gray-700">
+            <th scope="col" className="px-6 py-2 font-medium text-gray-900">
               {t('Pages.Event.Tables.Name')}
             </th>
-            <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" className="px-6 py-2 font-medium text-gray-900">
               {t('Pages.Event.Tables.Organiser')}
             </th>
-            <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" className="px-6 py-2 font-medium text-gray-900">
               {t('Pages.Event.Tables.Date')}
             </th>
           </tr>
@@ -29,19 +29,21 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
             data.map((event, index) => (
               <tr
                 key={index}
-                className="hover:bg-gray-50 cursor-pointer"
                 onClick={() => navigate('/event/' + event.id)}
+                className={`hover:bg-gray-50 cursor-pointer transition-colors duration-500 border-b dark:border-gray-700 ${
+                  index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+                }`}
               >
-                <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
+                <td className="flex gap-3 px-6 py-2 font-normal text-gray-900">
                   <div className="text-sm">
                     <div className="font-medium text-gray-700">
                       {event.name}
                     </div>
                     <div className="text-gray-400">{event.location}</div>
                   </div>
-                </th>
-                <td className="px-6 py-4">{event.organizer}</td>
-                <td className="px-6 py-4">{formatDate(event.date)}</td>
+                </td>
+                <td className="px-6 py-2">{event.organizer}</td>
+                <td className="px-6 py-2">{formatDate(event.date)}</td>
               </tr>
             ))
           ) : (
@@ -89,28 +91,45 @@ export const EventList = () => {
       return eventDate > today; // Compare only dates (without time)
     }) || [];
   return (
-    <>
-      <h2>{t('Pages.Event.Tables.Today')}</h2>
-      <EventTable
-        navigate={navigate}
-        data={todaysEvents}
-        isLoading={isLoading}
-        error={error}
-      />
-      <h2>{t('Pages.Event.Tables.Recent')}</h2>
-      <EventTable
-        navigate={navigate}
-        data={recentEvents}
-        isLoading={isLoading}
-        error={error}
-      />
-      <h2>{t('Pages.Event.Tables.Upcoming')}</h2>
-      <EventTable
-        navigate={navigate}
-        data={upcomingEvents}
-        isLoading={isLoading}
-        error={error}
-      />
-    </>
+    <div className="flex flex-col gap-6">
+      {/* Full width event table */}
+      <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-gray-900 dark:text-white">
+        <h2 className="font-semibold dark:text-white pb-4">
+          {t('Pages.Event.Tables.Today')}
+        </h2>
+        <EventTable
+          navigate={navigate}
+          data={todaysEvents}
+          isLoading={isLoading}
+          error={error}
+        />
+      </div>
+
+      {/* Two divs side by side (50% width on large screens, full width on smaller screens) */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="relative flex flex-col w-full lg:w-1/2 h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-gray-900 dark:text-white">
+          <h2 className="font-semibold dark:text-white pb-4">
+            {t('Pages.Event.Tables.Recent')}
+          </h2>
+          <EventTable
+            navigate={navigate}
+            data={recentEvents}
+            isLoading={isLoading}
+            error={error}
+          />
+        </div>
+        <div className="relative flex flex-col w-full lg:w-1/2 h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-gray-900 dark:text-white">
+          <h2 className="font-semibold dark:text-white pb-4">
+            {t('Pages.Event.Tables.Upcoming')}
+          </h2>
+          <EventTable
+            navigate={navigate}
+            data={upcomingEvents}
+            isLoading={isLoading}
+            error={error}
+          />
+        </div>
+      </div>
+    </div>
   );
 };

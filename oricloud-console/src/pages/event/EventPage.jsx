@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from 'src/organisms/Dialog';
 import { EventForm } from '.';
-import { useAuth } from '../..//utils';
+import { useAuth } from '../../utils';
 
 const CreateEventDialog = ({ t, initialData = null }) => {
   return (
@@ -59,13 +59,11 @@ export const EventPage = () => {
   return (
     <EventPageLayout t={t}>
       <div className="grid items-start gap-8">
-        <div className="flex flex-col gap-1 items-center">
-          <h1 className="text-3xl md:text-4xl">{t('Route.Events')}</h1>
-          <p className="text-lg text-muted-foreground">
-            {t('Pages.Event.Description')}
-          </p>
-        </div>
-        <hr />
+        {typeof token !== 'undefined' && token && (
+          <div className="flex justify-end">
+            <CreateEventDialog t={t} />
+          </div>
+        )}
         <Alert
           severity="warning"
           title={t('Pages.Event.Alert.DemoTitle')}
@@ -73,11 +71,6 @@ export const EventPage = () => {
         >
           {t('Pages.Event.Alert.DemoDescription')}
         </Alert>
-        {typeof token !== 'undefined' && token && (
-          <div className="flex justify-end">
-            <CreateEventDialog t={t} />
-          </div>
-        )}
         <EventList />
       </div>
     </EventPageLayout>
