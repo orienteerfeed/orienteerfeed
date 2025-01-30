@@ -65,6 +65,7 @@ export const EventPage = () => {
           </div>
         )}
         <Alert
+          variant="filled"
           severity="warning"
           title={t('Pages.Event.Alert.DemoTitle')}
           className="!pl-14"

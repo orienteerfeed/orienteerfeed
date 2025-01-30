@@ -38,9 +38,9 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ```bash
 # Clone this repository
-git clone https://github.com/martinkrivda/oricloud.git
+git clone https://github.com/martinkrivda/orienteerfeed.git
 # Go into the repository
-cd oricloud
+cd orienteerfeed
 Create backend/.env from the template in backend/.env.example and fill in the credentials to your database and keys to 3rd party.
 # Install dependencies
 npm install

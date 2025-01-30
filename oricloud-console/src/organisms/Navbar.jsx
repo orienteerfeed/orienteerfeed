@@ -1,127 +1,180 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { LanguageSelector, ThemeToggleButton } from '../molecules';
+import { useLocation, Link } from 'react-router-dom';
+import { AiOutlineBell, AiOutlineMenu } from 'react-icons/ai';
+
+import { Dropdown, ThemeToggleButton, UserAvatar } from '../molecules';
 import { useAuth } from '../utils';
 import PATHNAMES from '../pathnames';
-import { useTranslation } from 'react-i18next';
 
-export const Navbar = () => {
+export const Navbar = ({ routes, onOpenSidenav, pageName, t }) => {
+  const location = useLocation();
   const { token, user, signout } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { t } = useTranslation();
+  const [currentRoute, setCurrentRoute] = useState({
+    name: 'Events',
+    link: PATHNAMES.empty(),
+  });
 
-  // Function to handle clicking outside the menu to close it
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        !event.target.closest('#menu') &&
-        !event.target.closest('#dropdown-menu')
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    getActiveRoute(routes);
+  }, [location.pathname, routes]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const getActiveRoute = (routes) => {
+    let activeRoute;
+    for (let i = 0; i < routes.length; i++) {
+      if (
+        window.location.href.indexOf(
+          routes[i].layout + '/' + routes[i].path,
+        ) !== -1
+      ) {
+        setCurrentRoute({ name: routes[i].name, link: routes[i].link });
+      }
+    }
+    return activeRoute;
   };
+
   return (
-    <div className="w-full h-20 bg-white justify-center items-start inline-flex">
-      <div className="px-8 grow shrink basis-0 self-stretch bg-white/0 shadow justify-between items-center flex">
-        <div className="w-96 flex-row justify-start items-center inline-flex gap-2">
-          <AiOutlineSearch size={24} />
+    <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center md:justify-between rounded-xl bg-white/10 dark:bg-inherit p-2 backdrop-blur-xl justify-end">
+      <div className="hidden md:block ml-[6px]">
+        <div className="h-6 w-[224px] pt-1">
+          <a
+            className="text-sm font-normal text-zinc-700 hover:underline dark:text-white dark:hover:text-white"
+            href=" "
+          >
+            Pages
+            <span className="mx-1 text-sm text-zinc-700 hover:text-zinc-700 dark:text-white">
+              {' '}
+              /{' '}
+            </span>
+          </a>
+          <Link
+            className="text-sm font-normal capitalize text-zinc-700 hover:underline dark:text-white dark:hover:text-white"
+            to={currentRoute.link}
+          >
+            {currentRoute.name}
+          </Link>
+        </div>
+        <p className="shrink text-[33px] capitalize text-zinc-700 dark:text-white">
+          <Link
+            to="#"
+            className="font-bold capitalize hover:text-zinc-700 dark:hover:text-white"
+          >
+            {typeof pageName !== 'undefined' ? pageName : currentRoute.name}
+          </Link>
+        </p>
+      </div>
+
+      <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-zinc-600 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[365px] xl:gap-2">
+        <div className="flex h-full items-center rounded-full bg-blue-50 text-zinc-700 dark:bg-zinc-800 dark:text-white xl:w-[225px]">
+          <p className="pl-3 pr-2 text-xl"></p>
           <input
             type="text"
-            className="w-full bg-transparent pr-4 text-black focus:outline-none xl:w-125"
-            placeholder={t('Organisms.Navbar.Placeholder')}
+            placeholder="Search..."
+            className="block h-full w-full rounded-full bg-blue-50 text-sm font-medium text-zinc-700 outline-none placeholder:!text-gray-400 dark:bg-zinc-800 dark:text-white dark:placeholder:!text-white sm:w-fit"
           />
         </div>
-        <div className="justify-start items-center gap-4 flex">
-          <div className="flex-col justify-start items-start inline-flex">
-            <LanguageSelector />
-          </div>
-          <div className="flex-col justify-start items-start inline-flex">
-            <ThemeToggleButton />
-          </div>
+        <span
+          className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden"
+          onClick={onOpenSidenav}
+        >
+          <AiOutlineMenu className="dark:text-white" />
+        </span>
+        {/* start Notification */}
+        <Dropdown
+          button={
+            <p className="cursor-pointer">
+              <AiOutlineBell className="dark:text-white" />
+            </p>
+          }
+          animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
+          children={
+            <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-zinc-700 dark:text-white dark:shadow-none sm:w-[460px]">
+              <div className="flex items-center justify-between">
+                <p className="text-base font-bold text-zinc-700 dark:text-white">
+                  Notification
+                </p>
+                <p className="text-sm font-bold text-zinc-700 dark:text-white">
+                  Mark all read
+                </p>
+              </div>
 
-          {typeof token !== 'undefined' && token ? (
-            <div className="flex-col justify-start items-start inline-flex">
-              <div className="self-stretch justify-start items-center gap-4 inline-flex">
-                <div
-                  id="menu"
-                  onClick={toggleMenu}
-                  className="inline-flex flex-row gap-4 items-center slef-stretch cursor-pointer"
-                >
-                  <div className="flex-col justify-start items-start inline-flex">
-                    <div className="self-stretch h-5 flex-col justify-start items-end flex">
-                      <div className="text-right text-gray-800 text-sm font-medium leading-tight">
-                        {typeof user !== 'undefined' && user && user.firstname}{' '}
-                        {typeof user !== 'undefined' && user && user.lastname}
-                      </div>
-                    </div>
-                    <div className="self-stretch h-4 flex-col justify-start items-end flex">
-                      <div className="text-right text-slate-500 text-xs font-normal leading-none">
-                        K.O.B. Choceň
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 rounded-full flex-col justify-start items-start inline-flex">
-                    <img
-                      className="w-12 h-12 relative"
-                      src="https://via.placeholder.com/48x48"
-                      alt="user-avatar"
-                    />
+              <button className="flex w-full items-center">
+                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white"></div>
+                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
+                    New Update: Martin Křivda miss punched
+                  </p>
+                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                    A new update for your fav competitor is available!
+                  </p>
+                </div>
+              </button>
+
+              <button className="flex w-full items-center">
+                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white"></div>
+                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
+                    New Update: Tomáš Křivda v cíli
+                  </p>
+                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                    A new update for your fav competitor!
+                  </p>
+                </div>
+              </button>
+            </div>
+          }
+          classNames={'py-2 top-10 -left-[230px] md:-left-[440px] w-max'}
+        />
+        <ThemeToggleButton />
+        {/* Profile & Dropdown */}
+        {typeof token !== 'undefined' && token ? (
+          <Dropdown
+            button={
+              <UserAvatar firstName={user.firstname} lastName={user.lastname} />
+            }
+            children={
+              <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-zinc-700 dark:text-white dark:shadow-none">
+                <div className="p-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-zinc-700 dark:text-white">
+                      👋 Hey, {user.firstname}
+                    </p>
                   </div>
                 </div>
-              </div>
-              {/* Dropdown Menu */}
-              {isMenuOpen && (
-                <div
-                  id="dropdown-menu"
-                  className="absolute top-16 right-0 mt-4 flex w-72 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark z-10"
-                >
-                  <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-6 dark:border-strokedark">
-                    <li>
-                      <Link
-                        className="flex items-center gap-4 font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-                        to={PATHNAMES.profile()}
-                      >
-                        {t('Organisms.Navbar.MyProfile')}
-                      </Link>
-                    </li>
-                  </ul>
+                <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+
+                <div className="flex flex-col p-4">
+                  <Link
+                    to={PATHNAMES.profile()}
+                    className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
+                  >
+                    {t('Organisms.Navbar.MyProfile')}
+                  </Link>
+                  <a
+                    href=" "
+                    className="mt-3 text-sm text-gray-800 dark:text-white hover:dark:text-white"
+                  >
+                    Notification Settings
+                  </a>
                   <button
                     onClick={signout}
-                    className="flex flex-col gap-5 border-b border-stroke px-6 py-6 dark:border-strokedark"
+                    className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
                   >
                     {t('Organisms.Navbar.LogOut')}
                   </button>
                 </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link
-                className="px-2 sm:px-4 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transparent transition-colors duration-500"
-                to={PATHNAMES.signIn()}
-              >
-                {t('Organisms.Navbar.SignIn')}
-              </Link>
-              <Link
-                className="px-2 sm:px-4 py-2 rounded-md bg-amber-300	hover:text-accent-foreground transparent transition-colors duration-500"
-                to={PATHNAMES.signUp()}
-              >
-                {t('Organisms.Navbar.SignUp')}
-              </Link>
-            </>
-          )}
-        </div>
+              </div>
+            }
+            classNames={'py-2 top-10 -left-[205px] w-max'}
+          />
+        ) : (
+          <Link
+            className="px-2 sm:px-4 py-2 rounded-full dark:text-white dark:hover:text-black hover:bg-accent hover:text-accent-foreground transparent transition-colors duration-500"
+            to={PATHNAMES.signIn()}
+          >
+            {t('Organisms.Navbar.SignIn')}
+          </Link>
+        )}
       </div>
-    </div>
+    </nav>
   );
 };

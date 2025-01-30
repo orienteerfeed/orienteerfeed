@@ -12,7 +12,9 @@ export const InputWithHelper = ({ error, helperText, type, ...props }) => {
       )}
 
       {helperText && !error && (
-        <p className="p-1 text-xs text-left text-gray-500">{helperText}</p>
+        <p className="p-1 text-xs text-left text-gray-500 dark:text-gray-400">
+          {helperText}
+        </p>
       )}
 
       {error && <p className="px-1 text-xs text-left text-red-600">{error}</p>}

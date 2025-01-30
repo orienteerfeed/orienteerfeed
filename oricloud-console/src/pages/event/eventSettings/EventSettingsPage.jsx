@@ -5,7 +5,6 @@ import { gql, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { EventPageLayout } from '../../../templates';
 import {
-  formatDate,
   formatDateForInput,
   formatDateTimeForInput,
   useAuth,
@@ -102,19 +101,6 @@ export const EventSettingsPage = () => {
   return (
     <EventPageLayout t={t} pageName={data?.event?.name}>
       <div className="grid items-start gap-8">
-        <div className="flex flex-col gap-1 items-center">
-          <h1 className="text-3xl md:text-4xl">
-            {typeof data !== 'undefined' && data && data.event.name}
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {typeof data !== 'undefined' && data && data.event.organizer} |{' '}
-            {typeof data !== 'undefined' &&
-              data &&
-              formatDate(new Date(parseInt(data.event.date, 10)))}{' '}
-            | {typeof data !== 'undefined' && data && data.event.location}
-          </p>
-        </div>
-        <hr />
         <BackButton t={t} path={PATHNAMES.getEventDetail(eventId)} />
         <DragDropFile eventId={eventId} />
         <div className="flex flex-row flex-wrap gap-4">

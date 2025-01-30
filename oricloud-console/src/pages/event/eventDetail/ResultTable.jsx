@@ -164,7 +164,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
     <div className="overflow-x-auto">
       <table className="table-auto w-full border-collapse text-sm">
         <thead className="text-gray-600 dark:text-white">
-          <tr className="border-b dark:border-gray-700">
+          <tr className="border-b dark:border-zinc-500">
             <th className="px-4 py-1 text-left">#</th>
             <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden">
               Name
@@ -172,7 +172,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
             <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
               Club
             </th>
-            <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden">
+            <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
               Bib N.
             </th>
             <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
@@ -180,7 +180,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
             </th>
             <th className="px-4 py-1 text-left">Start</th>
             <th className="px-4 py-1 text-left">Finish</th>
-            <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden">
+            <th className="px-4 py-1 text-left truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
               Diff
             </th>
             {showRanking && (
@@ -207,8 +207,8 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
                 highlightedRows.includes(competitor.id)
                   ? 'bg-orange-200'
                   : index % 2 === 0
-                  ? 'bg-gray-100'
-                  : 'bg-white'
+                  ? 'bg-gray-100 dark:bg-zinc-700'
+                  : 'bg-white dark:bg-zinc-600'
               }`}
             >
               <td
@@ -226,7 +226,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
               <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
                 {competitor.organisation}
               </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden">
+              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
                 {competitor.bibNumber}
               </td>
               <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
@@ -244,7 +244,7 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
               <td className="px-4 py-1">
                 {competitor.time && formatSecondsToTime(competitor.time)}
               </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden">
+              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
                 {competitor.loss > 0 &&
                   `+ ${formatSecondsToTime(competitor.loss)}`}
               </td>

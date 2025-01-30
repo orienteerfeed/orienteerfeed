@@ -4,7 +4,7 @@ import * as LabelPrimitive from '@radix-ui/react-label';
 import { cn } from '../utils';
 
 const labelVariants =
-  'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70';
+  'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-white';
 
 const Label = forwardRef(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
