@@ -6,6 +6,8 @@ export const typeDef = /* GraphQL */ `
   extend type Mutation {
     signin(input: LoginInput): AuthPayload
     signup(input: UserInput): ResponseMessage
+    requestPasswordReset(email: String!): ResetResponse!
+    resetPassword(token: String!, newPassword: String!): AuthPayload!
   }
   type ResponseMessage {
     token: String!
@@ -16,6 +18,12 @@ export const typeDef = /* GraphQL */ `
     token: String
     user: User
   }
+
+  type ResetResponse {
+    success: Boolean!
+    message: String
+  }
+
   type User {
     id: Int!
     email: String! @constraint(format: "email", maxLength: 255)

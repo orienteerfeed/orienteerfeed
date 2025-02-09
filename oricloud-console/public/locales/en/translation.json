@@ -12,7 +12,9 @@
           "Lastname": "Newman",
           "Club": "My Club",
           "Email": "newman@example.com",
-          "Password": "Your secret password"
+          "Password": "Your secret password",
+          "NewPassword": "Your new secret password",
+          "PasswordConfirmation": "Password confirmation"
         }
       },
       "SignInUpPage": {
@@ -26,6 +28,20 @@
         "SignUp": "Sign Up",
         "SignInWithEmail": "Sign In With Email",
         "WelcomeBack": "Welcome back"
+      },
+      "RequestPasswordResetPage": {
+        "ForgottenPassword": "Forgotten password",
+        "EnterYourEmail": "Enter your email to receive a link to reset your password",
+        "ResetPassword": "Reset password"
+      },
+      "PasswordResetEmailSentPage": {
+        "CheckYourEmail": "Check Your Email",
+        "PasswordResetInstructions1": "If this email address is associated with an account, you will receive a password reset link shortly. Please check your inbox and follow the instructions to reset your password.",
+        "PasswordResetInstructions2": "If you don’t see the email, please check your spam folder.",
+        "PasswordResetInstructions3": "If you didn’t request a password reset, you can ignore this email."
+      },
+      "PasswordResetPage": {
+        "EnterYourNewPassword": "Enter a new password"
       }
     },
     "Event": {

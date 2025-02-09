@@ -234,6 +234,12 @@ model OAuthRefreshToken {
   expiresAt DateTime
 }
 
+model PasswordReset {
+  email     String  @id
+  token     String
+  createdAt DateTime @default(now())
+}
+
 enum Sex {
   B
   M

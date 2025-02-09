@@ -165,7 +165,7 @@ export const UserRegisterForm = ({ t }) => {
               />
             </div>
             <SubmitButton variant="default">
-              {t('Pages.Auth.SignInPage.SignInWithEmail')}
+              {t('Pages.Auth.SignInUpPage.SignInWithEmail')}
             </SubmitButton>
           </div>
         </form>

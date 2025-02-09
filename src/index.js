@@ -37,7 +37,7 @@ const swaggerOptions = {
       title: 'OrienteerFeed API',
       version: '1.1.0',
       description:
-        'This is a REST API application made with Express. It retrieves data from JSONPlaceholder.',
+        'This is a REST API application made with Express. It includes competitor data updates and real-time results for orienteering events.',
         contact: {
           email: 'martin.krivda@kobchocen.cz',
         },
@@ -126,6 +126,7 @@ app.use(
           req.headers['x-orienteerfeed-app-activate-user-url'] || 'localhost',
           token: token,
           basicAuthCredentials: basicAuthCredentials,
+        resetPasswordUrl: req.headers['x-ofeed-app-reset-password-url'] || 'localhost',
       };
     },
   }),

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { FloatingBadge } from '../../../organisms';
 import { EventPageLayout } from '../../../templates';
 import { useAuth } from '../../../utils';
 import PATHNAMES from '../../../pathnames';
@@ -106,9 +107,8 @@ export const EventDetailPage = () => {
     setClassMenuOpen(false); // Close menu after selection
   };
 
-  if (loading || competitorsLoading)
-    return <p>{t('Loading', { ns: 'common' })}</p>;
-  if (error || competitorsError)
+  if (loading) return <p>{t('Loading', { ns: 'common' })}</p>;
+  if (error)
     return (
       <p>
         {t('Error', { ns: 'common' })}: {error.message}
@@ -125,6 +125,7 @@ export const EventDetailPage = () => {
   return (
     <EventPageLayout t={t} pageName={data?.event?.name}>
       <div className="grid items-start gap-8">
+        <FloatingBadge title={data?.event?.name} />
         {user?.id === data.event.authorId && (
           <div>
             <Link
@@ -156,6 +157,8 @@ export const EventDetailPage = () => {
                 selectedClassName={
                   data?.event?.classes.find((c) => c.id === selectedClass)?.name
                 }
+                isLoading={competitorsLoading}
+                error={competitorsError}
               />
             ) : (
               <p>{t('Pages.Event.NoCompetitorsFound')}</p>
@@ -167,7 +170,7 @@ export const EventDetailPage = () => {
               <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
                 {t('Orienteering.Class', { ns: 'common' })}
               </h2>
-              <nav className="flex flex-wrap gap-4 justify-start">
+              <nav className="flex flex-wrap gap-4 justify-start max-h-[56rem] overflow-y-auto">
                 {[...data?.event?.classes]
                   ?.sort((a, b) => a.name.localeCompare(b.name))
                   .map((classItem) => (
@@ -190,7 +193,7 @@ export const EventDetailPage = () => {
 
       {/* Floating Button (for Mobile) */}
       <button
-        className="xl:hidden fixed bottom-32 right-12 bg-blue-600 text-white p-4 rounded-full shadow-lg"
+        className="xl:hidden fixed bottom-24 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg"
         onClick={() => setClassMenuOpen(!classMenuOpen)}
       >
         {data?.event?.classes.find((c) => c.id === selectedClass)?.name ||
@@ -199,7 +202,7 @@ export const EventDetailPage = () => {
 
       {/* Mobile Menu (Slide-in from Right) */}
       <div
-        className={`fixed inset-y-0 right-0 w-64 bg-white dark:bg-zinc-700 p-4 transform z-50 ${
+        className={`fixed inset-y-0 right-0 w-96 bg-white dark:bg-zinc-700 p-4 transform z-50 ${
           classMenuOpen ? 'translate-x-0' : 'translate-x-full'
         } transition-transform duration-300 ease-in-out shadow-lg`}
       >
@@ -212,14 +215,14 @@ export const EventDetailPage = () => {
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
           {t('Orienteering.Class', { ns: 'common' })}
         </h2>
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-wrap gap-2 justify-start">
           {[...data?.event?.classes]
             ?.sort((a, b) => a.name.localeCompare(b.name))
             .map((classItem) => (
               <button
                 key={classItem.id}
                 onClick={() => onClickClass(classItem.id)}
-                className={`w-full text-left px-3 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 ${
+                className={`text-left px-3 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 ${
                   selectedClass === classItem.id &&
                   'bg-gray-300 dark:bg-gray-500'
                 }`}

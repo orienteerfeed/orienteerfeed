@@ -5,7 +5,12 @@ import OAuth2Server from '@node-oauth/oauth2-server';
 import argon2 from 'argon2';
 import crypto from 'crypto';
 
-import { authenticateUser, signupUser } from './authService.js';
+import {
+  authenticateUser,
+  signupUser,
+  passwordResetRequest,
+  passwordResetConfirm,
+} from './authService.js';
 import {
   AuthenticationError,
   ValidationError,
@@ -195,6 +200,153 @@ router.post(
             res.statusCode,
           ),
         );
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res
+          .status(422)
+          .json(errorResponse(error.message, res.statusCode));
+      }
+      return res.status(500).json(errorResponse(error.message, res.statusCode));
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /rest/v1/auth/request-password-reset:
+ *  post:
+ *    summary: Request user's account password reset
+ *    description: Password reset
+ *    parameters:
+ *       - in: header
+ *         name: x-ofeed-app-reset-password-url
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Frontend URL where the user will reset their password.
+ *       - in: body
+ *         name: email
+ *         required: true
+ *         description: User's e-mail.
+ *         schema:
+ *           type: string
+ *           example: jan.novak@priklad.cz
+ *    responses:
+ *      200:
+ *        description: Email with password reset link sent successfully
+ *      422:
+ *        description: Request is not valid
+ *      500:
+ *        description: Database errors
+ */
+router.post(
+  '/request-password-reset',
+  [check('email').not().isEmpty().trim().isEmail()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(422)
+        .json(validationResponse(formatErrors(errors), res.statusCode));
+    }
+
+    const {
+      body: { email },
+    } = req;
+
+    try {
+      const passwordResetPayload = await passwordResetRequest(
+        email,
+        req.headers['x-ofeed-app-reset-password-url'] || 'localhost',
+      );
+
+      return res
+        .status(200)
+        .json(
+          successResponse(
+            'OK',
+            { data: signUpPayload, message: passwordResetPayload.message },
+            res.statusCode,
+          ),
+        );
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res
+          .status(422)
+          .json(errorResponse(error.message, res.statusCode));
+      }
+      return res.status(500).json(errorResponse(error.message, res.statusCode));
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /rest/v1/auth/reset-password:
+ *  post:
+ *    summary: Reset user's account password
+ *    description: Set new password
+ *    parameters:
+ *       - in: body
+ *         name: token
+ *         required: true
+ *         description: Request token.
+ *         schema:
+ *           type: string
+ *           example: 1gzhutrads2fhgt546fgn456ayer4tgf6f
+ *       - in: body
+ *         name: newPassword
+ *         required: true
+ *         description: User's new password.
+ *         schema:
+ *           type: string
+ *           example: Password123
+ *    responses:
+ *      200:
+ *        description: Password reset successful
+ *      422:
+ *        description: Request is not valid
+ *      500:
+ *        description: Database errors
+ */
+router.post(
+  '/reset-password',
+  [
+    check('token').not().isEmpty().trim().isString(),
+    check('newPassword').not().isEmpty().trim().isString(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(422)
+        .json(validationResponse(formatErrors(errors), res.statusCode));
+    }
+
+    const {
+      body: { token, newPassword },
+    } = req;
+
+    try {
+      const passwordResetPayload = await passwordResetConfirm(
+        token,
+        newPassword,
+      );
+
+      return res.status(200).json(
+        successResponse(
+          'OK',
+          {
+            data: {
+              token: passwordResetPayload.jwtToken,
+              user: passwordResetPayload.user,
+              message: 'Password reset successful',
+            },
+            message: passwordResetPayload.message,
+          },
+          res.statusCode,
+        ),
+      );
     } catch (error) {
       if (error instanceof ValidationError) {
         return res

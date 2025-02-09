@@ -28,7 +28,7 @@ export const sendEmail = async ({
 
 const getMailOptions = ({ html, text, subject, emailTo }) => ({
   to: emailTo,
-  from: { email: 'hello@martinkrivda.cz', name: 'Oricloud' },
+  from: { email: 'hello@martinkrivda.cz', name: 'Orienteerfeed' },
   subject,
   text,
   html,

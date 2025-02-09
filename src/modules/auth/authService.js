@@ -12,6 +12,7 @@ import prisma from '../../utils/context.js';
 import { generateJwtTokenForLink } from '../../utils/jwtToken.js';
 import { getLoginSuccessPayload } from '../../utils/loginUser.js';
 import { sendEmail } from '../../utils/email.js';
+import { generateResetPasswordToken } from '../../utils/hashUtils.js';
 
 // Correctly calculate the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -140,5 +141,137 @@ export const signupUser = async (
     }
     console.error('Database error in createUser:', error);
     throw new DatabaseError('Failed to create user');
+  }
+};
+
+// Function to sign up a user and send a registration confirmation email
+export const passwordResetRequest = async (email, app_base_url) => {
+  const successResponse = {
+    success: true,
+    message:
+      'Please check your inbox and follow the instructions to reset your password.',
+  };
+  try {
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (!existingUser) {
+      return successResponse;
+    }
+    const token = generateResetPasswordToken(existingUser.id);
+    const createdAt = new Date(Date.now());
+
+    try {
+      await prisma.passwordReset.upsert({
+        where: { email }, // Find existing record by email
+        update: { token, createdAt }, // Update token & expiration if exists
+        create: { email, token, createdAt }, // Create new record if not found
+      });
+    } catch (error) {
+      console.error('Error creating or updating password reset record:', error);
+      throw new Error('Could not process password reset request.');
+    }
+
+    // Construct the link to be sent via email
+    const resetPasswordAppLink = `${app_base_url}/${token}`;
+
+    // Prepare and send the email
+    let emailTemplate;
+    // Calculate the path to the ejs file
+    const templatePath = path.join(
+      __dirname,
+      '../../views/emails/password-reset.ejs',
+    );
+
+    await ejs
+      .renderFile(templatePath, {
+        user_firstname: existingUser.firstname,
+        password_reset_link: resetPasswordAppLink,
+        year: new Date().getFullYear(),
+      })
+      .then((result) => {
+        emailTemplate = result;
+      })
+      .catch((err) => {
+        throw new ValidationError('Error Rendering email template: ' + err);
+      });
+
+    sendEmail({
+      html: emailTemplate,
+      text: 'OrienteerFeed',
+      subject: 'OrienteerFeed - forgotten password',
+      emailTo: email,
+      onSuccess: () => console.log('Email sent successfully!'),
+      onError: (error) => {
+        throw new Error('Failed to send email:' + error);
+      },
+    });
+    // Return both the token and the user object
+    return successResponse;
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw error; // rethrow to be handled by the caller
+    }
+    console.error('Database error in password reset:', error);
+    throw new DatabaseError('Failed to create password reset request');
+  }
+};
+
+export const passwordResetConfirm = async (token, newPassword) => {
+  try {
+    // Find the password reset request
+    const passwordRequest = await prisma.passwordReset.findFirst({
+      where: { token: token },
+    });
+
+    if (!passwordRequest) {
+      throw new ValidationError('Password reset token expired or invalid.');
+    }
+
+    // Get current time and subtract 1 hour (60 * 60 * 1000 ms)
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+    // Convert timestamps to Date objects and compare
+    const tokenCreatedAt = new Date(passwordRequest.createdAt);
+
+    if (tokenCreatedAt < oneHourAgo) {
+      throw new ValidationError('Password reset token expired.');
+    }
+
+    // Find the user to reset password
+    const user = await prisma.user.findUnique({
+      where: { email: passwordRequest.email },
+    });
+
+    if (!passwordRequest) {
+      throw new ValidationError('Password reset token invalid.');
+    }
+
+    // Generate a random 128-bit (16 bytes) salt
+    const salt = crypto.randomBytes(16);
+    const hashedPassword = await argon2.hash(newPassword, { salt });
+
+    // Update user password
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Delete the used password reset token
+    await prisma.passwordReset.delete({
+      where: { email: user.email },
+    });
+
+    // Generate JWT token for email link
+    const jwtToken = generateJwtTokenForLink(user.id);
+
+    // Return both the token and the user object
+    return { jwtToken, user };
+  } catch (error) {
+    console.error('Error in confirmPasswordReset:', error);
+    throw new DatabaseError('Failed to reset password.');
   }
 };

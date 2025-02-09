@@ -1,10 +1,12 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
-import { UserLoginForm } from './UserLoginForm';
 import { LanguageSelector } from '../../../molecules';
 import PATHNAMES from '../../../pathnames';
-export const SignInPage = () => {
+import { RequestPasswordResetForm } from '.';
+
+export const RequestPasswordResetPage = () => {
   const { t } = useTranslation(['translation', 'common']);
   return (
     <div className="min-h-screen">
@@ -24,21 +26,13 @@ export const SignInPage = () => {
           </div>
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              {t('Pages.Auth.SignInUpPage.WelcomeBack')}
+              {t('Pages.Auth.RequestPasswordResetPage.ForgottenPassword')}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {t('Pages.Auth.SignInUpPage.EnterYourEmailToSignIn')}
+              {t('Pages.Auth.RequestPasswordResetPage.EnterYourEmail')}
             </p>
             <div className="grid gap-6">
-              <UserLoginForm t={t} />
-              <p className="text-center text-sm text-muted-foreground">
-                <Link
-                  to={PATHNAMES.resetPassword()}
-                  className="hover:text-brand hover:underline underline-offset-4"
-                >
-                  {t('Pages.Auth.RequestPasswordResetPage.ForgottenPassword')}
-                </Link>
-              </p>
+              <RequestPasswordResetForm t={t} />
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />

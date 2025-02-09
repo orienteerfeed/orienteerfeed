@@ -1,8 +1,15 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { TableFetchState } from '../../../molecules';
 import { formatTimeToHms, formatSecondsToTime } from '../../../utils';
 
-export const ResultTable = ({ competitors, event, selectedClassName }) => {
+export const ResultTable = ({
+  competitors,
+  event,
+  selectedClassName,
+  isLoading,
+  error,
+}) => {
   const [highlightedRows, setHighlightedRows] = useState([]);
   const previousCompetitorsRef = useRef([]);
 
@@ -161,8 +168,8 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
       selectedClassName.startsWith('W21'));
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto w-full border-collapse text-sm">
+    <div className="">
+      <table className="w-full border-collapse text-xs md:text-sm">
         <thead className="text-gray-600 dark:text-white">
           <tr className="border-b dark:border-zinc-500">
             <th className="px-4 py-1 text-left">#</th>
@@ -191,92 +198,115 @@ export const ResultTable = ({ competitors, event, selectedClassName }) => {
           </tr>
         </thead>
         <tbody>
-          {processedCompetitors.map((competitor, index) => (
-            <motion.tr
-              key={competitor.id}
-              layout
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{
-                type: 'spring',
-                stiffness: 100,
-                damping: 15,
-              }}
-              className={`transition-colors duration-500 border-b dark:border-gray-700 ${
-                highlightedRows.includes(competitor.id)
-                  ? 'bg-orange-200'
-                  : index % 2 === 0
-                  ? 'bg-gray-100 dark:bg-zinc-700'
-                  : 'bg-white dark:bg-zinc-600'
-              }`}
-            >
-              <td
-                className="px-4 py-1"
-                title={competitor.positionTooltip || ''}
+          {processedCompetitors && processedCompetitors.length > 0 ? (
+            processedCompetitors.map((competitor, index) => (
+              <motion.tr
+                key={competitor.id}
+                layout
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 100,
+                  damping: 15,
+                }}
+                className={`transition-colors duration-500 border-b dark:border-gray-700 ${
+                  highlightedRows.includes(competitor.id)
+                    ? 'bg-orange-200'
+                    : index % 2 === 0
+                    ? 'bg-gray-100 dark:bg-zinc-700'
+                    : 'bg-white dark:bg-zinc-600'
+                }`}
               >
-                {competitor.position && competitor.position}
-                {competitor.position &&
-                  typeof competitor.position === 'number' &&
-                  '.'}
-              </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden">
-                {competitor.lastname} {competitor.firstname}
-              </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
-                {competitor.organisation}
-              </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
-                {competitor.bibNumber}
-              </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
-                {competitor.card}
-              </td>
-              <td className="px-4 py-1">
-                {competitor.startTime &&
-                  formatTimeToHms(new Date(parseInt(competitor.startTime, 10)))}
-                {competitor.lateStart && (
-                  <span className="pl-1" title="Late start">
-                    ⚠️
-                  </span>
-                )}
-              </td>
-              <td className="px-4 py-1">
-                {competitor.time && formatSecondsToTime(competitor.time)}
-              </td>
-              <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
-                {competitor.loss > 0 &&
-                  `+ ${formatSecondsToTime(competitor.loss)}`}
-              </td>
-              {showRanking && (
+                <td
+                  className="px-4 py-1"
+                  title={competitor.positionTooltip || ''}
+                >
+                  {competitor.position && competitor.position}
+                  {competitor.position &&
+                    typeof competitor.position === 'number' &&
+                    '.'}
+                </td>
+                <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden">
+                  <CompetitorName competitor={competitor} />
+                </td>
+                <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
+                  {competitor.organisation}
+                </td>
                 <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
-                  {competitor.ranking && competitor.rankPointsAvg && (
-                    <div
-                      className={`inline-flex items-center px-2 py-0.5 text-[9px] font-medium text-white rounded-full 
+                  {competitor.bibNumber}
+                </td>
+                <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden lg:table-cell">
+                  {competitor.card}
+                </td>
+                <td className="px-4 py-1">
+                  {competitor.startTime &&
+                    formatTimeToHms(
+                      new Date(parseInt(competitor.startTime, 10)),
+                    )}
+                  {competitor.lateStart && (
+                    <span className="pl-1" title="Late start">
+                      ⚠️
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-1">
+                  {competitor.time && formatSecondsToTime(competitor.time)}
+                </td>
+                <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
+                  {competitor.loss > 0 &&
+                    `+ ${formatSecondsToTime(competitor.loss)}`}
+                </td>
+                {showRanking && (
+                  <td className="px-4 py-1 truncate whitespace-nowrap overflow-hidden hidden md:table-cell">
+                    {competitor.ranking && competitor.rankPointsAvg && (
+                      <div
+                        className={`inline-flex items-center px-2 py-0.5 text-[9px] font-medium text-white rounded-full 
                       ${
                         competitor.ranking > competitor.rankPointsAvg
                           ? 'bg-green-500' // Green for higher rankings
                           : 'bg-red-500' // Red for lower rankings
                       }`}
-                      style={{
-                        height: '16px', // Smaller badge height
-                        lineHeight: '16px', // Align text vertically
-                      }}
-                    >
-                      {competitor.ranking > competitor.rankPointsAvg ? (
-                        <span className="mr-1 text-[10px]">↗</span> // Smaller up arrow
-                      ) : (
-                        <span className="mr-1 text-[10px]">↘</span> // Smaller down arrow
-                      )}
-                      {competitor.ranking}
-                    </div>
-                  )}
-                </td>
-              )}
-            </motion.tr>
-          ))}
+                        style={{
+                          height: '16px', // Smaller badge height
+                          lineHeight: '16px', // Align text vertically
+                        }}
+                      >
+                        {competitor.ranking > competitor.rankPointsAvg ? (
+                          <span className="mr-1 text-[10px]">↗</span> // Smaller up arrow
+                        ) : (
+                          <span className="mr-1 text-[10px]">↘</span> // Smaller down arrow
+                        )}
+                        {competitor.ranking}
+                      </div>
+                    )}
+                  </td>
+                )}
+              </motion.tr>
+            ))
+          ) : (
+            <tr className="text-center">
+              <td colSpan={3}>
+                <TableFetchState isLoading={isLoading} error={error} />
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
+  );
+};
+
+const CompetitorName = ({ competitor }) => {
+  return (
+    <>
+      <span className="block sm:hidden">
+        {competitor.lastname} {competitor.firstname.charAt(0)}.
+      </span>
+      <span className="hidden sm:block">
+        {competitor.lastname} {competitor.firstname}
+      </span>
+    </>
   );
 };

@@ -12,7 +12,9 @@
           "Lastname": "Novák",
           "Club": "Můj klub",
           "Email": "novak@priklad.cz",
-          "Password": "Tvoje tajné heslo"
+          "Password": "Tvoje tajné heslo",
+          "NewPassword": "Tvoje nové tajné heslo",
+          "PasswordConfirmation": "Potvrzení hesla"
         }
       },
       "SignInUpPage": {
@@ -26,6 +28,20 @@
         "SignUp": "Zaregistruj se",
         "SignInWithEmail": "Přihlásit se přes e-mail",
         "WelcomeBack": "Vítej zpět"
+      },
+      "RequestPasswordResetPage": {
+        "ForgottenPassword": "Zapomenuté heslo",
+        "EnterYourEmail": "Vlož svůj e-mail pro zaslání odkazu pro obnovu hesla",
+        "ResetPassword": "Obnovit heslo"
+      },
+      "PasswordResetEmailSentPage": {
+        "CheckYourEmail": "Zkontrolujte svůj e-mail",
+        "PasswordResetInstructions1": "Pokud je tato e-mailová adresa spojena s účtem, brzy obdržíte odkaz pro obnovení hesla. Zkontrolujte prosím svou e-mailovou schránku a postupujte podle pokynů k obnovení hesla.",
+        "PasswordResetInstructions2": "Pokud se vám e-mail nezobrazí, zkontrolujte složku se spamem.",
+        "PasswordResetInstructions3": "Pokud jste o obnovení hesla nepožádali, můžete tento e-mail ignorovat."
+      },
+      "PasswordResetPage": {
+        "EnterYourNewPassword": "Zadej tvoje nové heslo"
       }
     },
     "Event": {

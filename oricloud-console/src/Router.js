@@ -5,7 +5,15 @@ import {
   Routes,
 } from 'react-router-dom';
 import PATHNAMES from './pathnames';
-import { SignInPage, SignUpPage } from './pages/auth';
+import { AboutPage } from './pages/about';
+import { ContactPage } from './pages/contact';
+import {
+  SignInPage,
+  SignUpPage,
+  RequestPasswordResetPage,
+  PasswordResetPage,
+  PasswordResetEmailSentPage,
+} from './pages/auth';
 import { EventDetailPage, EventPage, EventSettingsPage } from './pages/event';
 import { ProfilePage } from './pages/profile';
 import { NotFoundPage } from './pages/notFound';
@@ -18,8 +26,22 @@ export const AppRouter = () => {
     <Router>
       <Routes>
         <Route path={PATHNAMES.empty()} element={<EventPage />} />
+        <Route path={PATHNAMES.about()} element={<AboutPage />} />
+        <Route path={PATHNAMES.contact()} element={<ContactPage />} />
         <Route path={PATHNAMES.signIn()} element={<SignInPage />} />
         <Route path={PATHNAMES.signUp()} element={<SignUpPage />} />
+        <Route
+          path={PATHNAMES.resetPassword()}
+          element={<RequestPasswordResetPage />}
+        />
+        <Route
+          path={PATHNAMES.passwordResetEmailSentPage()}
+          element={<PasswordResetEmailSentPage />}
+        />
+        <Route
+          path={PATHNAMES.passwordResetConfirmation()}
+          element={<PasswordResetPage />}
+        />
         <Route path={PATHNAMES.eventDetail()} element={<EventDetailPage />} />
         <Route path={PATHNAMES.landing()} element={<LandingPageLayout />} />
         <Route

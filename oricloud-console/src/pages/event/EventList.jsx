@@ -15,19 +15,19 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
           <tr className="border-b dark:border-zinc-500">
             <th
               scope="col"
-              className="px-6 py-2 font-medium text-gray-900 dark:text-white"
+              className="px-2 py-2 font-medium text-gray-900 dark:text-white"
             >
               {t('Pages.Event.Tables.Name')}
             </th>
             <th
               scope="col"
-              className="px-6 py-2 font-medium text-gray-900 dark:text-white"
+              className="px-2 py-2 font-medium text-gray-900 dark:text-white hidden md:table-cell"
             >
               {t('Pages.Event.Tables.Organiser')}
             </th>
             <th
               scope="col"
-              className="px-6 py-2 font-medium text-gray-900 dark:text-white"
+              className="px-2 py-2 font-medium text-gray-900 dark:text-white"
             >
               {t('Pages.Event.Tables.Date')}
             </th>
@@ -45,7 +45,7 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
                     : 'bg-white dark:bg-zinc-600'
                 }`}
               >
-                <td className="flex gap-3 px-6 py-2 font-normal text-gray-900">
+                <td className="flex gap-3 px-2 py-2 font-normal text-gray-900">
                   <div className="text-sm">
                     <div className="font-medium text-gray-700 dark:text-white">
                       {event.name}
@@ -53,17 +53,17 @@ const EventTable = ({ navigate, data, isLoading, error }) => {
                     <div className="text-gray-400">{event.location}</div>
                   </div>
                 </td>
-                <td className="px-6 py-2 text-gray-700 dark:text-white">
+                <td className="px-2 py-2 text-gray-700 dark:text-white hidden md:table-cell">
                   {event.organizer}
                 </td>
-                <td className="px-6 py-2 text-gray-700 dark:text-white">
+                <td className="px-2 py-2 text-gray-700 dark:text-white">
                   {formatDate(event.date)}
                 </td>
               </tr>
             ))
           ) : (
             <tr className="text-center">
-              <td colSpan={4}>
+              <td colSpan={3}>
                 <TableFetchState isLoading={isLoading} error={error} />
               </td>
             </tr>

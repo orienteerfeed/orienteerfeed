@@ -4,6 +4,7 @@ export { Card } from './Card';
 export { CountdownTimer } from './CountdownTimer';
 export { DragDropFile } from './DragDropFile';
 export { Field } from './Field';
+export { FloatingBadge } from './FloatingBadge';
 export { Footer } from './Footer';
 export { Navbar } from './Navbar';
 export { Sidebar } from './Sidebar';
