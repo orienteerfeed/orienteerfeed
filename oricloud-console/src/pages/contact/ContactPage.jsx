@@ -105,6 +105,10 @@ export const ContactPage = () => {
             </Link>{' '}
             so we can squash it faster than you reach the next control point.
           </p>
+          {/*           <Map
+            apiKey="tPVxGxmTRbdoc4vDVIIvTTIMRmVjdJgcwv9U_Hqhekk"
+            center={{ lat: 50.0755, lng: 14.4378 }}
+          /> */}
         </section>
       </div>
     </EventPageLayout>
