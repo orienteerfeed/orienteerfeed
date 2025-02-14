@@ -59,28 +59,39 @@
         "Name": "Název",
         "Organiser": "Pořadatel",
         "Date": "Datum",
+        "MyEvents": "Moje události",
         "Today": "Dnes",
         "Recent": "Nedávné",
-        "Upcoming": "Plánované"
+        "Upcoming": "Plánované",
+        "Visibility": "Viditelnost",
+        "Edit": "Upravit"
       },
       "Alert": {
         "DemoTitle": "Zkušební provoz",
-        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reportování v Githubu."
+        "DemoDescription": "Jedná se o první prototyp aplikace, který může obsahovat chyby. Budeme rádi za jejich reportování v Githubu.",
+        "EventDataNotAvailableTitle": "Data závodu nejsou k dispozici",
+        "EventDataNotAvailableMessage": "Pro tento závod zatím nejsou dostupná žádná data (startovní listiny, přihlášky, tratě ani výsledky). Zkuste to prosím později nebo se informujte u pořadatele."
       },
       "Form": {
         "EventName": "Název závodu",
         "Sport": "Sport",
         "Date": "Datum konání",
+        "Timezone": "Časová zóna",
         "Organiser": "Pořadatel",
         "Location": "Lokalita",
+        "Latitude": "Zeměpisná šířka",
+        "Longitude": "Zeměpisná délka",
         "Country": "Země",
         "ZeroTime": "Čas startu",
         "Ranking": "Ranking",
         "CoefRanking": "Rankingový koeficient",
         "Relay": "Štafety",
+        "HundredthPrecision": "Setinová přesnost",
         "Published": "Zveřejněno",
         "Placeholders": {
-          "EventName": "Můj první závod"
+          "EventName": "Můj první závod",
+          "Latitude": "Zadej gps šířku (např., 50.0755)",
+          "Longitude": "Zadej gps délku (např., 14.4378)"
         },
         "Toast": {
           "EditSuccess": "Závod byl úspěšně aktualizován!"
@@ -204,6 +215,8 @@
     "RegistrationNumber": "Registrační číslo musí odpovídat platnému formátu ČSOS (např. XXX0101)",
     "Number": "Zadaná hodnota musí být číslo",
     "Time": "Čas musí být zadán ve formátu HH:MM:SS (např. 01:18:06)",
-    "TimeInZones": "Čas v zónách nesmí být delší než celkový čas aktivity"
+    "TimeInZones": "Čas v zónách nesmí být delší než celkový čas aktivity",
+    "Latitude": "Zeměpisná šířka musí být mezi -90 a 90",
+    "Longitude": "Zeměpisná délka musí být mezi -180 a 180"
   }
 }

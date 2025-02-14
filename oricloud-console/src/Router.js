@@ -14,7 +14,12 @@ import {
   PasswordResetPage,
   PasswordResetEmailSentPage,
 } from './pages/auth';
-import { EventDetailPage, EventPage, EventSettingsPage } from './pages/event';
+import {
+  EventDetailPage,
+  EventPage,
+  EventSettingsPage,
+  MyEventPage,
+} from './pages/event';
 import { ProfilePage } from './pages/profile';
 import { NotFoundPage } from './pages/notFound';
 import { LandingPageLayout } from './templates/LandingPageLayout';
@@ -44,6 +49,10 @@ export const AppRouter = () => {
         />
         <Route path={PATHNAMES.eventDetail()} element={<EventDetailPage />} />
         <Route path={PATHNAMES.landing()} element={<LandingPageLayout />} />
+        <Route
+          path={PATHNAMES.myEvents()}
+          element={<PrivateRoute component={<MyEventPage />} />}
+        />
         <Route
           path={PATHNAMES.eventSettings()}
           element={<PrivateRoute component={<EventSettingsPage />} />}

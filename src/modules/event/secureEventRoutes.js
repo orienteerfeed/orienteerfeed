@@ -19,9 +19,13 @@ import prisma from '../../utils/context.js';
 
 import {
   changeCompetitorStatus,
+  storeCompetitor,
   updateCompetitor,
   getDecryptedEventPassword,
+  deleteEventCompetitors,
+  deleteAllEventData,
 } from './eventService.js';
+import validateCompetitor from '../../utils/validateCompetitor.js';
 
 const router = Router();
 
@@ -59,7 +63,7 @@ const generatePassword = (wordCount = 3) => {
     'forest',
     'map',
     'rock',
-    'stone',
+    'boulder',
     'tree',
     'north',
     'east',
@@ -72,6 +76,26 @@ const generatePassword = (wordCount = 3) => {
     'compass',
     'gps',
     'blueberry',
+    'hill',
+    'knoll',
+    'pit',
+    'cliff',
+    'saddle',
+    'cave',
+    'lake',
+    'waterhole',
+    'stream',
+    'river',
+    'ditch',
+    'marsh',
+    'spring',
+    'clearing',
+    'thicket',
+    'road',
+    'ride',
+    'path',
+    'fence',
+    'canopy',
   ];
 
   // Ensure wordCount is a positive integer greater than 0
@@ -113,6 +137,7 @@ const generatePassword = (wordCount = 3) => {
  *            required:
  *              - name
  *              - date
+ *              - timezone
  *              - organizer
  *              - location
  *              - zeroTime
@@ -125,12 +150,26 @@ const generatePassword = (wordCount = 3) => {
  *                type: string
  *                format: date-time
  *                description: The date and time of the event (ISO 8601 format).
+ *              timezone:
+ *                type: string
+ *                description: "Time zone identifier based on the IANA database (e.g., 'Europe/Prague'). Used to correctly localize event times."
+ *                example: "Europe/Prague"
  *              organizer:
  *                type: string
  *                description: The name of the event organizer.
  *              location:
  *                type: string
  *                description: The location where the event will take place.
+ *              latitude:
+ *                type: number
+ *                format: float
+ *                description: "Geographical latitude of the event location, ranging from -90 to 90 degrees."
+ *                example: 50.0755
+ *              longitude:
+ *                type: number
+ *                format: float
+ *                description: "Geographical longitude of the event location, ranging from -180 to 180 degrees."
+ *                example: 14.4378
  *              country:
  *                type: string
  *                description: Optional 2-character country code. Must exist in the table of countries.
@@ -163,6 +202,10 @@ const generatePassword = (wordCount = 3) => {
  *              relay:
  *                type: boolean
  *                description: Whether the event is a relay event.
+ *              hundredthPrecision:
+ *                type: boolean
+ *                description: "Indicates whether the event timing should be recorded with hundredth-of-a-second precision."
+ *                example: true
  *    responses:
  *      200:
  *        description: Event created successfully
@@ -183,13 +226,17 @@ router.post('/', validateEvent, async (req, res) => {
   const {
     name,
     date,
+    timezone,
     organizer,
     location,
+    latitude,
+    longitude,
     country,
     zeroTime,
     ranking,
     coefRanking,
     startMode,
+    hundredthPrecision,
     published,
     sportId,
     relay,
@@ -206,13 +253,17 @@ router.post('/', validateEvent, async (req, res) => {
       data: {
         name,
         date: dateTime,
+        timezone,
         organizer,
         location,
+        latitude,
+        longitude,
         countryId: country,
         zeroTime: new Date(zeroTime),
         ranking,
         coefRanking,
         startMode,
+        hundredthPrecision,
         published,
         sportId,
         relay,
@@ -262,6 +313,7 @@ router.post('/', validateEvent, async (req, res) => {
  *            required:
  *              - name
  *              - date
+ *              - timezone
  *              - organizer
  *              - location
  *              - zeroTime
@@ -274,12 +326,26 @@ router.post('/', validateEvent, async (req, res) => {
  *                type: string
  *                format: date-time
  *                description: The date and time of the event (ISO 8601 format).
+ *              timezone:
+ *                type: string
+ *                description: "Time zone identifier based on the IANA database (e.g., 'Europe/Prague'). Used to correctly localize event times."
+ *                example: "Europe/Prague"
  *              organizer:
  *                type: string
  *                description: The name of the event organizer.
  *              location:
  *                type: string
  *                description: The location where the event will take place.
+ *              latitude:
+ *                type: number
+ *                format: float
+ *                description: "Geographical latitude of the event location, ranging from -90 to 90 degrees."
+ *                example: 50.0755
+ *              longitude:
+ *                type: number
+ *                format: float
+ *                description: "Geographical longitude of the event location, ranging from -180 to 180 degrees."
+ *                example: 14.4378
  *              country:
  *                type: string
  *                description: Optional 2-character country code. Must exist in the table of countries.
@@ -312,6 +378,10 @@ router.post('/', validateEvent, async (req, res) => {
  *              relay:
  *                type: boolean
  *                description: Whether the event is a relay event.
+ *              hundredthPrecision:
+ *                type: boolean
+ *                description: "Indicates whether the event timing should be recorded with hundredth-of-a-second precision."
+ *                example: true
  *    responses:
  *      200:
  *        description: Event updated successfully
@@ -447,6 +517,7 @@ router.delete('/:eventId', async (req, res) => {
   try {
     const event = await prisma.event.findUnique({
       where: { id: eventId },
+      select: { authorId: true },
     });
 
     if (!event || event.authorId !== userId) {
@@ -725,6 +796,8 @@ router.get('/:eventId/password', async (req, res) => {
  *  post:
  *    summary: Update competitor status
  *    description: Change competitor status. For example from the start procecudere set status Active or DidNotStart
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
  *         name: eventId
@@ -843,10 +916,201 @@ const validateUpdateCompetitorInputs = [
 
 /**
  * @swagger
+ * /rest/v1/events/{eventId}/competitors:
+ *  post:
+ *    summary: Store a new competitor
+ *    description: Add a new competitor to an event's class
+ *    tags:
+ *       - Events
+ *    parameters:
+ *      - in: path
+ *        name: eventId
+ *        required: true
+ *        description: String ID of the event.
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - classId
+ *              - origin
+ *              - firstname
+ *              - lastname
+ *            properties:
+ *              classId:
+ *                type: integer
+ *                description: ID of the competitor's class.
+ *                example: 5
+ *              origin:
+ *                type: string
+ *                description: Origin of the request (e.g., START).
+ *                enum: ["START"]
+ *                example: "START"
+ *              firstname:
+ *                type: string
+ *                description: First name of the competitor.
+ *                maxLength: 255
+ *                example: "Martin"
+ *              lastname:
+ *                type: string
+ *                description: Last name of the competitor.
+ *                maxLength: 255
+ *                example: "Krivda"
+ *              bibNumber:
+ *                type: integer
+ *                description: The competitor's bib number.
+ *                example: 123
+ *              nationality:
+ *                type: string
+ *                description: 3-letter country code of nationality.
+ *                maxLength: 3
+ *                example: "CZE"
+ *              registration:
+ *                type: string
+ *                description: Registration number of the competitor.
+ *                maxLength: 10
+ *                example: "MKR2024"
+ *              license:
+ *                type: string
+ *                description: License type (single character).
+ *                maxLength: 1
+ *                example: "A"
+ *              ranking:
+ *                type: integer
+ *                description: Ranking position.
+ *                example: 7563
+ *              rankPointsAvg:
+ *                type: integer
+ *                description: Average ranking points.
+ *                example: 8500
+ *              organisation:
+ *                type: string
+ *                description: Organisation name.
+ *                maxLength: 255
+ *                example: "K.O.B. Choceň"
+ *              shortName:
+ *                type: string
+ *                description: Short name of the competitor.
+ *                maxLength: 10
+ *                example: "CHC"
+ *              card:
+ *                type: integer
+ *                description: SI card number.
+ *                example: 123456
+ *              startTime:
+ *                type: string
+ *                format: date-time
+ *                description: Start time in ISO 8601 format.
+ *                example: "2025-04-10T08:30:00Z"
+ *              finishTime:
+ *                type: string
+ *                format: date-time
+ *                description: Finish time in ISO 8601 format.
+ *                example: null
+ *              time:
+ *                type: integer
+ *                description: Time taken in seconds.
+ *                example: null
+ *              teamId:
+ *                type: integer
+ *                description: ID of the competitor's team.
+ *                example: null
+ *              leg:
+ *                type: integer
+ *                description: Leg number in relay.
+ *                example: null
+ *              status:
+ *                type: string
+ *                description: Status of the competitor.
+ *                enum: ["Inactive", "Active", "DidNotStart", "Finished"]
+ *                example: "Active"
+ *              lateStart:
+ *                type: boolean
+ *                description: Whether the competitor had a late start.
+ *                example: false
+ *              note:
+ *                type: string
+ *                description: Additional notes about the competitor.
+ *                maxLength: 255
+ *                example: "Elite runner"
+ *    responses:
+ *        200:
+ *          description: Successfully stored a new competitor.
+ *        401:
+ *          description: Not authenticated.
+ *        403:
+ *          description: User not authorized to add a competitor to this event.
+ *        422:
+ *          description: Validation Error.
+ *        500:
+ *          description: Internal Server Error.
+ */
+router.post('/:eventId/competitors', validateCompetitor, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json(validationResponse(errors.array()));
+  }
+
+  const { eventId } = req.params;
+  const { userId } = req.jwtDecoded;
+  const { origin } = req.body;
+  const competitorData = req.body;
+
+  try {
+    // Check if the event exists and the user is authorized
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: { authorId: true },
+    });
+
+    if (!event) {
+      return res.status(404).json(errorResponse('Event not found', 404));
+    }
+
+    if (event.authorId !== userId) {
+      return res
+        .status(403)
+        .json(errorResponse('Not authorized to add a competitor', 403));
+    }
+
+    // Store competitor
+    const storeCompetitorMessage = await storeCompetitor(
+      eventId,
+      competitorData,
+      userId,
+      origin,
+    );
+
+    return res
+      .status(200)
+      .json(successResponse('OK', { data: storeCompetitorMessage }, 200));
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof ValidationError) {
+      return res.status(422).json(validationResponse(error.message, 422));
+    } else if (error instanceof AuthenticationError) {
+      return res.status(401).json(errorResponse(error.message, 401));
+    } else if (error instanceof DatabaseError) {
+      return res.status(500).json(errorResponse(error.message, 500));
+    }
+
+    return res.status(500).json(errorResponse('Internal Server Error', 500));
+  }
+});
+
+/**
+ * @swagger
  * /rest/v1/events/{eventId}/competitors/{competitorId}:
  *  put:
  *    summary: Update competitor's data
  *    description: Change competitor status. For example from the start procecudere set status Active or DidNotStart
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
  *         name: eventId
@@ -966,6 +1230,8 @@ router.put(
  *  get:
  *    summary: Get changelog for the event
  *    description: Get protocol of all changes in competitor's data
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
  *         name: eventId
@@ -1074,6 +1340,168 @@ router.get(
         .json(
           successResponse('OK', { data: dbProtocolResponse }, res.statusCode),
         );
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /rest/v1/events/{eventId}/competitors:
+ *  delete:
+ *    summary: Delete all competitors for an event
+ *    description: Remove all competitors and protocol records associated with a given event ID.
+ *    tags:
+ *       - Events
+ *    security:
+ *       - bearerAuth: []  # Require user login with Bearer token
+ *    parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         description: ID of the event for which competitors should be deleted.
+ *         schema:
+ *           type: string
+ *    responses:
+ *        200:
+ *          description: Successfully deleted competitors and protocol records
+ *        401:
+ *          description: Not authenticated
+ *        403:
+ *          description: Not authorized
+ *        422:
+ *          description: Validation Error
+ *        500:
+ *          description: Internal Server Error
+ *    securitySchemes:
+ *      bearerAuth:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT
+ */
+router.delete(
+  '/:eventId/competitors',
+  [check('eventId').not().isEmpty().isString()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(validationResponse(formatErrors(errors)));
+    }
+    const { eventId } = req.params;
+    const { userId } = req.jwtDecoded;
+
+    try {
+      // Check user permissions
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: { authorId: true },
+      });
+
+      if (event.authorId !== userId) {
+        return res
+          .status(403)
+          .json(errorResponse('Not authorized', res.statusCode));
+      }
+
+      // Call deleteEventCompetitors function
+      const deleteMessage = await deleteEventCompetitors(eventId);
+
+      return res
+        .status(200)
+        .json(successResponse('OK', { data: deleteMessage }, res.statusCode));
+    } catch (error) {
+      console.error(error);
+      if (error instanceof DatabaseError) {
+        return res
+          .status(500)
+          .json(errorResponse(error.message, res.statusCode));
+      }
+      return res
+        .status(500)
+        .json(errorResponse('Internal Server Error', res.statusCode));
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /rest/v1/events/{eventId}/delete-data:
+ *  delete:
+ *    summary: Delete all event-related data
+ *    description: Remove all competitors, protocol records, classes, and event password associated with a given event ID.
+ *    tags:
+ *       - Events
+ *    security:
+ *       - bearerAuth: []  # Require user login with Bearer token
+ *    parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         description: ID of the event for which all related data should be deleted.
+ *         schema:
+ *           type: string
+ *    responses:
+ *        200:
+ *          description: Successfully deleted all event-related data
+ *        401:
+ *          description: Not authenticated
+ *        403:
+ *          description: Not authorized
+ *        422:
+ *          description: Validation Error
+ *        500:
+ *          description: Internal Server Error
+ *    securitySchemes:
+ *      bearerAuth:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT
+ */
+router.delete(
+  '/:eventId/delete-data',
+  [check('eventId').not().isEmpty().isString()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(validationResponse(formatErrors(errors)));
+    }
+    const { eventId } = req.params;
+    const { userId } = req.jwtDecoded;
+
+    try {
+      // Check user permissions
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: { authorId: true },
+      });
+
+      if (!event) {
+        return res
+          .status(404)
+          .json(errorResponse('Event not found', res.statusCode));
+      }
+
+      if (event.authorId !== userId) {
+        return res
+          .status(403)
+          .json(errorResponse('Not authorized', res.statusCode));
+      }
+
+      // Call deleteEventData function
+      const deleteMessage = await deleteAllEventData(eventId);
+
+      return res
+        .status(200)
+        .json(successResponse('OK', { data: deleteMessage }, res.statusCode));
+    } catch (error) {
+      console.error(error);
+      if (error instanceof DatabaseError) {
+        return res
+          .status(500)
+          .json(errorResponse(error.message, res.statusCode));
+      }
+      return res
+        .status(500)
+        .json(errorResponse('Internal Server Error', res.statusCode));
     }
   },
 );

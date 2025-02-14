@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { FloatingBadge } from '../../../organisms';
+import { Alert, FloatingBadge } from '../../../organisms';
 import { EventPageLayout } from '../../../templates';
 import { useAuth } from '../../../utils';
 import PATHNAMES from '../../../pathnames';
@@ -136,59 +136,76 @@ export const EventDetailPage = () => {
             </Link>
           </div>
         )}
-        <div className="flex gap-6">
-          <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-                {data?.event?.classes.find((c) => c.id === selectedClass)?.name}
-              </h2>
-              <div>
-                <p className="text-sm">
-                  {formattedCourseLength} km{' '}
-                  {courseClimbthInMetres && '/ ' + courseClimbthInMetres + ' m'}
-                </p>
+        {typeof data?.event !== 'undefined' &&
+        data.event?.classes.length > 0 ? (
+          <div className="flex gap-6">
+            <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                  {
+                    data?.event?.classes.find((c) => c.id === selectedClass)
+                      ?.name
+                  }
+                </h2>
+                <div>
+                  <p className="text-sm">
+                    {formattedCourseLength} km{' '}
+                    {courseClimbthInMetres &&
+                      '/ ' + courseClimbthInMetres + ' m'}
+                  </p>
+                </div>
               </div>
+              {competitors.length > 0 ? (
+                <ResultTable
+                  competitors={competitors}
+                  event={data?.event}
+                  selectedClassName={
+                    data?.event?.classes.find((c) => c.id === selectedClass)
+                      ?.name
+                  }
+                  isLoading={competitorsLoading}
+                  error={competitorsError}
+                />
+              ) : (
+                <p>{t('Pages.Event.NoCompetitorsFound')}</p>
+              )}
             </div>
-            {competitors.length > 0 ? (
-              <ResultTable
-                competitors={competitors}
-                event={data?.event}
-                selectedClassName={
-                  data?.event?.classes.find((c) => c.id === selectedClass)?.name
-                }
-                isLoading={competitorsLoading}
-                error={competitorsError}
-              />
-            ) : (
-              <p>{t('Pages.Event.NoCompetitorsFound')}</p>
-            )}
+            {/* Sidebar (Visible only on lg+) */}
+            <aside className="hidden xl:flex flex-col gap-4">
+              <div className="relative flex flex-col w-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                  {t('Orienteering.Class', { ns: 'common' })}
+                </h2>
+                <nav className="flex flex-wrap gap-4 justify-start max-h-[56rem] overflow-y-auto">
+                  {[...data?.event?.classes]
+                    ?.sort((a, b) => a.name.localeCompare(b.name))
+                    .map((classItem) => (
+                      <button
+                        key={classItem.id}
+                        onClick={() => onClickClass(classItem.id)}
+                        className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
+                          selectedClass === classItem.id &&
+                          'bg-accent dark:text-accent-foreground'
+                        }`}
+                      >
+                        <span>{classItem.name}</span>
+                      </button>
+                    ))}
+                </nav>
+              </div>
+            </aside>
           </div>
-          {/* Sidebar (Visible only on lg+) */}
-          <aside className="hidden xl:flex flex-col gap-4">
-            <div className="relative flex flex-col w-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-                {t('Orienteering.Class', { ns: 'common' })}
-              </h2>
-              <nav className="flex flex-wrap gap-4 justify-start max-h-[56rem] overflow-y-auto">
-                {[...data?.event?.classes]
-                  ?.sort((a, b) => a.name.localeCompare(b.name))
-                  .map((classItem) => (
-                    <button
-                      key={classItem.id}
-                      onClick={() => onClickClass(classItem.id)}
-                      className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
-                        selectedClass === classItem.id &&
-                        'bg-accent dark:text-accent-foreground'
-                      }`}
-                    >
-                      <span>{classItem.name}</span>
-                    </button>
-                  ))}
-              </nav>
-            </div>
-          </aside>
-        </div>
+        ) : (
+          <Alert
+            variant="filled"
+            severity="warning"
+            title={t('Pages.Event.Alert.EventDataNotAvailableTitle')}
+            className="!pl-14"
+          >
+            {t('Pages.Event.Alert.EventDataNotAvailableMessage')}
+          </Alert>
+        )}
       </div>
 
       {/* Floating Button (for Mobile) */}

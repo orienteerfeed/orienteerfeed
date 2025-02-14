@@ -98,8 +98,11 @@ export const signupUser = async (
     });
 
     // Generate JWT token for email link
-    const token = generateJwtTokenForLink(user.id);
-
+    const loginSuccessPayload = await getLoginSuccessPayload({
+      userId: user.id,
+      prisma,
+    });
+    const { token } = loginSuccessPayload;
     // Construct the link to be sent via email
     const registrationConfirmFeAppLink = `${app_base_url}/${token}`;
 

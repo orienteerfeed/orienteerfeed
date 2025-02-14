@@ -7,12 +7,17 @@ const apiEndpoints = {
   fetchOAuth2Credentials: () => `${apiPrefix}/auth/oauth2-credentials`,
   generateOAuth2Credentials: () =>
     `${apiPrefix}/auth/generate-oauth2-credentials`,
+  myEvents: () => `${apiPrefix}/my-events`,
 
   // event
   events: () => `${apiPrefix}/events`,
   eventDetail: (eventId) => `${apiPrefix}/events/${eventId}`,
   generateEventPassword: () => `${apiPrefix}/events/generate-password`,
   revokeEventPassword: () => `${apiPrefix}/events/revoke-password`,
+  deleteEventCompetitors: (eventId) =>
+    `${apiPrefix}/events/${eventId}/competitors`,
+  deleteEventData: (eventId) => `${apiPrefix}/events/${eventId}/delete-data`,
+  deleteEvent: (eventId) => `${apiPrefix}/events/${eventId}`,
   uploadIofXml: () => `${apiPrefix}/upload/iof`,
 };
 

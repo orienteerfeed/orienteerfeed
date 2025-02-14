@@ -5,14 +5,19 @@ export const typeDef = /* GraphQL */ `
     competitorsByTeam(id: Int!): [Competitor!]
   }
   extend type Mutation {
-    competitorStatusChange(input: StatusChange): ResponseMessage
-    competitorUpdate(input: UpdateCompetitorInput): ResponseMessage
+    competitorStatusChange(input: StatusChange!): ResponseMessage!
+    competitorUpdate(input: UpdateCompetitorInput!): ResponseMessage!
+    competitorCreate(input: StoreCompetitorInput!): StoreCompetitorResponse!
   }
   extend type Subscription {
     competitorsByClassUpdated(classId: Int!): [Competitor!]
   }
   type ResponseMessage {
     message: String!
+  }
+  type StoreCompetitorResponse {
+    message: String!
+    competitor: Competitor!
   }
   type Competitor {
     id: Int!
@@ -54,6 +59,31 @@ export const typeDef = /* GraphQL */ `
     competitorId: Int!
     origin: String! @constraint(pattern: "^START$", maxLength: 32)
     card: Int
+    note: String
+  }
+
+  input StoreCompetitorInput {
+    eventId: String!
+    classId: Int!
+    origin: String!
+    firstname: String!
+    lastname: String!
+    bibNumber: Int
+    nationality: String
+    registration: String
+    license: String
+    ranking: Int
+    rankPointsAvg: Int
+    organisation: String
+    shortName: String
+    card: Int
+    startTime: String
+    finishTime: String
+    time: Int
+    teamId: Int
+    leg: Int
+    status: String
+    lateStart: Boolean
     note: String
   }
 `;

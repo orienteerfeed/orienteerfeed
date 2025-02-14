@@ -1,6 +1,7 @@
 import {
   changeCompetitorStatus,
   updateCompetitor,
+  storeCompetitor,
 } from '../../modules/event/eventService.js';
 import { verifyToken, verifyBasicAuth } from '../../utils/jwtToken.js';
 
@@ -29,6 +30,19 @@ export const competitorStatusChange = async (_, { input }, context) => {
   const { userId } = jwtDecoded;
 
   try {
+    // Check if event exists and user is authorized
+    const event = await context.prisma.event.findUnique({
+      where: { id: eventId },
+      select: { authorId: true },
+    });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    if (event.authorId !== userId) {
+      throw new Error('Not authorized to add a competitor');
+    }
     const statusChangeMessage = await changeCompetitorStatus(
       eventId,
       competitorId,
@@ -66,6 +80,20 @@ export const competitorUpdate = async (_, { input }, context) => {
   }
 
   try {
+    // Check if event exists and user is authorized
+    const event = await context.prisma.event.findUnique({
+      where: { id: eventId },
+      select: { authorId: true },
+    });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    if (event.authorId !== userId) {
+      throw new Error('Not authorized to add a competitor');
+    }
+
     const updateCompetitorMessage = await updateCompetitor(
       eventId,
       competitorId,
@@ -75,6 +103,52 @@ export const competitorUpdate = async (_, { input }, context) => {
     );
     return {
       message: updateCompetitorMessage,
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const competitorCreate = async (_, { input }, context) => {
+  // Verify JWT token
+  if (!context.token) {
+    throw new Error('Unauthorized: No token provided');
+  }
+
+  const jwtDecoded = verifyToken(context.token);
+  if (!jwtDecoded) {
+    throw new Error('Unauthorized: Invalid or expired token');
+  }
+
+  const { eventId, origin, ...competitorData } = input;
+  const { userId } = jwtDecoded;
+
+  try {
+    // Check if event exists and user is authorized
+    const event = await context.prisma.event.findUnique({
+      where: { id: eventId },
+      select: { authorId: true },
+    });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    if (event.authorId !== userId) {
+      throw new Error('Not authorized to add a competitor');
+    }
+
+    // Store competitor
+    const storeCompetitorResponse = await storeCompetitor(
+      eventId,
+      competitorData,
+      userId,
+      origin,
+    );
+
+    return {
+      message: 'Competitor successfully added',
+      competitor: storeCompetitorResponse.competitor,
     };
   } catch (error) {
     throw new Error(error.message);

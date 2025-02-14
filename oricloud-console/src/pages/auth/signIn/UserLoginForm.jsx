@@ -107,6 +107,7 @@ export const UserLoginForm = ({ t }) => {
                   type="password"
                   autoCapitalize="none"
                   autoCorrect="off"
+                  autoComplete="current-password"
                 />
               </div>
             )}

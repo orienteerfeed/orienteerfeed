@@ -50,6 +50,14 @@ const validateEvent = [
       return true;
     }),
 
+  // Validate 'timezone' - must be a valid IANA timezone
+  check('timezone')
+    .not()
+    .isEmpty()
+    .withMessage('Timezone is required')
+    .isString()
+    .withMessage('Timezone must be a string'),
+
   // Validate 'organizer' - must be a string with max length of 255 characters
   check('organizer')
     .not()
@@ -70,6 +78,18 @@ const validateEvent = [
     .isLength({ max: 255 })
     .withMessage('Location can be at most 255 characters long'),
 
+  // Validate 'latitude' - must be a number between -90 and 90
+  check('latitude')
+    .optional({ nullable: true })
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be a number between -90 and 90'),
+
+  // Validate 'longitude' - must be a number between -180 and 180
+  check('longitude')
+    .optional({ nullable: true })
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be a number between -180 and 180'),
+
   // Validate 'zeroTime' - must be a valid datetime object
   check('zeroTime')
     .not()
@@ -84,6 +104,12 @@ const validateEvent = [
     .isBoolean()
     .withMessage('Relay must be a boolean')
     .default(false),
+
+  // Validate 'hundredthPrecision' - must be a boolean
+  check('hundredthPrecision')
+    .optional()
+    .isBoolean()
+    .withMessage('HundredthPrecision must be a boolean (true/false)'),
 
   // Validate 'published' - must be a boolean, defaults to false
   check('published')
@@ -110,7 +136,7 @@ const validateEvent = [
 
   // Validate 'coefRanking' - must be a float, optional, defaults to null
   check('coefRanking')
-    .optional()
+    .optional({ nullable: true })
     .isFloat({ min: 0 })
     .withMessage(
       'Coefficient ranking must be a float value greater than or equal to 0',
