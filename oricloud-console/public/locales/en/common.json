@@ -25,5 +25,7 @@
     "Seconds": "seconds"
   },
   "Share": "Share",
-  "Print": "Print"
+  "Print": "Print",
+  "Public": "Public",
+  "Private": "Private"
 }

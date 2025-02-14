@@ -19,12 +19,15 @@ const router = Router();
  *    responses:
  *      200:
  *        description: Array of events
+ *      500:
+ *        description: Internal server error
  */
 router.get('/', async (req, res) => {
   // Everything went fine.
   let dbResponse;
   try {
     dbResponse = await prisma.event.findMany({
+      where: { published: true },
       select: {
         id: true,
         name: true,
@@ -48,13 +51,15 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /rest/v1/events/{id}:
+ * /rest/v1/events/{eventId}:
  *  get:
  *    summary: Event detail
  *    description: Get detail info about the event
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
- *         name: id
+ *         name: eventId
  *         required: true
  *         description: String ID of the event to retrieve.
  *         schema:
@@ -62,6 +67,10 @@ router.get('/', async (req, res) => {
  *    responses:
  *      200:
  *        description: Array of events
+ *      422:
+ *        description: Validation Error
+ *      500:
+ *        description: Internal server error
  */
 router.get(
   '/:eventId',
@@ -81,7 +90,10 @@ router.get(
           id: true,
           name: true,
           date: true,
+          timezone: true,
           location: true,
+          latitude: true,
+          longitude: true,
           country: true,
           organizer: true,
           relay: true,
@@ -89,6 +101,7 @@ router.get(
           coefRanking: true,
           sport: true,
           zeroTime: true,
+          hundredthPrecision: true,
           classes: true,
         },
       });
@@ -123,13 +136,15 @@ router.get(
 
 /**
  * @swagger
- * /rest/v1/events/{id}/competitors:
+ * /rest/v1/events/{eventId}/competitors:
  *  get:
  *    summary: Class definition with competitos (startlists & results)
  *    description: Get event class definition and competitors
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
- *         name: id
+ *         name: eventId
  *         required: true
  *         description: String ID of the event to retrieve.
  *         schema:
@@ -361,6 +376,8 @@ router.get(
  *  get:
  *    summary: Competitor detail
  *    description: Get competitor detial data
+ *    tags:
+ *       - Events
  *    parameters:
  *       - in: path
  *         name: eventId

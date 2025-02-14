@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Formik } from 'formik';
 import { gql, useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
+import { toDate, format } from 'date-fns-tz';
 
 import { Label } from '../../atoms';
 import { Field, SubmitButton } from '../../organisms';
@@ -43,6 +44,8 @@ export const EventForm = ({
     requiredNumber,
     requiredString,
     requiredDate,
+    gpsLatitude,
+    gpsLongitude,
   } = translatedValidations(t);
 
   const schema = object({
@@ -50,13 +53,17 @@ export const EventForm = ({
     sport: requiredNumber,
     organizer: requiredString,
     date: requiredDate,
+    timezone: requiredString,
     location: requiredString,
+    latitude: gpsLatitude,
+    longitude: gpsLongitude,
     country: string,
     zeroTime: requiredDate,
     ranking: boolean,
     coefRanking: number,
     relay: boolean,
     published: boolean,
+    hundredthPrecision: boolean,
   });
 
   const request = useRequest();
@@ -67,13 +74,17 @@ export const EventForm = ({
       sport,
       organizer,
       date,
+      timezone,
       location,
+      latitude,
+      longitude,
       country,
       zeroTime,
       ranking,
       coefRanking,
       relay,
       published,
+      hundredthPrecision,
     },
     setSubmitting,
   ) => {
@@ -91,13 +102,17 @@ export const EventForm = ({
         sportId: parseInt(sport, 10),
         organizer,
         date,
+        timezone,
         location,
+        latitude,
+        longitude,
         country,
         zeroTime,
         ranking,
         coefRanking: parseFloat(coefRanking),
         relay,
         published,
+        hundredthPrecision,
       }),
       onSuccess: (response) => {
         console.log('Form submitted successfully');
@@ -139,6 +154,12 @@ export const EventForm = ({
         }))
       : [];
 
+  // Generate timezone options with UTC offset
+  const timezones = Intl.supportedValuesOf('timeZone').map((tz) => ({
+    value: tz,
+    label: `${tz} (UTC ${format(toDate(new Date(), { timeZone: tz }), 'XXX')})`,
+  }));
+
   // Použití useQuery hooku pro provedení dotazu
   const { error: errorCountries, data: dataCountries } = useQuery(GET_COUNTRY);
   const optionsCountries =
@@ -166,27 +187,35 @@ export const EventForm = ({
         eventName: initialData.eventName,
         sport: initialData.sportId,
         date: initialData.date,
+        timezone: initialData.timezone,
         organizer: initialData.organizer,
         location: initialData.location,
+        latitude: initialData.latitude,
+        longitude: initialData.longitude,
         country: initialData.country,
         zeroTime: initialData.zeroTime,
         ranking: initialData.ranking,
         coefRanking: initialData.coefRanking,
         relay: initialData.relay,
         published: initialData.published,
+        hundredthPrecision: initialData.hundredthPrecision,
       }
     : {
         eventName: '',
         sport: '',
         date: '',
+        timezone: 'Europe/Prague',
         organizer: '',
         location: '',
+        latitude: '',
+        longitude: '',
         country: '',
         zeroTime: '',
         ranking: false,
         coefRanking: '',
         relay: false,
         published: false,
+        hundredthPrecision: false,
       };
   return (
     <Formik
@@ -237,6 +266,18 @@ export const EventForm = ({
               <Field id="date" name="date" type="date" required />
             </div>
             <div className="grid gap-1">
+              <Label htmlFor="timezone">{t('Pages.Event.Form.Timezone')}</Label>
+              <Field
+                id="timezone"
+                name="timezone"
+                type="select"
+                options={timezones}
+                value={values.timezone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="grid gap-1">
               <Label htmlFor="organizer">
                 {t('Pages.Event.Form.Organiser')}
               </Label>
@@ -262,6 +303,33 @@ export const EventForm = ({
                 autoComplete="none"
                 autoCorrect="off"
                 required
+              />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="latitude">{t('Pages.Event.Form.Latitude')}</Label>
+              <Field
+                id="latitude"
+                name="latitude"
+                type="number"
+                step="0.000001"
+                placeholder={t('Pages.Event.Form.Placeholders.Latitude')}
+                value={values.latitude}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="longitude">
+                {t('Pages.Event.Form.Longitude')}
+              </Label>
+              <Field
+                id="longitude"
+                name="longitude"
+                type="number"
+                step="0.000001"
+                placeholder={t('Pages.Event.Form.Placeholders.Longitude')}
+                value={values.longitude}
+                onChange={handleChange}
               />
             </div>
             <div className="grid gap-1">
@@ -312,8 +380,24 @@ export const EventForm = ({
               </div>
             </div>
             <div className="grid gap-1 justify-start">
-              <Label htmlFor="relay">{t('Pages.Event.Form.Relay')}</Label>
-              <Field id="relay" name="relay" type="checkbox" />
+              <div className="flex flex-row gap-4">
+                <div>
+                  <Label htmlFor="relay">{t('Pages.Event.Form.Relay')}</Label>
+                  <Field id="relay" name="relay" type="checkbox" />
+                </div>
+                <div>
+                  <Label htmlFor="hundredthPrecision">
+                    {t('Pages.Event.Form.HundredthPrecision')}
+                  </Label>
+                  <Field
+                    id="hundredthPrecision"
+                    name="hundredthPrecision"
+                    type="checkbox"
+                    checked={values.hundredthPrecision}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
             </div>
             <div className="grid gap-1 justify-start">
               <Label htmlFor="published">

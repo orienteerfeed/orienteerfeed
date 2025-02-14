@@ -59,28 +59,39 @@
         "Name": "Name",
         "Organiser": "Organiser",
         "Date": "Date",
+        "MyEvents": "My Events",
         "Today": "Today",
         "Recent": "Recent",
-        "Upcoming": "Upcoming"
+        "Upcoming": "Upcoming",
+        "Visibility": "Visibility",
+        "Edit": "Edit"
       },
       "Alert": {
         "DemoTitle": "This is a demo app",
-        "DemoDescription": "OrienteerFeed console app is a demo app. If you face an issue please report it to Github issues, thanks."
+        "DemoDescription": "OrienteerFeed console app is a demo app. If you face an issue please report it to Github issues, thanks.",
+        "EventDataNotAvailableTitle": "Event Data Not Available",
+        "EventDataNotAvailableMessage": "No data is currently available for this event (start lists, registrations, courses, or results). Please check back later or contact the event organizer for more information."
       },
       "Form": {
         "EventName": "Event name",
         "Sport": "Sport",
         "Date": "Date",
+        "Timezone": "Timezone",
         "Organiser": "Organiser",
         "Location": "Location",
+        "Latitude": "GPS Latitude",
+        "Longitude": "GPS Longitude",
         "Country": "Country",
         "ZeroTime": "Zero time",
         "Ranking": "Ranking",
         "CoefRanking": "Ranking coeficient",
         "Relay": "Relay",
+        "HundredthPrecision": "Hundredth precision",
         "Published": "Published",
         "Placeholders": {
-          "EventName": "My first event"
+          "EventName": "My first event",
+          "Latitude": "Enter latitude (e.g., 50.0755)",
+          "Longitude": "Enter longitude (e.g., 14.4378)"
         },
         "Toast": {
           "EditSuccess": "The event was updated successfully!"
@@ -181,6 +192,9 @@
           "DescriptionPlural": "Only {{count}} files can be uploaded at a time"
         }
       }
+    },
+    "SearchBox": {
+      "SearchResults": "Search results"
     }
   },
   "Route": {
@@ -204,6 +218,8 @@
     "RegistrationNumber": "The registration number must correspond to the valid CSOS format (e.g. XXX0101)",
     "Number": "The entered value must be a number",
     "Time": "The time must be entered in the format HH:MM:SS (e.g. 01:18:06)",
-    "TimeInZones": "The time in the zones must not be longer than the total activity time"
+    "TimeInZones": "The time in the zones must not be longer than the total activity time",
+    "Latitude": "Latitude must be between -90 and 90",
+    "Longitude": "Longitude must be between -180 and 180"
   }
 }

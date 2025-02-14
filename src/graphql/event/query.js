@@ -20,3 +20,10 @@ export const eventsByUser = (_, { userId }, context) => {
     where: { authorId: userId },
   });
 };
+
+export const searchEvents = async (_, { query }) => {
+  return prisma.$queryRaw`
+    SELECT * FROM Event
+    WHERE MATCH(name, location, organizer) AGAINST(${query} IN BOOLEAN MODE);
+  `;
+};

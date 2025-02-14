@@ -13,7 +13,12 @@ import { config } from '../../../config';
 
 import { BackButton } from '../../../molecules';
 import { DragDropFile } from '../../../organisms';
-import { EventInfoCard, EventPasswordCard, QrCodeCredentialsCard } from '.';
+import {
+  DangerZoneCard,
+  EventInfoCard,
+  EventPasswordCard,
+  QrCodeCredentialsCard,
+} from '.';
 import { NotAuthorizedPage } from 'src/pages/notAuthorized';
 
 import ENDPOINTS from '../../../endpoints';
@@ -26,16 +31,20 @@ const GET_EVENT = gql`
       name
       organizer
       location
+      latitude
+      longitude
       country {
         countryCode
       }
       sportId
       date
+      timezone
       zeroTime
       ranking
       coefRanking
       startMode
       relay
+      hundredthPrecision
       published
       authorId
       classes {
@@ -79,8 +88,11 @@ export const EventSettingsPage = () => {
         eventName: data.event.name,
         sportId: data.event.sportId,
         date: formatDateForInput(new Date(parseInt(data.event.date, 10))),
+        timezone: data.event.timezone,
         organizer: data.event.organizer,
         location: data.event.location,
+        latitude: data.event.latitude,
+        longitude: data.event.longitude,
         country: data.event.country?.countryCode,
         zeroTime: formatDateTimeForInput(
           new Date(parseInt(data.event.zeroTime, 10)),
@@ -88,6 +100,7 @@ export const EventSettingsPage = () => {
         ranking: data.event.ranking,
         coefRanking: data.event.coefRanking,
         relay: data.event.relay,
+        hundredthPrecision: data.event.hundredthPrecision,
         published: data.event.published,
       }
     : null;
@@ -125,6 +138,9 @@ export const EventSettingsPage = () => {
               />
             </div>
           )}
+          <div className="flex flex-col">
+            <DangerZoneCard t={t} eventId={eventId} />
+          </div>
         </div>
       </div>
     </EventPageLayout>

@@ -25,5 +25,7 @@
     "Seconds": "vteřin"
   },
   "Share": "Sdílet",
-  "Print": "Tisk"
+  "Print": "Tisk",
+  "Public": "Veřejné",
+  "Private": "Soukromé"
 }

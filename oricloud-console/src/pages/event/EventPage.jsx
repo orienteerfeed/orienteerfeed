@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { EventPageLayout } from '../../templates';
@@ -14,6 +15,8 @@ import {
 } from 'src/organisms/Dialog';
 import { EventForm } from '.';
 import { useAuth } from '../../utils';
+
+import PATHNAMES from '../../pathnames';
 
 const CreateEventDialog = ({ t, initialData = null }) => {
   return (
@@ -55,12 +58,16 @@ const CreateEventDialog = ({ t, initialData = null }) => {
 export const EventPage = () => {
   const { t } = useTranslation();
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <EventPageLayout t={t}>
       <div className="grid items-start gap-8">
         {typeof token !== 'undefined' && token && (
-          <div className="flex justify-end">
+          <div className="flex justify-end space-x-2">
+            <Button onClick={() => navigate(PATHNAMES.myEvents())}>
+              {t('Pages.Event.Tables.MyEvents')}
+            </Button>
             <CreateEventDialog t={t} />
           </div>
         )}

@@ -5,6 +5,7 @@ const routes = {
   about: () => '/about',
   contact: () => '/contact',
   event: () => '/event',
+  myEvents: () => '/my-events',
   eventDetail: () => `/event/:eventId`,
   getEventDetail: (eventId) => `/event/${eventId}`,
   eventSettings: () => `/event/:eventId/settings`,
