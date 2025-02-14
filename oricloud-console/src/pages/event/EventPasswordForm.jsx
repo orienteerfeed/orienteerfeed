@@ -29,6 +29,15 @@ export const EventPasswordForm = ({
     setPasswordVisible(!passwordVisible);
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(password);
+    toast({
+      title: t('Operations.Success', { ns: 'common' }),
+      description: t('Pages.Event.Password.Toast.CopySuccessDescription'),
+      variant: 'success',
+    });
+  };
+
   // Generate a new password and set expiration
   const handleGeneratePassword = () => {
     // Send the generated password and expiration to the server
@@ -155,6 +164,15 @@ export const EventPasswordForm = ({
                   autoCorrect="off"
                   readOnly
                 />
+                {/* Copy Button */}
+                <button
+                  type="button"
+                  onClick={copyToClipboard}
+                  className="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 outline-solid outline-1 px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-300"
+                >
+                  {t('Pages.Event.Password.Copy')}
+                </button>
+
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}

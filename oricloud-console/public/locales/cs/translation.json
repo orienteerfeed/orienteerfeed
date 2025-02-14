@@ -106,6 +106,7 @@
         "RegeneratePassword": "Přegenerovat heslo",
         "PassportExpiration": "Expirace hesla",
         "NoExpirationSet": "Není nastavena expirace",
+        "Copy": "Kopírovat",
         "Revoke": "Zneplatnit",
         "Card": {
           "Title": "Heslo závodu",
@@ -121,7 +122,8 @@
           "UpdateSuccessDescription": "Heslo úspěšně aktualizováno!",
           "UpdateFailTitle": "Něco se pokazilo, zkus operaci opakovat.",
           "RevokeSuccessDescription": "Heslo úspěšně zneplatněno!",
-          "RevokeFailTitle": "Něco se pokazilo, zkus operaci opakovat."
+          "RevokeFailTitle": "Něco se pokazilo, zkus operaci opakovat.",
+          "CopySuccessDescription": "Heslo zkopírováno! Udržte ho v bezpečí."
         }
       },
       "QrCode": {

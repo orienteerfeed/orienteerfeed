@@ -106,6 +106,7 @@
         "RegeneratePassword": "Regenerate Password",
         "PassportExpiration": "Password Expiration",
         "NoExpirationSet": "No expiration set",
+        "Copy": "Copy",
         "Revoke": "Revoke",
         "Card": {
           "Title": "Event Password",
@@ -121,7 +122,8 @@
           "UpdateSuccessDescription": "Password was updated successfully!",
           "UpdateFailTitle": "Something went wrong, please try again.",
           "RevokeSuccessDescription": "Password was revoked successfully!",
-          "RevokeFailTitle": "Something went wrong, please try again."
+          "RevokeFailTitle": "Something went wrong, please try again.",
+          "CopySuccessDescription": "Password copied! Keep it safe."
         }
       },
       "QrCode": {
