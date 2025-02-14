@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FloatingBadge } from '../../organisms';
 import { EventPageLayout } from '../../templates';
+import { Map } from 'react-mapycz-leaflet';
 
 export const ContactPage = () => {
   const { t } = useTranslation();
@@ -105,6 +106,10 @@ export const ContactPage = () => {
             </Link>{' '}
             so we can squash it faster than you reach the next control point.
           </p>
+          <Map
+            apiKey="tPVxGxmTRbdoc4vDVIIvTTIMRmVjdJgcwv9U_Hqhekk"
+            center={{ lat: 50.0755, lng: 14.4378 }}
+          />
         </section>
       </div>
     </EventPageLayout>

@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextIndex"]
 }
 
 datasource db {
@@ -63,7 +64,10 @@ model Event {
   name      String
   organizer String?
   date      DateTime @db.Date
+  timezone  String   @default("Europe/Prague")
   location  String?
+  latitude  Float?   // GPS Latitude (nullable)
+  longitude Float?   // GPS Longitude (nullable)
   countryId String?  @db.Char(2)
   country   Country? @relation(fields: [countryId], references: [countryCode])
   zeroTime  DateTime @db.DateTime()
@@ -71,7 +75,9 @@ model Event {
   startMode StartMode @default(Individual)
   ranking   Boolean  @default(false)
   coefRanking Float?
+  hundredthPrecision Boolean  @default(false) // Measure finish time in hundredths of a second
   published Boolean  @default(false)
+  demo      Boolean  @default(false)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?     @db.UnsignedInt
   createdAt DateTime @default(now())
@@ -79,6 +85,7 @@ model Event {
   classes   Class[]
   protocols Protocol[]
   eventPasswords EventPassword[]
+  @@fulltext([name, organizer, location])
 }
 
 model Class {
@@ -277,6 +284,7 @@ enum Origin {
 }
 
 enum ProtocolType {
+  competitor_create
   competitor_update
   status_change
   si_card_change

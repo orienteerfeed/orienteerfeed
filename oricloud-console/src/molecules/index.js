@@ -6,6 +6,7 @@ export { DragDropContainer } from './DragDropContainer';
 export { Dropdown } from './Dropdown';
 export { InputWithHelper } from './InputWithHelper';
 export { LanguageSelector } from './LanguageSelector';
+export { SearchBox } from './SearchBox';
 export { TableFetchState } from './TableFetchState';
 export { ThemeToggleButton } from './ThemeToggleButton';
 export { UserAvatar } from './UserAvatar';

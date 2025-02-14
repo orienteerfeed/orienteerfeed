@@ -20,6 +20,8 @@ export const translatedValidations = (t) => ({
   fileRequired: fileRequired(t),
   fileRequiredPdf: fileRequiredPdf(t),
   requiredArrayOfNumbers: requiredArrayOfNumbers(t),
+  gpsLatitude: gpsLatitude(t),
+  gpsLongitude: gpsLongitude(t),
 });
 
 const string = () => yup.string().nullable();
@@ -112,3 +114,12 @@ const uniqueMinMaxEmails =
 
       return true;
     });
+
+const gpsLatitude = (t) =>
+  number(t)
+    .min(-90, t('Validations.Latitude'))
+    .max(90, t('Validations.Latitude'));
+const gpsLongitude = (t) =>
+  number(t)
+    .min(-180, t('Validations.Longitude'))
+    .max(180, t('Validations.Longitude'));
