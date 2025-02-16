@@ -16,3 +16,5 @@ export {
   ToastClose,
   ToastAction,
 } from './Toast';
+export { ToggleSwitch } from './ToggleSwitch';
+export { VisibilityBadge } from './VisibilityBadge';

@@ -10,6 +10,7 @@ import { validation, error, success } from '../../utils/responseApi.js';
 import { formatErrors } from '../../utils/errors.js';
 import { createShortCompetitorHash } from '../../utils/hashUtils.js';
 import { calculateCompetitorRankingPoints } from '../../utils/ranking.js';
+import { notifyWinnerChanges } from './../event/winnerCache.js';
 
 import { storeCzechRankingData } from './uploadService.js';
 
@@ -421,6 +422,8 @@ router.post(
               }
             }),
           );
+          // Publish notifications
+          notifyWinnerChanges(eventId);
         } else if (type.jsonKey === 'StartList') {
           // For-each class
           const classStart = iofXml3.StartList.ClassStart;

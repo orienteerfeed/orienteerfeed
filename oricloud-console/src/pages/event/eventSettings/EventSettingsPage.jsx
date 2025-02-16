@@ -5,6 +5,7 @@ import { gql, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { EventPageLayout } from '../../../templates';
 import {
+  formatDate,
   formatDateForInput,
   formatDateTimeForInput,
   useAuth,
@@ -15,9 +16,11 @@ import { BackButton } from '../../../molecules';
 import { DragDropFile } from '../../../organisms';
 import {
   DangerZoneCard,
+  EventLinkCard,
   EventInfoCard,
   EventPasswordCard,
   QrCodeCredentialsCard,
+  EventVisibilityCard,
 } from '.';
 import { NotAuthorizedPage } from 'src/pages/notAuthorized';
 
@@ -118,7 +121,7 @@ export const EventSettingsPage = () => {
         <DragDropFile eventId={eventId} />
         <div className="flex flex-row flex-wrap gap-4">
           <EventInfoCard t={t} initialData={initialData} />
-          <div className="flex flex-col">
+          <div className="flex flex-col space-y-4">
             <EventPasswordCard
               t={t}
               eventId={initialData.id}
@@ -126,9 +129,7 @@ export const EventSettingsPage = () => {
               expiresAt={data?.event.eventPassword?.expiresAt}
               onPasswordUpdate={setPassword} // Pass the callback to update password
             />
-          </div>
-          {password && (
-            <div className="flex flex-col">
+            {password && (
               <QrCodeCredentialsCard
                 t={t}
                 eventId={eventId}
@@ -136,8 +137,24 @@ export const EventSettingsPage = () => {
                 url={apiEventsEndpoint}
                 host={config.BASE_API_URL}
               />
-            </div>
-          )}
+            )}
+          </div>
+          <div className="flex flex-col space-y-4">
+            <EventVisibilityCard
+              t={t}
+              eventId={eventId}
+              isPublished={data?.event?.published}
+            />
+            <EventLinkCard
+              t={t}
+              eventId={initialData.id}
+              eventName={data?.event?.name}
+              eventLocation={data?.event?.location}
+              eventDateFormatted={formatDate(
+                new Date(parseInt(data.event.date, 10)),
+              )}
+            />
+          </div>
           <div className="flex flex-col">
             <DangerZoneCard t={t} eventId={eventId} />
           </div>

@@ -126,6 +126,15 @@
           "CopySuccessDescription": "Heslo zkopírováno! Udržte ho v bezpečí."
         }
       },
+      "Link": {
+        "Card": {
+          "Title": "Odkaz na událost",
+          "Description": "Použijte tuto funkci pro rychlé sdílení odkazu na událost – můžete jej kopírovat, sdílet nebo vytisknout QR kód pro snadný přístup k živým výsledkům."
+        },
+        "Toast": {
+          "CopySuccessDescription": "Hop! Odkaz je teď ve schránce, sdílej dál!"
+        }
+      },
       "QrCode": {
         "Card": {
           "Title": "O Checklist propojení",
@@ -134,6 +143,15 @@
           "EventId": "ID události",
           "ShareQrCode": "Sdílet QR kód události",
           "PrintQrCode": "Vytisknout QR kód události"
+        }
+      },
+      "Visibility": {
+        "Card": {
+          "Title": "Viditelnost"
+        },
+        "Toast": {
+          "UpdateSuccess": "Událost je nyní {{status}}!",
+          "UpdateFail": "Nepodařilo se aktualizovat viditelnost události."
         }
       }
     },

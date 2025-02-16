@@ -9,7 +9,7 @@ import { formatDate, useFetchRequest } from '../../../utils';
 
 import ENDPOINTS from '../../../endpoints';
 import PATHNAMES from '../../../pathnames';
-import { Button } from 'src/atoms';
+import { Button, VisibilityBadge } from '../../../atoms';
 
 export const MyEventPage = () => {
   const { t } = useTranslation();
@@ -114,11 +114,7 @@ const MyEventTable = ({ t, navigate, data, isLoading, error }) => {
                   {formatDate(event.date)}
                 </td>
                 <td className="px-2 py-2 text-gray-700 dark:text-white">
-                  {event.published === true ? (
-                    <PublicBadge t={t} />
-                  ) : (
-                    <PrivateBadge t={t} />
-                  )}
+                  <VisibilityBadge t={t} isPublic={event.published} />
                 </td>
                 <td className="px-2 py-2 text-gray-700 dark:text-white">
                   {/* Prevent row click when clicking the button */}
@@ -144,21 +140,5 @@ const MyEventTable = ({ t, navigate, data, isLoading, error }) => {
         </tbody>
       </table>
     </div>
-  );
-};
-
-const PublicBadge = ({ t }) => {
-  return (
-    <span className="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded-md text-xs uppercase">
-      {t('Public', { ns: 'common' })}
-    </span>
-  );
-};
-
-const PrivateBadge = ({ t }) => {
-  return (
-    <span className="bg-gray-100 text-gray-900 font-bold px-2 py-1 rounded-md text-xs uppercase">
-      {t('Private', { ns: 'common' })}
-    </span>
   );
 };

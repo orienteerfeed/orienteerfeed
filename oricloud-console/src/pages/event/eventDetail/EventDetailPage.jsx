@@ -7,6 +7,8 @@ import { EventPageLayout } from '../../../templates';
 import { useAuth } from '../../../utils';
 import PATHNAMES from '../../../pathnames';
 import { ResultTable } from './ResultTable';
+import { WinnerNotification } from './WinnerNotifications';
+import { NotificationControlPanel } from './NotificationControlPanel';
 
 const GET_EVENT = gql`
   query Event($eventId: String!) {
@@ -126,16 +128,21 @@ export const EventDetailPage = () => {
     <EventPageLayout t={t} pageName={data?.event?.name}>
       <div className="grid items-start gap-8">
         <FloatingBadge title={data?.event?.name} />
-        {user?.id === data.event.authorId && (
-          <div>
-            <Link
-              to={PATHNAMES.getEventSettings(eventId)}
-              className="bg-zinc-800 dark:bg-zinc-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block text-center"
-            >
-              {t('Settings', { ns: 'common' })}
-            </Link>
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-start">
+            {user?.id === data.event.authorId && (
+              <div className="flex items-center">
+                <Link
+                  to={PATHNAMES.getEventSettings(eventId)}
+                  className="bg-zinc-800 dark:bg-zinc-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block text-center"
+                >
+                  {t('Settings', { ns: 'common' })}
+                </Link>
+              </div>
+            )}
           </div>
-        )}
+          <NotificationControlPanel className="ibline-block" />
+        </div>
         {typeof data?.event !== 'undefined' &&
         data.event?.classes.length > 0 ? (
           <div className="flex gap-6">
@@ -170,6 +177,7 @@ export const EventDetailPage = () => {
               ) : (
                 <p>{t('Pages.Event.NoCompetitorsFound')}</p>
               )}
+              <WinnerNotification eventId={eventId} />
             </div>
             {/* Sidebar (Visible only on lg+) */}
             <aside className="hidden xl:flex flex-col gap-4">

@@ -48,8 +48,7 @@ export const AboutPage = () => {
             </li>
             <li>
               📺 <strong>Big Screen Results Board</strong> – Keep the crowd
-              engaged with flashy, live-updating results. Perfect for epic
-              comebacks and heartbreaking near-misses.
+              engaged with flashy, live-updating results.
             </li>
             <li>
               ⏳ <strong>Last-Minute Entries</strong> – Because some people love
@@ -81,8 +80,10 @@ export const AboutPage = () => {
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
             <li>
-              🏃‍♂️ <strong>You run, we track</strong> – Live data streams in
-              faster than you can say <i>"Where’s the next control point?"</i>
+              🏃‍♂️ <strong>You run, we sync</strong> – Live data is instantly
+              synchronized with our cloud service, giving you access to all
+              information from anywhere, whether through our app or via the
+              REST/GraphQL API.
             </li>
             <li>
               📡 <strong>Smart APIs, No Tech Headaches</strong> – Whether you

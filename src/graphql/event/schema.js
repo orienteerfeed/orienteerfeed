@@ -6,6 +6,27 @@ export const typeDef = /* GraphQL */ `
     eventsByUser(userId: Int!): [Event!]
     searchEvents(query: String!): [Event]!
   }
+
+  extend type Mutation {
+    updateEventVisibility(eventId: String!, published: Boolean!): EventResponse!
+  }
+
+  type Subscription {
+    winnerUpdated(eventId: String!): WinnerNotification
+  }
+
+  type EventResponse {
+    message: String!
+    event: Event
+  }
+
+  type WinnerNotification {
+    eventId: String!
+    classId: Int!
+    className: String!
+    name: String!
+  }
+
   type Event {
     id: String!
     sportId: Int!

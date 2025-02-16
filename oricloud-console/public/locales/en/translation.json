@@ -126,6 +126,15 @@
           "CopySuccessDescription": "Password copied! Keep it safe."
         }
       },
+      "Link": {
+        "Card": {
+          "Title": "Event link",
+          "Description": "Use this feature to quickly share a link to an event - you can copy, share or print the QR code for easy access to live results."
+        },
+        "Toast": {
+          "CopySuccessDescription": "Boom! The link is now in your clipboard, share it away!"
+        }
+      },
       "QrCode": {
         "Card": {
           "Title": "O Checklist connection",
@@ -134,6 +143,15 @@
           "EventId": "ID události",
           "ShareQrCode": "Share event QR code",
           "PrintQrCode": "Print event QR code"
+        }
+      },
+      "Visibility": {
+        "Card": {
+          "Title": "Visibility"
+        },
+        "Toast": {
+          "UpdateSuccess": "Event is now {{status}}!",
+          "UpdateFail": "Couldn't update event visibility."
         }
       }
     },

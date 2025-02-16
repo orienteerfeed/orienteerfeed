@@ -35,20 +35,32 @@ const DialogContent = forwardRef(
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed z-50 grid w-full gap-4 rounded-b-lg border bg-background p-6 shadow-lg animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:max-w-lg sm:rounded-lg sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0',
+          'fixed z-50 flex flex-col w-full max-h-[90vh] sm:max-w-lg bg-background rounded-lg shadow-lg border animate-in',
           className,
         )}
         {...props}
       >
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
-        {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        {/* 🔹 Close Button in Top-Right */}
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm z-20 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
           <MdClose className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
+
+        {/* 🔹 Fixed Header */}
+        <div className="sticky top-0 z-10 bg-background p-4 shadow-sm">
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
+        </div>
+
+        {/* 🔹 Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4">{children}</div>
+
+        {/* 🔹 Fixed Footer */}
+        <div className="sticky bottom-0 z-10 bg-background p-1 shadow-sm">
+          <DialogFooter />
+        </div>
       </DialogPrimitive.Content>
     </DialogPortal>
   ),

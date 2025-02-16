@@ -1,6 +1,8 @@
 import { typeDef } from './schema.js';
 import * as queries from './query.js';
 import * as mutations from './mutation.js';
+import * as subscriptions from './subscription.js';
+
 import prisma from '../../utils/context.js';
 import { verifyToken } from '../../utils/jwtToken.js';
 import { getDecryptedEventPassword } from '../../modules/event/eventService.js';
@@ -13,6 +15,9 @@ const resolvers = {
   },
   Mutation: {
     ...mutations,
+  },
+  Subscription: {
+    ...subscriptions,
   },
   Event: {
     classes(parent, _, context) {
