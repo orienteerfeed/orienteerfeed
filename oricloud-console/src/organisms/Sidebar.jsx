@@ -37,7 +37,10 @@ const SidebarLinks = ({ routes }) => {
   let location = useLocation();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
-    return location.pathname.includes(routeName);
+    if (routeName === '/' && location.pathname === '/') {
+      return true; // Home page is active only if exactly "/"
+    }
+    return location.pathname.startsWith(routeName) && routeName !== '/';
   };
 
   const createLinks = (routes) => {

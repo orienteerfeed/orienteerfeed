@@ -30,7 +30,8 @@ export const AppRouter = () => {
   return (
     <Router>
       <Routes>
-        <Route path={PATHNAMES.empty()} element={<EventPage />} />
+        <Route path={PATHNAMES.empty()} element={<LandingPageLayout />} />
+        <Route path={PATHNAMES.event()} element={<EventPage />} />
         <Route path={PATHNAMES.about()} element={<AboutPage />} />
         <Route path={PATHNAMES.contact()} element={<ContactPage />} />
         <Route path={PATHNAMES.signIn()} element={<SignInPage />} />
@@ -48,7 +49,6 @@ export const AppRouter = () => {
           element={<PasswordResetPage />}
         />
         <Route path={PATHNAMES.eventDetail()} element={<EventDetailPage />} />
-        <Route path={PATHNAMES.landing()} element={<LandingPageLayout />} />
         <Route
           path={PATHNAMES.myEvents()}
           element={<PrivateRoute component={<MyEventPage />} />}

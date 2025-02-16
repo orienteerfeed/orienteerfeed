@@ -6,10 +6,10 @@ import PATHNAMES from '../pathnames';
 const MENU_EXPAND_THRESHOLD = 1280;
 
 const routes = [
-  { path: PATHNAMES.empty(), name: 'Events' },
+  { path: PATHNAMES.empty(), name: 'Home' },
+  { path: PATHNAMES.event(), name: 'Events' },
   { path: PATHNAMES.about(), name: 'About' },
   { path: PATHNAMES.contact(), name: 'Contact' },
-  { path: '/landing', name: 'Landing page' },
   { path: PATHNAMES.mrb(), name: 'MyResultBoard' },
 ];
 
@@ -38,7 +38,7 @@ export const EventPageLayout = ({ children, t, pageName }) => {
           <Navbar
             routes={routes}
             onOpenSidenav={() => setOpen(true)}
-            logoText={'Horizon UI Tailwind React'}
+            logoText={'Orienteerfeed'}
             pageName={pageName}
             t={t}
           />
