@@ -80,7 +80,7 @@ export const AboutPage = () => {
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
             <li>
-              🏃‍♂️ <strong>You run, we sync</strong> – Live data is instantly
+              🏃‍♂️ <strong>You organize, we sync</strong> – Live data is instantly
               synchronized with our cloud service, giving you access to all
               information from anywhere, whether through our app or via the
               REST/GraphQL API.
