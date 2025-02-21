@@ -12,7 +12,7 @@ export const QrCodeCredentialsCard = ({
 }) => {
   const qrCodeRef = useRef(null); // Reference to the QR code canvas
   // Format the service credentials
-  const serviceCredentials = `ORIENTEERFEED:U:${url};T:BASIC;EVENT:${eventId};PASSWORD:${eventPassword};;`;
+  const serviceCredentials = `orienteerfeed://U:${url};T:BASIC;EVENT:${eventId};PASSWORD:${eventPassword};;`;
   const codeSize = 200; // Set the size you want for the QR code
   const errorCorrectionLevel = 'L'; // Set the desired error correction level - values L, M, Q, H,
 
