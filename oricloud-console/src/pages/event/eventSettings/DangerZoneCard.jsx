@@ -134,62 +134,62 @@ export const DangerZoneCard = ({ t, eventId }) => {
 
   return (
     <Card
-      title="Danger Zone"
-      description="Destroy all competitors and classes related to your event permanently."
+      title={t('Pages.Event.DangerZone.Title')}
+      description={t('Pages.Event.DangerZone.Description')}
     >
       <div className="space-y-4">
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">Delete competitors</h3>
-          <p>
-            If you uploaded Start list or Results for a wrong event, you can
-            delete all competitors and start over. This button deletes all
-            runners (Start list & Results).
-          </p>
+          <h3 className="font-semibold">
+            {t('Pages.Event.DangerZone.DeleteCompetitors.Title')}
+          </h3>
+          <p>{t('Pages.Event.DangerZone.DeleteCompetitors.Description')}</p>
           <ButtonWithSpinner
             variant="outline"
             onClick={() => handleDeleteCompetitors()}
           >
-            Delete competitors
+            {t('Pages.Event.DangerZone.DeleteCompetitors.Button')}
           </ButtonWithSpinner>
         </div>
 
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">Delete all event data</h3>
-          <p>
-            If you need to completely remove all event data, including runners,
-            classes, and results, use this button. Be cautious, as this action
-            is irreversible.
-          </p>
+          <h3 className="font-semibold">
+            {t('Pages.Event.DangerZone.DeleteAllEventData.Title')}
+          </h3>
+          <p>{t('Pages.Event.DangerZone.DeleteAllEventData.Description')}</p>
           <ButtonWithSpinner
             variant="outline"
             onClick={() => handleDeleteAllEventData()}
           >
-            Delete all event data
+            {t('Pages.Event.DangerZone.DeleteAllEventData.Button')}
           </ButtonWithSpinner>
         </div>
 
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold text-red-500">Delete event</h3>
-          <p>All event data will be deleted. This action cannot be undone.</p>
+          <h3 className="font-semibold text-red-500">
+            {t('Pages.Event.DangerZone.DeleteEvent.Title')}
+          </h3>
+          <p>{t('Pages.Event.DangerZone.DeleteEvent.Description')}</p>
           <ButtonWithSpinner
             variant="destructive"
             onClick={() => handleDeleteEvent()}
           >
-            Delete event
+            {t('Pages.Event.DangerZone.DeleteEvent.Button')}
           </ButtonWithSpinner>
         </div>
 
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">Experiencing problems?</h3>
+          <h3 className="font-semibold">
+            {t('Pages.Event.DangerZone.TroublesShooting.Title')}
+          </h3>
           <p>
-            Describe your difficulties to{' '}
+            {t('Pages.Event.DangerZone.TroublesShooting.Description1')}{' '}
             <a
               href="mailto:support@orienteerfeed.com"
               className="text-blue-500"
             >
               support@orienteerfeed.com
             </a>
-            , please include any relevant files.
+            {t('Pages.Event.DangerZone.TroublesShooting.Description2')}
           </p>
         </div>
       </div>

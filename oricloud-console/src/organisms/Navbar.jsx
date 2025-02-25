@@ -15,8 +15,8 @@ export const Navbar = ({ routes, onOpenSidenav, pageName, t }) => {
   const location = useLocation();
   const { token, user, signout } = useAuth();
   const [currentRoute, setCurrentRoute] = useState({
-    name: 'Events',
-    link: PATHNAMES.empty(),
+    name: '',
+    path: PATHNAMES.empty(),
   });
 
   useEffect(() => {
@@ -28,10 +28,11 @@ export const Navbar = ({ routes, onOpenSidenav, pageName, t }) => {
     for (let i = 0; i < routes.length; i++) {
       if (
         window.location.href.indexOf(
-          routes[i].layout + '/' + routes[i].path,
+          // routes[i].layout + '/' + routes[i].path,
+          routes[i].path,
         ) !== -1
       ) {
-        setCurrentRoute({ name: routes[i].name, link: routes[i].link });
+        setCurrentRoute({ name: routes[i].name, path: routes[i].path });
       }
     }
     return activeRoute;
@@ -45,7 +46,7 @@ export const Navbar = ({ routes, onOpenSidenav, pageName, t }) => {
             className="text-sm font-normal text-zinc-700 hover:underline dark:text-white dark:hover:text-white"
             href=" "
           >
-            Pages
+            {t('Organisms.Navbar.Pages')}
             <span className="mx-1 text-sm text-zinc-700 hover:text-zinc-700 dark:text-white">
               {' '}
               /{' '}

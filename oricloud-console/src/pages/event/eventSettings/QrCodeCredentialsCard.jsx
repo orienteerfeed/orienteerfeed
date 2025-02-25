@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
+import { AiOutlinePrinter } from 'react-icons/ai';
+import { LuSend } from 'react-icons/lu';
 import { Button } from '../../../atoms';
 import { Card } from '../../../organisms';
 
@@ -7,12 +9,14 @@ export const QrCodeCredentialsCard = ({
   t,
   eventId,
   eventPassword,
-  url,
-  host,
+  eventName,
+  eventDate,
+  apiEventsEndpoint,
+  apiBaseUrl,
 }) => {
   const qrCodeRef = useRef(null); // Reference to the QR code canvas
   // Format the service credentials
-  const serviceCredentials = `orienteerfeed://U:${url};T:BASIC;EVENT:${eventId};PASSWORD:${eventPassword};;`;
+  const serviceCredentials = `orienteerfeed://U:${apiEventsEndpoint};T:BASIC;EVENT:${eventId};PASSWORD:${eventPassword};;`;
   const codeSize = 200; // Set the size you want for the QR code
   const errorCorrectionLevel = 'L'; // Set the desired error correction level - values L, M, Q, H,
 
@@ -27,12 +31,14 @@ export const QrCodeCredentialsCard = ({
         const canvas = qrCodeRef.current; // Get the QR code canvas element
         const dataUrl = canvas.toDataURL('image/png'); // Convert the canvas to base64 PNG
         const blob = dataURLToBlob(dataUrl); // Convert base64 to a Blob
-        const file = new File([blob], 'qr-code.png', { type: 'image/png' });
+        const file = new File([blob], 'ofeed-ochecklist-qr.png', {
+          type: 'image/png',
+        });
 
         await navigator.share({
           files: [file], // Share the QR code image
-          title: 'OrienteerFeed QR Code',
-          text: 'Here is the QR code for the O-Feed event to pair your mobile app O-Checklist!',
+          title: t('Pages.Event.QrCode.Card.Navigator.Title'),
+          text: t('Pages.Event.QrCode.Card.Navigator.Text'),
         });
         console.log('QR code shared successfully!');
       } catch (error) {
@@ -99,16 +105,32 @@ export const QrCodeCredentialsCard = ({
           </head>
           <body>
             <div class="container">
-              <div class="header"><h1>ORIENTEERFEED</h1></div>
-              <div class="subheader">Scan this QR code to pair your mobile app O-Checklist with the event.</div>
+              <div class="header"><h1>${t(
+                'Pages.Event.QrCode.PrintWindow.Header',
+              )}</h1></div>
+              <div class="subheader">${t(
+                'Pages.Event.QrCode.PrintWindow.Subheader',
+              )}</div>
               <img src="${dataUrl}" class="qr-code" alt="QR Code" />
               <div class="details">
-                <span><strong>Host:</strong> ${host}</span>
-                <span><strong>Event ID:</strong> ${eventId}</span>
-                <span><strong>Event Password:</strong> ${eventPassword}</span>
+                <span><strong>${t(
+                  'Pages.Event.QrCode.Card.EventName',
+                )}:</strong> ${eventName}</span>
+                <span><strong>${t(
+                  'Pages.Event.QrCode.Card.EventDate',
+                )}:</strong> ${eventDate}</span>
+                <span><strong>${t(
+                  'Pages.Event.QrCode.Card.ApiBaseUrl',
+                )}:</strong> ${apiBaseUrl}</span>
+                <span><strong>${t(
+                  'Pages.Event.QrCode.Card.EventId',
+                )}:</strong> ${eventId}</span>
+                <span><strong>${t(
+                  'Pages.Event.QrCode.Card.EventPassword',
+                )}:</strong> ${eventPassword}</span>
               </div>
               <div class="footer">
-                Please keep this information secure. If you encounter any issues, contact support.
+              ${t('Pages.Event.QrCode.PrintWindow.Footer')}
               </div>
             </div>
             <script>
@@ -151,28 +173,24 @@ export const QrCodeCredentialsCard = ({
             ref={qrCodeRef} // Reference the QR code canvas
           />
         </div>
-        <div className="flex justify-center">
-          <ul>
-            <li>
-              <b>{t('Pages.Event.QrCode.Card.Host')}: </b> {host}
-            </li>
-            <li>
-              <b>{t('Pages.Event.QrCode.Card.EventId')}: </b> {eventId}
-            </li>
-          </ul>
-        </div>
         <div className="flex items-end gap-2 mt-4">
           <Button
             onClick={handleShare}
             title={t('Pages.Event.QrCode.Card.ShareQrCode')}
           >
             {t('Share', { ns: 'common' })}
+            <span className="ml-2">
+              <LuSend />
+            </span>
           </Button>
           <Button
             onClick={handlePrint}
             title={t('Pages.Event.QrCode.Card.PrintQrCode')}
           >
             {t('Print', { ns: 'common' })}
+            <span className="ml-2">
+              <AiOutlinePrinter />
+            </span>
           </Button>
         </div>
       </div>
