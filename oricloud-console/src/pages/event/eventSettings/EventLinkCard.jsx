@@ -46,18 +46,20 @@ export const EventLinkCard = ({
 
         const qrImageUrl = canvas.toDataURL('image/png');
         const blob = await fetch(qrImageUrl).then((res) => res.blob()); // Convert base64 to a Blob
-        const file = new File([blob], 'event-qr.png', { type: 'image/png' });
+        const file = new File([blob], 'ofeed-link-qr.png', {
+          type: 'image/png',
+        });
 
         await navigator.share({
           files: [file], // Attach QR Code image
-          title: `OrienteerFeed: ${eventName}`,
-          text: `📅 Event: ${eventName}
-📍 Location: ${eventLocation}
-🗓️ Date: ${eventDateFormatted}
+          title: `${t('Pages.Event.Link.Card.Navigator.Title')}: ${eventName}`,
+          text: `📅 ${t('Pages.Event.Link.Card.Navigator.Event')}: ${eventName}
+📍 ${t('Pages.Event.Link.Card.Navigator.Location')}: ${eventLocation}
+🗓️ ${t('Pages.Event.Link.Card.Navigator.Date')}: ${eventDateFormatted}
 
-🔗 View Live Results: ${eventUrl}
+🔗 ${t('Pages.Event.Link.Card.Navigator.UrlTitle')}: ${eventUrl}
 
-Scan the QR code to access live results instantly!`,
+${t('Pages.Event.Link.Card.Navigator.UrlDescription')}`,
         });
 
         console.log('Event link shared successfully!');
@@ -91,7 +93,7 @@ Scan the QR code to access live results instantly!`,
       printWindow.document.write(`
         <html>
           <head>
-            <title>QR Code - OrienteerFeed Live Results</title>
+            <title>${t('Pages.Event.Link.PrintWindow.Title')}</title>
             <style>
               body {
                 font-family: Arial, sans-serif;
@@ -123,11 +125,11 @@ Scan the QR code to access live results instantly!`,
           </head>
           <body>
             <div class="qr-container">
-              <h1>ORIENTEERFEED</h1>
+              <h1>${t('Pages.Event.Link.PrintWindow.Header')}</h1>
               <div class="qr-code">
                 <img src="${qrImageUrl}" alt="QR Code">
               </div>
-              <p class="info">Scan this QR code to view live results online.</p>
+              <p class="info">${t('Pages.Event.Link.PrintWindow.Info')}</p>
               <p><strong>${hostUrl}</strong></p>
             </div>
             <script>

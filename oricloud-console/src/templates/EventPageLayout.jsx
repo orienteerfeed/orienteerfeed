@@ -5,15 +5,14 @@ import PATHNAMES from '../pathnames';
 
 const MENU_EXPAND_THRESHOLD = 1280;
 
-const routes = [
-  { path: PATHNAMES.empty(), name: 'Home' },
-  { path: PATHNAMES.event(), name: 'Events' },
-  { path: PATHNAMES.about(), name: 'About' },
-  { path: PATHNAMES.contact(), name: 'Contact' },
-  { path: PATHNAMES.mrb(), name: 'MyResultBoard' },
-];
-
 export const EventPageLayout = ({ children, t, pageName }) => {
+  const routes = [
+    { path: PATHNAMES.empty(), name: t('Templates.Routes.Home') },
+    { path: PATHNAMES.event(), name: t('Templates.Routes.Events') },
+    { path: PATHNAMES.about(), name: t('Templates.Routes.About') },
+    { path: PATHNAMES.contact(), name: t('Templates.Routes.Contact') },
+    { path: PATHNAMES.mrb(), name: t('Templates.Routes.MRB') },
+  ];
   const [open, setOpen] = useState(
     window.innerWidth > MENU_EXPAND_THRESHOLD ? true : false,
   );
@@ -53,7 +52,7 @@ export const EventPageLayout = ({ children, t, pageName }) => {
 
         {/* Footer (Always at Bottom) */}
         <footer className="w-full p-1 md:p-4">
-          <Footer />
+          <Footer t={t} />
         </footer>
       </div>
     </div>

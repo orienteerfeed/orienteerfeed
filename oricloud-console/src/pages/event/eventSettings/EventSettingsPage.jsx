@@ -134,8 +134,10 @@ export const EventSettingsPage = () => {
                 t={t}
                 eventId={eventId}
                 eventPassword={password} // Pass updated password
-                url={apiEventsEndpoint}
-                host={config.BASE_API_URL}
+                eventName={data.event?.name}
+                eventDate={formatDate(new Date(parseInt(data.event?.date, 10)))}
+                apiEventsEndpoint={apiEventsEndpoint}
+                apiBaseUrl={config.BASE_API_URL}
               />
             )}
           </div>

@@ -129,7 +129,20 @@
       "Link": {
         "Card": {
           "Title": "Odkaz na událost",
-          "Description": "Použijte tuto funkci pro rychlé sdílení odkazu na událost – můžete jej kopírovat, sdílet nebo vytisknout QR kód pro snadný přístup k živým výsledkům."
+          "Description": "Použij tuto funkci pro rychlé sdílení odkazu na událost – můžeš jej kopírovat, sdílet nebo QR kód vytisknout pro snadný přístup k živým výsledkům.",
+          "Navigator": {
+            "Title": "OrienteerFeed",
+            "Text": "Událost",
+            "Location": "Lokalita",
+            "Date": "Datum",
+            "UrlTitle": "Zobrazit online výsledky",
+            "UrlDescription": "Naskenuj QR kód a okamžitě máš online výsledky v telefonu!"
+          }
+        },
+        "PrintWindow": {
+          "Title": "QR kód - OrienteerFeed online vsledky",
+          "Header": "ORIENTEERFEED",
+          "Info": "Naskenuj QR kód pro zobrazení online vsledků."
         },
         "Toast": {
           "CopySuccessDescription": "Hop! Odkaz je teď ve schránce, sdílej dál!"
@@ -139,10 +152,22 @@
         "Card": {
           "Title": "O Checklist propojení",
           "Description": "Naskenuj QR kód pro automatické načtení url, id závodu a hesla do nastavení připojení k O-Feedu. Kliknutím na ikonu QR kódu v nastavení v aplikace se spustí foťák.",
-          "Host": "Host",
-          "EventId": "ID události",
-          "ShareQrCode": "Sdílet QR kód události",
-          "PrintQrCode": "Vytisknout QR kód události"
+          "ApiBaseUrl": "Url",
+          "EventId": "Id",
+          "EventPassword": "Heslo",
+          "EventName": "Název",
+          "EventDate": "Datum",
+          "ShareQrCode": "Sdílet QR kód",
+          "PrintQrCode": "Vytisknout QR kód",
+          "Navigator": {
+            "Title": "OrienteerFeed QR kód",
+            "Text": "Tady máš QR kód k O-Feed události, abys mohl snadno propojit s O-Checklistem!"
+          }
+        },
+        "PrintWindow": {
+          "Header": "ORIENTEERFEED",
+          "Subheader": "Naskenuj tento QR kód pro snadné propojení s mobilní aplikací O-Checklist.",
+          "Footer": "Prosíme udržuj QR kód na bezpečném místě. Pokud Ti něco nefunguje, kontaktuj tým podpory."
         }
       },
       "Visibility": {
@@ -152,6 +177,34 @@
         "Toast": {
           "UpdateSuccess": "Událost je nyní {{status}}!",
           "UpdateFail": "Nepodařilo se aktualizovat viditelnost události."
+        }
+      },
+      "DangerZone": {
+        "Title": "Nebezpečná zóna",
+        "Description": "Odstraň trvale všechny závodníky a kategorie v tvojí události.",
+        "DeleteCompetitors": {
+          "Title": "Smazat závodníky",
+          "Description": "Pokud nahraješ startovku nebo výsledky do špatné události, tak můžeš všechny závodníky smazat a začít znovu. Toto tlačítko odstraní úplně všechny závodníky (startovku & výsledky).",
+          "Button": "Smazat"
+        },
+        "DeleteAllEventData": {
+          "Title": "Smazat všechna data závodu",
+          "Description": "Pokud potřebuješ odstranit všechna data závodu (závodníky, kategorie a výsledky), tak použij toto tlačítko. Pozor, operace je nevratná!",
+          "Button": "Smazat"
+        },
+        "DeleteEvent": {
+          "Title": "Smazat událost",
+          "Description": "Všechna data události budou smazána. Smazání je trvalé a nelze vrátit zpět!",
+          "Button": "Smazat"
+        },
+        "TroublesShooting": {
+          "Title": "Něco ti nefunguje?",
+          "Description1": "Popiš nám situaci na",
+          "Description2": ", prosíme přilož případně problémové soubory."
+        },
+        "Toast": {
+          "DeleteFailTitle": "Chyba při mazání dat",
+          "DeleteSuccessDescription": "Data úspěšně smazána"
         }
       }
     },
@@ -189,7 +242,15 @@
       "SignIn": "Přihlásit",
       "SignUp": "Registrovat",
       "LogOut": "Odhlásit",
-      "MyProfile": "Můj profil"
+      "MyProfile": "Můj profil",
+      "Pages": "Stránky"
+    },
+    "Footer": {
+      "AllRightsReserved": "Všechna práva vyhrazena.",
+      "Collaborate": "Přispět",
+      "Docs": "Dokumentace",
+      "Donate": "Podpořit",
+      "Blog": "Blog"
     }
   },
   "Molecules": {
@@ -223,6 +284,15 @@
     "Finances": "Finance",
     "Settings": "Nastavení",
     "Transactions": "Transakce"
+  },
+  "Templates": {
+    "Routes": {
+      "Home": "Domů",
+      "Events": "Události",
+      "About": "O nás",
+      "Contact": "Kontakty",
+      "MRB": "MyResultBoard"
+    }
   },
   "Validations": {
     "Required": "Povinný údaj",

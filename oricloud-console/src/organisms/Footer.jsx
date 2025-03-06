@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PATHNAMES from '../pathnames';
 
-export const Footer = () => {
+export const Footer = ({ t }) => {
   return (
     <div className="flex w-full flex-col items-center justify-between px-1 pb-2 pt-3 lg:px-8 xl:flex-row">
       <h5 className="mb-1 text-center text-sm font-medium text-gray-600 xl:!mb-0 md:text-lg">
@@ -11,7 +11,7 @@ export const Footer = () => {
           <Link className="hover:underline" to={PATHNAMES.empty()}>
             Orienteerfeed
           </Link>
-          . All Rights Reserved.
+          . {t('Organisms.Footer.AllRightsReserved')}
         </p>
       </h5>
       <div>
@@ -21,7 +21,7 @@ export const Footer = () => {
               to="https://github.com/martinkrivda/orienteerfeed"
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
-              Collaborate
+              {t('Organisms.Footer.Collaborate')}
             </Link>
           </li>
           <li>
@@ -29,7 +29,7 @@ export const Footer = () => {
               to="https://obpraha.cz/orienteer-feed-docs"
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
-              Docs
+              {t('Organisms.Footer.Docs')}
             </Link>
           </li>
           <li>
@@ -37,7 +37,7 @@ export const Footer = () => {
               to="#"
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
-              Donate
+              {t('Organisms.Footer.Donate')}
             </Link>
           </li>
           <li>
@@ -45,7 +45,7 @@ export const Footer = () => {
               to="#"
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
-              Blog
+              {t('Organisms.Footer.Blog')}
             </Link>
           </li>
         </ul>
