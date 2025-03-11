@@ -67,17 +67,50 @@ export const competitorUpdate = async (_, { input }, context) => {
     throw new Error('Unauthorized: Invalid or expired token');
   }
   // Implement signin logic here
-  const { eventId, competitorId, origin, card, note } = input;
+  const { eventId, competitorId, origin } = input;
   const { userId } = jwtDecoded;
 
   // Build update object conditionally
-  const updateData = {};
-  if (typeof card !== 'undefined') {
-    updateData.card = parseInt(card);
-  }
-  if (typeof note !== 'undefined') {
-    updateData.note = note;
-  }
+  const fieldTypes = {
+    classId: 'number',
+    firstname: 'string',
+    lastname: 'string',
+    nationality: 'string',
+    registration: 'string',
+    license: 'string',
+    organisation: 'string',
+    shortName: 'string',
+    card: 'number',
+    bibNumber: 'number',
+    startTime: 'date',
+    finishTime: 'date',
+    time: 'number',
+    status: 'string',
+    lateStart: 'boolean',
+    teamId: 'number',
+    leg: 'number',
+    note: 'string',
+    externalId: 'string',
+  };
+
+  const updateData = Object.keys(input).reduce((acc, field) => {
+    if (input[field] !== undefined && fieldTypes[field]) {
+      switch (fieldTypes[field]) {
+        case 'number':
+          acc[field] = parseInt(input[field], 10);
+          break;
+        case 'boolean':
+          acc[field] = Boolean(input[field]);
+          break;
+        case 'date':
+          acc[field] = new Date(input[field]);
+          break;
+        default:
+          acc[field] = input[field];
+      }
+    }
+    return acc;
+  }, {});
 
   try {
     // Check if event exists and user is authorized
@@ -102,7 +135,7 @@ export const competitorUpdate = async (_, { input }, context) => {
       userId,
     );
     return {
-      message: updateCompetitorMessage,
+      message: updateCompetitorMessage.message,
     };
   } catch (error) {
     throw new Error(error.message);

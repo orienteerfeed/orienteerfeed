@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, check, oneOf, validationResult } from 'express-validator';
+import { body, check, validationResult } from 'express-validator';
 
 import {
   AuthenticationError,
@@ -25,7 +25,10 @@ import {
   deleteEventCompetitors,
   deleteAllEventData,
 } from './eventService.js';
-import validateCompetitor from '../../utils/validateCompetitor.js';
+import {
+  validateCreateCompetitor,
+  validateUpdateCompetitor,
+} from '../../utils/validateCompetitor.js';
 
 const router = Router();
 
@@ -887,33 +890,6 @@ router.post(
   },
 );
 
-const validateUpdateCompetitorInputs = [
-  check('eventId').not().isEmpty().isString(),
-  check('competitorId').not().isEmpty().isNumeric(),
-  body('origin').not().isEmpty().isString(),
-  body('origin').custom((value) => {
-    if (!validInputOrigin.includes(value)) {
-      throw new Error('Invalid origin');
-    }
-    return true; // Indicate that the validation succeeded
-  }),
-  oneOf(
-    [
-      check('card')
-        .exists()
-        .withMessage('card is required if note is not provided')
-        .isNumeric(),
-      check('note')
-        .exists()
-        .withMessage('note is required if card is not provided')
-        .isString()
-        .trim()
-        .isLength({ max: 255 }),
-    ],
-    'Either card or note must be provided',
-  ),
-];
-
 /**
  * @swagger
  * /rest/v1/events/{eventId}/competitors:
@@ -1037,6 +1013,11 @@ const validateUpdateCompetitorInputs = [
  *                description: Additional notes about the competitor.
  *                maxLength: 255
  *                example: "Elite runner"
+ *              externalId:
+ *                type: string
+ *                description: ID of the main source system.
+ *                maxLength: 191
+ *                example: "27"
  *    responses:
  *        200:
  *          description: Successfully stored a new competitor.
@@ -1049,59 +1030,64 @@ const validateUpdateCompetitorInputs = [
  *        500:
  *          description: Internal Server Error.
  */
-router.post('/:eventId/competitors', validateCompetitor, async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json(validationResponse(errors.array()));
-  }
-
-  const { eventId } = req.params;
-  const { userId } = req.jwtDecoded;
-  const { origin } = req.body;
-  const competitorData = req.body;
-
-  try {
-    // Check if the event exists and the user is authorized
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
-      select: { authorId: true },
-    });
-
-    if (!event) {
-      return res.status(404).json(errorResponse('Event not found', 404));
+router.post(
+  '/:eventId/competitors',
+  check('eventId').not().isEmpty().isString(),
+  validateCreateCompetitor,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(validationResponse(errors.array()));
     }
 
-    if (event.authorId !== userId) {
+    const { eventId } = req.params;
+    const { userId } = req.jwtDecoded;
+    const { origin } = req.body;
+    const competitorData = req.body;
+
+    try {
+      // Check if the event exists and the user is authorized
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: { authorId: true },
+      });
+
+      if (!event) {
+        return res.status(404).json(errorResponse('Event not found', 404));
+      }
+
+      if (event.authorId !== userId) {
+        return res
+          .status(403)
+          .json(errorResponse('Not authorized to add a competitor', 403));
+      }
+
+      // Store competitor
+      const storeCompetitorMessage = await storeCompetitor(
+        eventId,
+        competitorData,
+        userId,
+        origin,
+      );
+
       return res
-        .status(403)
-        .json(errorResponse('Not authorized to add a competitor', 403));
+        .status(200)
+        .json(successResponse('OK', { data: storeCompetitorMessage }, 200));
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof ValidationError) {
+        return res.status(422).json(validationResponse(error.message, 422));
+      } else if (error instanceof AuthenticationError) {
+        return res.status(401).json(errorResponse(error.message, 401));
+      } else if (error instanceof DatabaseError) {
+        return res.status(500).json(errorResponse(error.message, 500));
+      }
+
+      return res.status(500).json(errorResponse('Internal Server Error', 500));
     }
-
-    // Store competitor
-    const storeCompetitorMessage = await storeCompetitor(
-      eventId,
-      competitorData,
-      userId,
-      origin,
-    );
-
-    return res
-      .status(200)
-      .json(successResponse('OK', { data: storeCompetitorMessage }, 200));
-  } catch (error) {
-    console.error(error);
-
-    if (error instanceof ValidationError) {
-      return res.status(422).json(validationResponse(error.message, 422));
-    } else if (error instanceof AuthenticationError) {
-      return res.status(401).json(errorResponse(error.message, 401));
-    } else if (error instanceof DatabaseError) {
-      return res.status(500).json(errorResponse(error.message, 500));
-    }
-
-    return res.status(500).json(errorResponse('Internal Server Error', 500));
-  }
-});
+  },
+);
 
 /**
  * @swagger
@@ -1124,24 +1110,116 @@ router.post('/:eventId/competitors', validateCompetitor, async (req, res) => {
  *         description: ID of the competitor whose status you want to change.
  *         schema:
  *           type: integer
- *       - in: body
- *         name: origin
- *         required: true
- *         description: Origin point from the change comes (e.g. START).
- *         schema:
- *           type: string
- *       - in: body
- *         name: card
- *         required: false
- *         description: New compoetitor SI card number.
- *         schema:
- *           type: integer
- *       - in: body
- *         name: note
- *         required: false
- *         description: Note for competitor.
- *         schema:
- *           type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - origin
+ *            properties:
+ *              classId:
+ *                type: integer
+ *                description: ID of the competitor's class.
+ *                example: 5
+ *              origin:
+ *                type: string
+ *                description: Origin of the request (e.g., START).
+ *                enum: ["START"]
+ *                example: "START"
+ *              firstname:
+ *                type: string
+ *                description: First name of the competitor.
+ *                maxLength: 255
+ *                example: "Martin"
+ *              lastname:
+ *                type: string
+ *                description: Last name of the competitor.
+ *                maxLength: 255
+ *                example: "Krivda"
+ *              bibNumber:
+ *                type: integer
+ *                description: The competitor's bib number.
+ *                example: 123
+ *              nationality:
+ *                type: string
+ *                description: 3-letter country code of nationality.
+ *                maxLength: 3
+ *                example: "CZE"
+ *              registration:
+ *                type: string
+ *                description: Registration number of the competitor.
+ *                maxLength: 10
+ *                example: "MKR2024"
+ *              license:
+ *                type: string
+ *                description: License type (single character).
+ *                maxLength: 1
+ *                example: "A"
+ *              ranking:
+ *                type: integer
+ *                description: Ranking position.
+ *                example: 7563
+ *              rankPointsAvg:
+ *                type: integer
+ *                description: Average ranking points.
+ *                example: 8500
+ *              organisation:
+ *                type: string
+ *                description: Organisation name.
+ *                maxLength: 255
+ *                example: "K.O.B. Choceň"
+ *              shortName:
+ *                type: string
+ *                description: Short name of the competitor.
+ *                maxLength: 10
+ *                example: "CHC"
+ *              card:
+ *                type: integer
+ *                description: SI card number.
+ *                example: 123456
+ *              startTime:
+ *                type: string
+ *                format: date-time
+ *                description: Start time in ISO 8601 format.
+ *                example: "2025-04-10T08:30:00Z"
+ *              finishTime:
+ *                type: string
+ *                format: date-time
+ *                description: Finish time in ISO 8601 format.
+ *                example: null
+ *              time:
+ *                type: integer
+ *                description: Time taken in seconds.
+ *                example: null
+ *              teamId:
+ *                type: integer
+ *                description: ID of the competitor's team.
+ *                example: null
+ *              leg:
+ *                type: integer
+ *                description: Leg number in relay.
+ *                example: null
+ *              status:
+ *                type: string
+ *                description: Status of the competitor.
+ *                enum: ["Inactive", "Active", "DidNotStart", "Finished"]
+ *                example: "Active"
+ *              lateStart:
+ *                type: boolean
+ *                description: Whether the competitor had a late start.
+ *                example: false
+ *              note:
+ *                type: string
+ *                description: Additional notes about the competitor.
+ *                maxLength: 255
+ *                example: "Elite runner"
+ *              externalId:
+ *                type: string
+ *                description: ID of the main source system.
+ *                maxLength: 191
+ *                example: "27"
  *    responses:
  *        200:
  *          description: Return successful message
@@ -1154,14 +1232,16 @@ router.post('/:eventId/competitors', validateCompetitor, async (req, res) => {
  */
 router.put(
   '/:eventId/competitors/:competitorId',
-  validateUpdateCompetitorInputs,
+  check('eventId').not().isEmpty().isString(),
+  check('competitorId').not().isEmpty().isNumeric(),
+  validateUpdateCompetitor,
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json(validationResponse(formatErrors(errors)));
     }
     const { eventId, competitorId } = req.params;
-    const { origin, card, note } = req.body;
+    const { origin } = req.body;
     const { userId } = req.jwtDecoded;
 
     //TODO: Check user permissions
@@ -1169,7 +1249,7 @@ router.put(
       where: { id: eventId },
     });
 
-    if (event.authorId !== userId) {
+    if (!event || event.authorId !== userId) {
       return res
         .status(403)
         .json(errorResponse('Not authorized', res.statusCode));
@@ -1178,13 +1258,46 @@ router.put(
     // Everything went fine.
     try {
       // Build update object conditionally
-      const updateData = {};
-      if (typeof card !== 'undefined') {
-        updateData.card = parseInt(card);
-      }
-      if (typeof note !== 'undefined') {
-        updateData.note = note;
-      }
+      const fieldTypes = {
+        classId: 'number',
+        firstname: 'string',
+        lastname: 'string',
+        nationality: 'string',
+        registration: 'string',
+        license: 'string',
+        organisation: 'string',
+        shortName: 'string',
+        card: 'number',
+        bibNumber: 'number',
+        startTime: 'date',
+        finishTime: 'date',
+        time: 'number',
+        status: 'string',
+        lateStart: 'boolean',
+        teamId: 'number',
+        leg: 'number',
+        note: 'string',
+        externalId: 'string',
+      };
+
+      const updateData = Object.keys(req.body).reduce((acc, field) => {
+        if (req.body[field] !== undefined && fieldTypes[field]) {
+          switch (fieldTypes[field]) {
+            case 'number':
+              acc[field] = parseInt(req.body[field], 10);
+              break;
+            case 'boolean':
+              acc[field] = Boolean(req.body[field]);
+              break;
+            case 'date':
+              acc[field] = new Date(req.body[field]);
+              break;
+            default:
+              acc[field] = req.body[field];
+          }
+        }
+        return acc;
+      }, {});
 
       const updateCompetitorMessage = await updateCompetitor(
         eventId,
@@ -1265,7 +1378,7 @@ router.get(
       where: { id: eventId },
     });
 
-    if (event.authorId !== userId) {
+    if (!event || event.authorId !== userId) {
       return res
         .status(403)
         .json(errorResponse('Not authorized', res.statusCode));
@@ -1396,7 +1509,7 @@ router.delete(
         select: { authorId: true },
       });
 
-      if (event.authorId !== userId) {
+      if (!event || event.authorId !== userId) {
         return res
           .status(403)
           .json(errorResponse('Not authorized', res.statusCode));

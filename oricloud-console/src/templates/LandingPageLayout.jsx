@@ -30,7 +30,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
       {/* Navbar */}
       <header className="flex justify-end xl:justify-between items-center px-8 py-6 border-b border-black relative z-10 bg-blue-50">
         <nav className="hidden xl:flex space-x-8 text-sm uppercase">
-          <Link to={PATHNAMES.event()} className="hover:underline">
+          <Link to={PATHNAMES.feature()} className="hover:underline">
             Features
           </Link>
           <Link
@@ -88,7 +88,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
             <ul className="mt-12 space-y-4 text-lg">
               <li>
                 <Link
-                  to={PATHNAMES.event()}
+                  to={PATHNAMES.feature()}
                   className="block hover:underline"
                   onClick={() => setIsMenuOpen(false)}
                 >

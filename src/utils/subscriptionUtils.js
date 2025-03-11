@@ -1,4 +1,8 @@
-import { pubsub, COMPETITORS_BY_CLASS_UPDATED } from './pubsub.js';
+import {
+  pubsub,
+  COMPETITORS_BY_CLASS_UPDATED,
+  COMPETITOR_UPDATED,
+} from './pubsub.js';
 import prisma from './context.js';
 
 /**
@@ -16,6 +20,20 @@ export const publishUpdatedCompetitors = async (classId) => {
 
     pubsub.publish(topic, {
       competitorsByClassUpdated: updatedCompetitors,
+    });
+  } catch (err) {
+    console.error('Failed to publish subscription update:', err);
+    throw new Error('Error publishing subscription update');
+  }
+};
+
+export const publishUpdatedCompetitor = async (eventId, updatedCompetitor) => {
+  try {
+    const topic = `${COMPETITOR_UPDATED}_${eventId}`;
+    console.log('Publishing to topic:', topic);
+
+    pubsub.publish(topic, {
+      competitorUpdated: updatedCompetitor,
     });
   } catch (err) {
     console.error('Failed to publish subscription update:', err);

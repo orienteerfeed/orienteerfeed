@@ -1,7 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { LandingPageLayout } from '../../templates';
+
+import PATHNAMES from '../../pathnames';
 
 const AnimatedText = ({ text, className, as = 'h2' }) => {
   const Tag = as;
@@ -109,21 +112,27 @@ export const LandingPage = () => {
           alt="Radio"
           className="absolute bottom-[56vh] left-[36vw] w-[15vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
         />
-        <img
-          src="/images/illustration/2025_orienteerfeed_v03_start.svg"
-          alt="Start"
-          className="absolute bottom-[30vh] right-[-3.5vw] w-[25vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
-        />
-        <img
-          src="/images/illustration/2025_orienteerfeed_v03_it_centrum.svg"
-          alt="IT Centrum"
-          className="absolute bottom-[7vh] left-[37vw] w-[14vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
-        />
-        <img
-          src="/images/illustration/2025_orienteerfeed_v03_results.svg"
-          alt="Results"
-          className="absolute bottom-[12vh] left-[55vw] w-[12vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
-        />
+        <Link to={PATHNAMES.getFeature('start')}>
+          <img
+            src="/images/illustration/2025_orienteerfeed_v03_start.svg"
+            alt="Start"
+            className="absolute bottom-[30vh] right-[-3.5vw] w-[25vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
+          />
+        </Link>
+        <Link to={PATHNAMES.getFeature('it')}>
+          <img
+            src="/images/illustration/2025_orienteerfeed_v03_it_centrum.svg"
+            alt="IT Centrum"
+            className="absolute bottom-[7vh] left-[37vw] w-[14vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
+          />
+        </Link>
+        <Link to={PATHNAMES.getFeature('results')}>
+          <img
+            src="/images/illustration/2025_orienteerfeed_v03_results.svg"
+            alt="Results"
+            className="absolute bottom-[12vh] left-[55vw] w-[12vw] transform -translate-x-1/2 object-cover transition-transform duration-300 ease-in-out hover:scale-105 z-20"
+          />
+        </Link>
         <img
           src="/images/illustration/2025_orienteerfeed_v03_bottom_frame.svg"
           alt="Trees"

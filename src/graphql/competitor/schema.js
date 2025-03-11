@@ -11,6 +11,7 @@ export const typeDef = /* GraphQL */ `
   }
   extend type Subscription {
     competitorsByClassUpdated(classId: Int!): [Competitor!]
+    competitorUpdated(eventId: String!): Competitor!
   }
   type ResponseMessage {
     message: String!
@@ -43,6 +44,8 @@ export const typeDef = /* GraphQL */ `
     status: String
     lateStart: Boolean!
     note: String
+    externalId: String
+    updatedAt: String!
   }
   input StatusChange {
     eventId: ID!
@@ -57,9 +60,29 @@ export const typeDef = /* GraphQL */ `
   input UpdateCompetitorInput {
     eventId: ID!
     competitorId: Int!
-    origin: String! @constraint(pattern: "^START$", maxLength: 32)
+    origin: String!
+      @constraint(pattern: "^(START|FINISH|IT|OFFICE)$", maxLength: 32)
+    classId: Int
+    firstname: String
+    lastname: String
+    bibNumber: Int
+    nationality: String
+    registration: String
+    license: String
+    ranking: Int
+    rankPointsAvg: Int
+    organisation: String
+    shortName: String
     card: Int
+    startTime: String
+    finishTime: String
+    time: Int
+    teamId: Int
+    leg: Int
+    status: String
+    lateStart: Boolean
     note: String
+    externalId: String
   }
 
   input StoreCompetitorInput {
@@ -85,5 +108,6 @@ export const typeDef = /* GraphQL */ `
     status: String
     lateStart: Boolean
     note: String
+    externalId: String
   }
 `;

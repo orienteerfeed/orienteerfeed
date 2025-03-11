@@ -246,6 +246,7 @@ router.get(
                     status: true,
                     lateStart: true,
                     note: true,
+                    externalId: true,
                   },
                 },
               },
@@ -297,6 +298,7 @@ router.get(
                         status: true,
                         lateStart: true,
                         note: true,
+                        externalId: true,
                       },
                     },
                   },
@@ -469,6 +471,7 @@ router.get(
             status: true,
             lateStart: true,
             note: true,
+            externalId: true,
             updatedAt: true,
             class: {
               select: {
@@ -525,6 +528,7 @@ router.get(
             leg: true,
             status: true,
             note: true,
+            externalId: true,
             updatedAt: true,
             class: {
               select: {

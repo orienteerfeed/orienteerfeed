@@ -22,7 +22,7 @@ import {
 } from './pages/event';
 import { ProfilePage } from './pages/profile';
 import { NotFoundPage } from './pages/notFound';
-import { LandingPage } from './pages/landing';
+import { LandingPage, FeaturePage } from './pages/landing';
 
 import { useAuth } from './utils';
 
@@ -31,6 +31,7 @@ export const AppRouter = () => {
     <Router>
       <Routes>
         <Route path={PATHNAMES.empty()} element={<LandingPage />} />
+        <Route path={PATHNAMES.feature()} element={<FeaturePage />} />
         <Route path={PATHNAMES.event()} element={<EventPage />} />
         <Route path={PATHNAMES.about()} element={<AboutPage />} />
         <Route path={PATHNAMES.contact()} element={<ContactPage />} />

@@ -1,4 +1,8 @@
-import { pubsub, COMPETITORS_BY_CLASS_UPDATED } from '../../utils/pubsub.js';
+import {
+  pubsub,
+  COMPETITORS_BY_CLASS_UPDATED,
+  COMPETITOR_UPDATED,
+} from '../../utils/pubsub.js';
 import { getCompetitorsByClass } from './shared.js';
 
 export const competitorsByClassUpdated = {
@@ -22,5 +26,12 @@ export const competitorsByClassUpdated = {
   resolve: (payload) => {
     // Process and return the payload
     return payload.competitorsByClassUpdated;
+  },
+};
+
+export const competitorUpdated = {
+  subscribe: (_, { eventId }) => {
+    console.log(`Subscribing to: COMPETITOR_UPDATED_${eventId}`);
+    return pubsub.asyncIterableIterator(`${COMPETITOR_UPDATED}_${eventId}`);
   },
 };

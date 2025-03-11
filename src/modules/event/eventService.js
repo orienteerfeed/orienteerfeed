@@ -2,7 +2,10 @@ import { DatabaseError, ValidationError } from '../../exceptions/index.js';
 import prisma from '../../utils/context.js';
 import { decrypt, decodeBase64 } from '../../utils/cryptoUtils.js';
 import { createShortCompetitorHash } from '../../utils/hashUtils.js';
-import { publishUpdatedCompetitors } from '../../utils/subscriptionUtils.js';
+import {
+  publishUpdatedCompetitor,
+  publishUpdatedCompetitors,
+} from '../../utils/subscriptionUtils.js';
 
 export const changeCompetitorStatus = async (
   eventId,
@@ -84,8 +87,24 @@ export const changeCompetitorStatus = async (
     throw new DatabaseError('Error creating protocol record');
   }
 
+  // Select the current competitor from the database
+  let updatedCompetitor = {};
+  try {
+    updatedCompetitor = await prisma.competitor.findUnique({
+      where: { id: parseInt(competitorId) },
+      include: {
+        class: true,
+        team: true,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to fetch updated competitor:', err);
+    throw new DatabaseError('Error fetching updated competitor');
+  }
+
   // Publish changes to subscribers
   try {
+    await publishUpdatedCompetitor(eventId, updatedCompetitor);
     await publishUpdatedCompetitors(dbResponseCompetitor.classId);
   } catch (err) {
     console.error('Error publishing competitors update:', err);
@@ -169,9 +188,24 @@ export const updateCompetitor = async (
       select: {
         id: true,
         classId: true,
-        status: true,
+        firstname: true,
+        lastname: true,
+        nationality: true,
+        registration: true,
+        license: true,
+        organisation: true,
+        shortName: true,
         card: true,
+        bibNumber: true,
+        startTime: true,
+        finishTime: true,
+        time: true,
+        status: true,
+        lateStart: true,
+        teamId: true,
+        leg: true,
         note: true,
+        externalId: true,
       },
     });
   } catch (err) {
@@ -205,8 +239,27 @@ export const updateCompetitor = async (
 
   // Define a mapping of updateData keys to their corresponding protocol types
   const keyToTypeMap = {
+    classId: 'class_change',
+    firstname: 'firstname_change',
+    lastname: 'lastname_change',
+    bibNumber: 'bibNumber_change',
+    nationality: 'nationality_change',
+    registration: 'registration_change',
+    license: 'license_change',
+    ranking: 'ranking_change',
+    rankPointsAvg: 'rank_points_avg_change',
+    organisation: 'organisation_change',
+    shortName: 'short_name_change',
     card: 'si_card_change',
+    startTime: 'start_time_change',
+    finishTime: 'finish_time_change',
+    time: 'time_change',
+    teamId: 'team_change',
+    leg: 'leg_change',
+    status: 'status_change',
+    lateStart: 'late_start_change',
     note: 'note_change',
+    externalId: 'external_id_change',
   };
 
   // Iterate over keys in updateData
@@ -250,9 +303,25 @@ export const updateCompetitor = async (
     throw new DatabaseError('Error creating protocol record');
   }
 
+  // Select the current competitor from the database
+  let updatedCompetitor = {};
+  try {
+    updatedCompetitor = await prisma.competitor.findUnique({
+      where: { id: parseInt(competitorId) },
+      include: {
+        class: true,
+        team: true,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to fetch updated competitor:', err);
+    throw new DatabaseError('Error fetching updated competitor');
+  }
+
   // Publish changes to subscribers
   try {
-    await publishUpdatedCompetitors(dbResponseCompetitor.classId);
+    await publishUpdatedCompetitor(eventId, updatedCompetitor);
+    await publishUpdatedCompetitors(updatedCompetitor.classId);
   } catch (err) {
     console.error('Error publishing competitors update:', err);
   }
@@ -317,6 +386,7 @@ export const storeCompetitor = async (
         status: status || 'Inactive', // Default to Inactive if not provided
         lateStart: competitorData.lateStart || false,
         note: note || null,
+        externalId: competitorData.externalId || null,
       },
     });
   } catch (err) {
@@ -342,8 +412,24 @@ export const storeCompetitor = async (
     throw new DatabaseError('Error logging competitor creation in protocol.');
   }
 
+  // Select the current competitor from the database
+  let updatedCompetitor = {};
+  try {
+    updatedCompetitor = await prisma.competitor.findUnique({
+      where: { id: parseInt(newCompetitor.id) },
+      include: {
+        class: true,
+        team: true,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to fetch updated competitor:', err);
+    throw new DatabaseError('Error fetching updated competitor');
+  }
+
   // Publish event updates
   try {
+    await publishUpdatedCompetitor(eventId, updatedCompetitor);
     await publishUpdatedCompetitors(newCompetitor.classId);
   } catch (err) {
     console.error('Error publishing competitors update:', err);
