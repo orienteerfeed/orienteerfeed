@@ -119,9 +119,25 @@ const commonValidations = [
 
   check('status')
     .optional()
-    .isIn(['Inactive', 'Active', 'DidNotStart', 'Finished'])
+    .isIn([
+      'OK',
+      'Finished',
+      'MissingPunch',
+      'Disqualified',
+      'DidNotFinish',
+      'Active',
+      'Inactive',
+      'OverTime',
+      'SportingWithdrawal',
+      'NotCompeting',
+      'Moved',
+      'MovedUp',
+      'DidNotStart',
+      'DidNotEnter',
+      'Cancelled',
+    ])
     .withMessage(
-      'Status must be one of Inactive, Active, DidNotStart, Finished',
+      'Status must be one of OK, Finished, MissingPunch, Disqualified, DidNotFinish, Active, Inactive, OverTime, SportingWithdrawal, NotCompeting, Moved, MovedUp, DidNotStart, DidNotEnter, Cancelled',
     ),
 
   check('lateStart')

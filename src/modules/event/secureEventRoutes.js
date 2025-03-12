@@ -924,7 +924,7 @@ router.post(
  *              origin:
  *                type: string
  *                description: Origin of the request (e.g., START).
- *                enum: ["START"]
+ *                enum: ["START", "FINISH", "IT", "OFFICE"]
  *                example: "START"
  *              firstname:
  *                type: string
@@ -1002,8 +1002,23 @@ router.post(
  *              status:
  *                type: string
  *                description: Status of the competitor.
- *                enum: ["Inactive", "Active", "DidNotStart", "Finished"]
- *                example: "Active"
+ *                enum:
+ *                  - Inactive
+ *                  - Active
+ *                  - DidNotStart
+ *                  - Finished
+ *                  - OK
+ *                  - MissingPunch
+ *                  - Disqualified
+ *                  - DidNotFinish
+ *                  - OverTime
+ *                  - SportingWithdrawal
+ *                  - NotCompeting
+ *                  - Moved
+ *                  - MovedUp
+ *                  - DidNotEnter
+ *                  - Cancelled
+ *                example: "Inactive"
  *              lateStart:
  *                type: boolean
  *                description: Whether the competitor had a late start.
@@ -1090,6 +1105,113 @@ router.post(
 );
 
 /**
+ * Handles the validation and update of a competitor's information.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.eventId - The ID of the event.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.origin - The origin of the request.
+ * @param {Object} req.jwtDecoded - The decoded JWT token.
+ * @param {string} req.jwtDecoded.userId - The ID of the user making the request.
+ * @param {Object} res - The response object.
+ * @param {string} competitorId - The ID of the competitor to be updated.
+ * @returns {Promise<void>} - A promise that resolves when the operation is complete.
+ */
+const handleValidateAndUpdateCompetitor = async (req, res, competitorId) => {
+  const { eventId } = req.params;
+  const { origin } = req.body;
+  const { userId } = req.jwtDecoded;
+
+  //TODO: Check user permissions
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+  });
+
+  if (!event || event.authorId !== userId) {
+    return res
+      .status(403)
+      .json(errorResponse('Not authorized', res.statusCode));
+  }
+
+  // Everything went fine.
+  try {
+    // Build update object conditionally
+    const fieldTypes = {
+      classId: 'number',
+      firstname: 'string',
+      lastname: 'string',
+      nationality: 'string',
+      registration: 'string',
+      license: 'string',
+      organisation: 'string',
+      shortName: 'string',
+      card: 'number',
+      bibNumber: 'number',
+      startTime: 'date',
+      finishTime: 'date',
+      time: 'number',
+      status: 'string',
+      lateStart: 'boolean',
+      teamId: 'number',
+      leg: 'number',
+      note: 'string',
+      externalId: 'string',
+    };
+
+    const updateData = Object.keys(req.body).reduce((acc, field) => {
+      if (req.body[field] !== undefined && fieldTypes[field]) {
+        switch (fieldTypes[field]) {
+          case 'number':
+            acc[field] = parseInt(req.body[field], 10);
+            break;
+          case 'boolean':
+            acc[field] = Boolean(req.body[field]);
+            break;
+          case 'date':
+            acc[field] = new Date(req.body[field]);
+            break;
+          default:
+            acc[field] = req.body[field];
+        }
+      }
+      return acc;
+    }, {});
+
+    const updateCompetitorMessage = await updateCompetitor(
+      eventId,
+      competitorId,
+      origin,
+      updateData,
+      userId,
+    );
+    return res
+      .status(200)
+      .json(
+        successResponse(
+          'OK',
+          { data: updateCompetitorMessage },
+          res.statusCode,
+        ),
+      );
+  } catch (error) {
+    console.error(error);
+    if (error instanceof ValidationError) {
+      return res
+        .status(422)
+        .json(validationResponse(error.message, res.statusCode));
+    } else if (error instanceof AuthenticationError) {
+      return res.status(401).json(errorResponse(error.message, res.statusCode));
+    } else if (error instanceof DatabaseError) {
+      return res.status(500).json(errorResponse(error.message, res.statusCode));
+    }
+    return res
+      .status(500)
+      .json(errorResponse('Internal Server Error', res.statusCode));
+  }
+};
+
+/**
  * @swagger
  * /rest/v1/events/{eventId}/competitors/{competitorId}:
  *  put:
@@ -1107,7 +1229,7 @@ router.post(
  *       - in: path
  *         name: competitorId
  *         required: true
- *         description: ID of the competitor whose status you want to change.
+ *         description: ID of the competitor whose data you want to change.
  *         schema:
  *           type: integer
  *    requestBody:
@@ -1126,7 +1248,7 @@ router.post(
  *              origin:
  *                type: string
  *                description: Origin of the request (e.g., START).
- *                enum: ["START"]
+ *                enum: ["START", "FINISH", "IT", "OFFICE"]
  *                example: "START"
  *              firstname:
  *                type: string
@@ -1204,7 +1326,22 @@ router.post(
  *              status:
  *                type: string
  *                description: Status of the competitor.
- *                enum: ["Inactive", "Active", "DidNotStart", "Finished"]
+ *                enum:
+ *                  - Inactive
+ *                  - Active
+ *                  - DidNotStart
+ *                  - Finished
+ *                  - OK
+ *                  - MissingPunch
+ *                  - Disqualified
+ *                  - DidNotFinish
+ *                  - OverTime
+ *                  - SportingWithdrawal
+ *                  - NotCompeting
+ *                  - Moved
+ *                  - MovedUp
+ *                  - DidNotEnter
+ *                  - Cancelled
  *                example: "Active"
  *              lateStart:
  *                type: boolean
@@ -1240,100 +1377,219 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json(validationResponse(formatErrors(errors)));
     }
-    const { eventId, competitorId } = req.params;
-    const { origin } = req.body;
-    const { userId } = req.jwtDecoded;
+    const { competitorId } = req.params;
+    handleValidateAndUpdateCompetitor(req, res, competitorId);
+  },
+);
 
-    //TODO: Check user permissions
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
-    });
-
-    if (!event || event.authorId !== userId) {
-      return res
-        .status(403)
-        .json(errorResponse('Not authorized', res.statusCode));
+/**
+ * @swagger
+ * /rest/v1/events/{eventId}/competitors/{competitorId}/external-id:
+ *  put:
+ *    summary: Update competitor's data
+ *    description: Change competitor data by the external ID (for cases that you don't know the competitor's ID in OrienteerFeed).
+ *    tags:
+ *       - Events
+ *    parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         description: String ID of the event to retrieve.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: competitorId
+ *         required: true
+ *         description: External ID of the competitor whose data you want to change.
+ *         schema:
+ *           type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - origin
+ *              - useExternalId
+ *            properties:
+ *              useExternalId:
+ *                type: boolean
+ *                description: Explicitly declare that the ExternalId column should be used as the competitor identifier.
+ *                example: true
+ *              classId:
+ *                type: integer
+ *                description: ID of the competitor's class.
+ *                example: 5
+ *              origin:
+ *                type: string
+ *                description: Origin of the request (e.g., START).
+ *                enum: ["START", "FINISH", "IT", "OFFICE"]
+ *                example: "START"
+ *              firstname:
+ *                type: string
+ *                description: First name of the competitor.
+ *                maxLength: 255
+ *                example: "Martin"
+ *              lastname:
+ *                type: string
+ *                description: Last name of the competitor.
+ *                maxLength: 255
+ *                example: "Krivda"
+ *              bibNumber:
+ *                type: integer
+ *                description: The competitor's bib number.
+ *                example: 123
+ *              nationality:
+ *                type: string
+ *                description: 3-letter country code of nationality.
+ *                maxLength: 3
+ *                example: "CZE"
+ *              registration:
+ *                type: string
+ *                description: Registration number of the competitor.
+ *                maxLength: 10
+ *                example: "MKR2024"
+ *              license:
+ *                type: string
+ *                description: License type (single character).
+ *                maxLength: 1
+ *                example: "A"
+ *              ranking:
+ *                type: integer
+ *                description: Ranking position.
+ *                example: 7563
+ *              rankPointsAvg:
+ *                type: integer
+ *                description: Average ranking points.
+ *                example: 8500
+ *              organisation:
+ *                type: string
+ *                description: Organisation name.
+ *                maxLength: 255
+ *                example: "K.O.B. Choceň"
+ *              shortName:
+ *                type: string
+ *                description: Short name of the competitor.
+ *                maxLength: 10
+ *                example: "CHC"
+ *              card:
+ *                type: integer
+ *                description: SI card number.
+ *                example: 123456
+ *              startTime:
+ *                type: string
+ *                format: date-time
+ *                description: Start time in ISO 8601 format.
+ *                example: "2025-04-10T08:30:00Z"
+ *              finishTime:
+ *                type: string
+ *                format: date-time
+ *                description: Finish time in ISO 8601 format.
+ *                example: null
+ *              time:
+ *                type: integer
+ *                description: Time taken in seconds.
+ *                example: null
+ *              teamId:
+ *                type: integer
+ *                description: ID of the competitor's team.
+ *                example: null
+ *              leg:
+ *                type: integer
+ *                description: Leg number in relay.
+ *                example: null
+ *              status:
+ *                type: string
+ *                description: Status of the competitor.
+ *                enum:
+ *                  - Inactive
+ *                  - Active
+ *                  - DidNotStart
+ *                  - Finished
+ *                  - OK
+ *                  - MissingPunch
+ *                  - Disqualified
+ *                  - DidNotFinish
+ *                  - OverTime
+ *                  - SportingWithdrawal
+ *                  - NotCompeting
+ *                  - Moved
+ *                  - MovedUp
+ *                  - DidNotEnter
+ *                  - Cancelled
+ *                example: "Active"
+ *              lateStart:
+ *                type: boolean
+ *                description: Whether the competitor had a late start.
+ *                example: false
+ *              note:
+ *                type: string
+ *                description: Additional notes about the competitor.
+ *                maxLength: 255
+ *                example: "Elite runner"
+ *              externalId:
+ *                type: string
+ *                description: ID of the main source system.
+ *                maxLength: 191
+ *                example: "27"
+ *    responses:
+ *        200:
+ *          description: Return successful message
+ *        401:
+ *          description: Not authenticated
+ *        422:
+ *          description: Validation Error
+ *        500:
+ *          description: Internal Server Error
+ */
+router.put(
+  '/:eventId/competitors/:competitorId/external-id',
+  check('eventId').not().isEmpty().isString(),
+  check('competitorId').not().isEmpty().isString(),
+  check('useExternalId').not().isEmpty().isBoolean(),
+  validateUpdateCompetitor,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(validationResponse(formatErrors(errors)));
     }
+    const { eventId, competitorId } = req.params;
+    const { useExternalId } = req.body;
 
-    // Everything went fine.
-    try {
-      // Build update object conditionally
-      const fieldTypes = {
-        classId: 'number',
-        firstname: 'string',
-        lastname: 'string',
-        nationality: 'string',
-        registration: 'string',
-        license: 'string',
-        organisation: 'string',
-        shortName: 'string',
-        card: 'number',
-        bibNumber: 'number',
-        startTime: 'date',
-        finishTime: 'date',
-        time: 'number',
-        status: 'string',
-        lateStart: 'boolean',
-        teamId: 'number',
-        leg: 'number',
-        note: 'string',
-        externalId: 'string',
-      };
-
-      const updateData = Object.keys(req.body).reduce((acc, field) => {
-        if (req.body[field] !== undefined && fieldTypes[field]) {
-          switch (fieldTypes[field]) {
-            case 'number':
-              acc[field] = parseInt(req.body[field], 10);
-              break;
-            case 'boolean':
-              acc[field] = Boolean(req.body[field]);
-              break;
-            case 'date':
-              acc[field] = new Date(req.body[field]);
-              break;
-            default:
-              acc[field] = req.body[field];
-          }
-        }
-        return acc;
-      }, {});
-
-      const updateCompetitorMessage = await updateCompetitor(
-        eventId,
-        competitorId,
-        origin,
-        updateData,
-        userId,
-      );
+    if (!useExternalId) {
       return res
-        .status(200)
+        .status(422)
         .json(
-          successResponse(
-            'OK',
-            { data: updateCompetitorMessage },
+          errorResponse(
+            'The useExternalId parameter must be set to true',
             res.statusCode,
           ),
         );
+    }
+
+    let dbCompetitorResponse;
+    try {
+      dbCompetitorResponse = await prisma.competitor.findFirst({
+        where: { class: { eventId: eventId }, externalId: competitorId },
+        select: {
+          id: true,
+        },
+      });
     } catch (error) {
       console.error(error);
-      if (error instanceof ValidationError) {
-        return res
-          .status(422)
-          .json(validationResponse(error.message, res.statusCode));
-      } else if (error instanceof AuthenticationError) {
-        return res
-          .status(401)
-          .json(errorResponse(error.message, res.statusCode));
-      } else if (error instanceof DatabaseError) {
-        return res
-          .status(500)
-          .json(errorResponse(error.message, res.statusCode));
-      }
       return res
         .status(500)
         .json(errorResponse('Internal Server Error', res.statusCode));
     }
+
+    if (!dbCompetitorResponse) {
+      return res
+        .status(404)
+        .json(errorResponse('Competitor not found', res.statusCode));
+    }
+
+    handleValidateAndUpdateCompetitor(req, res, dbCompetitorResponse.id);
   },
 );
 
