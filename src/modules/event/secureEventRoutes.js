@@ -1384,7 +1384,7 @@ router.put(
 
 /**
  * @swagger
- * /rest/v1/events/{eventId}/competitors/{competitorId}/external-id:
+ * /rest/v1/events/{eventId}/competitors/{competitorExternalId}/external-id:
  *  put:
  *    summary: Update competitor's data
  *    description: Change competitor data by the external ID (for cases that you don't know the competitor's ID in OrienteerFeed).
@@ -1398,7 +1398,7 @@ router.put(
  *         schema:
  *           type: string
  *       - in: path
- *         name: competitorId
+ *         name: competitorExternalId
  *         required: true
  *         description: External ID of the competitor whose data you want to change.
  *         schema:
@@ -1544,9 +1544,9 @@ router.put(
  *          description: Internal Server Error
  */
 router.put(
-  '/:eventId/competitors/:competitorId/external-id',
+  '/:eventId/competitors/:competitorExternalId/external-id',
   check('eventId').not().isEmpty().isString(),
-  check('competitorId').not().isEmpty().isString(),
+  check('competitorExternalId').not().isEmpty().isString(),
   check('useExternalId').not().isEmpty().isBoolean(),
   validateUpdateCompetitor,
   async (req, res) => {
@@ -1554,7 +1554,7 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json(validationResponse(formatErrors(errors)));
     }
-    const { eventId, competitorId } = req.params;
+    const { eventId, competitorExternalId } = req.params;
     const { useExternalId } = req.body;
 
     if (!useExternalId) {
@@ -1571,7 +1571,10 @@ router.put(
     let dbCompetitorResponse;
     try {
       dbCompetitorResponse = await prisma.competitor.findFirst({
-        where: { class: { eventId: eventId }, externalId: competitorId },
+        where: {
+          class: { eventId: eventId },
+          externalId: competitorExternalId,
+        },
         select: {
           id: true,
         },
