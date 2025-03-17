@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LandingPageLayout } from '../../../templates';
 import { formatTimeToHms } from '../../../utils';
@@ -7,7 +7,9 @@ export const FeaturePage = ({ t }) => {
   return (
     <LandingPageLayout>
       <div className="container mx-auto">
-        <StartFeature />
+        <section id="start" className="min-h-screen">
+          <StartFeature />
+        </section>
         <section id="results" className="min-h-screen">
           Results
         </section>
@@ -45,7 +47,7 @@ const StartFeature = () => {
       </div>
       <EntriesTable competitors={competitors}></EntriesTable>
       <FinishGate competitors={competitors} setCompetitors={setCompetitors} />
-      <div className="text-center">
+      <div className="text-center p-8">
         <a
           href="https://play.google.com/store/apps/details?id=se.tg3.startlist"
           target="_blank"
@@ -153,33 +155,42 @@ const RotatingList = () => {
 };
 
 const OrienteerFeedDemo = ({ competitors, setCompetitors }) => {
+  // Memoized name arrays to avoid unnecessary re-renders
+  const firstNames = useMemo(
+    () => [
+      'Jan',
+      'Ladislav',
+      'Petr',
+      'Jiří',
+      'Marek',
+      'Karel',
+      'Tomáš',
+      'Anna',
+      'Jakub',
+      'Michal',
+    ],
+    [],
+  );
+
+  const lastNames = useMemo(
+    () => [
+      'Novák',
+      'Novotný',
+      'Svoboda',
+      'Dvořák',
+      'Černý',
+      'Kovář',
+      'Jelínek',
+      'Horák',
+      'Malý',
+      'Pokorný',
+    ],
+    [],
+  );
+
   const getRandomItem = (array) =>
     array[Math.floor(Math.random() * array.length)];
 
-  const firstNames = [
-    'Jan',
-    'Ladislav',
-    'Petr',
-    'Jiří',
-    'Marek',
-    'Karel',
-    'Tomáš',
-    'Anna',
-    'Jakub',
-    'Michal',
-  ];
-  const lastNames = [
-    'Novák',
-    'Novotný',
-    'Svoboda',
-    'Dvořák',
-    'Černý',
-    'Kovář',
-    'Jelínek',
-    'Horák',
-    'Malý',
-    'Pokorný',
-  ];
   const generateClubNames = () => {
     const adjectives = [
       'K.O.B.',
@@ -191,31 +202,14 @@ const OrienteerFeedDemo = ({ competitors, setCompetitors }) => {
       'OK',
     ];
     const nouns = ['Brno', 'Praha', 'Choceň', 'Kamenice', 'Hradec Králové'];
-
-    const clubs = [];
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    clubs.push(`${adjective} ${noun}`);
-    return clubs;
-  };
-  // Function to generate start times with a +1 minute interval for each competitor
-  const generateStartTimes = (competitors) => {
-    const currentTime = new Date(); // Get the current UTC time
-
-    // For each competitor return start interval (default 60000)
-    return competitors.map((competitor, index) => {
-      const startTime = new Date(
-        currentTime.getTime() + 10000 * (index + 1),
-      ).toISOString();
-      return {
-        ...competitor,
-        startTime,
-      };
-    });
+    return `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${
+      nouns[Math.floor(Math.random() * nouns.length)]
+    }`;
   };
 
-  useEffect(() => {
-    const initialCompetitors = [
+  // Memoized initial competitors
+  const initialCompetitors = useMemo(
+    () => [
       {
         id: 1,
         firstname: getRandomItem(firstNames),
@@ -246,40 +240,47 @@ const OrienteerFeedDemo = ({ competitors, setCompetitors }) => {
         leftDistance: 0,
         lastUpdate: '',
       },
-    ];
+    ],
+    [firstNames, lastNames],
+  );
 
+  // Function to generate start times
+  const generateStartTimes = useCallback((competitors) => {
+    const currentTime = new Date();
+    return competitors.map((competitor, index) => ({
+      ...competitor,
+      startTime: new Date(
+        currentTime.getTime() + 10000 * (index + 1),
+      ).toISOString(),
+    }));
+  }, []);
+
+  // Memoized function to update competitor status
+  const updateCompetitorStatus = useCallback(() => {
+    setCompetitors((prevCompetitors) =>
+      prevCompetitors.map((competitor) => {
+        const currentTime = new Date();
+        const startTime = new Date(competitor.startTime);
+        return startTime < currentTime && competitor.status === 'inactive'
+          ? { ...competitor, status: 'didNotStart', lastUpdate: currentTime }
+          : competitor;
+      }),
+    );
+  }, [setCompetitors]);
+
+  // Initialize competitors and set interval for status updates
+  useEffect(() => {
     const competitorsWithStartTimes = generateStartTimes(initialCompetitors);
     setCompetitors(competitorsWithStartTimes);
 
-    // Function to update status to 'didNotStart' for inactive competitors who missed their start time
-    const updateCompetitorStatus = () => {
-      const currentTime = new Date();
-
-      // Use a callback function to get the current state
-      setCompetitors((prevCompetitors) => {
-        return prevCompetitors.map((competitor) => {
-          const startTime = new Date(competitor.startTime);
-
-          if (startTime < currentTime && competitor.status === 'inactive') {
-            return {
-              ...competitor,
-              status: 'didNotStart',
-              lastUpdate: currentTime,
-            };
-          }
-          return competitor;
-        });
-      });
-    };
-
-    // Update status every minute
-    const interval = setInterval(() => {
-      updateCompetitorStatus();
-    }, 1000);
-
-    // Cleanup the interval on component unmount
+    const interval = setInterval(updateCompetitorStatus, 1000);
     return () => clearInterval(interval);
-  }, []); // Empty dependency array to run only once on mount
+  }, [
+    generateStartTimes,
+    initialCompetitors,
+    updateCompetitorStatus,
+    setCompetitors,
+  ]);
 
   // Handler to update card number
   const updateCardNumber = (id, newCard) => {
