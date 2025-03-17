@@ -28,7 +28,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
   return (
     <div className="min-h-screen bg-blue-50 text-black relative overflow-hidden">
       {/* Navbar */}
-      <header className="flex justify-end xl:justify-between items-center px-8 py-6 border-b border-black relative z-10 bg-blue-50">
+      <header className="fixed top-0 left-0 right-0 flex justify-end xl:justify-between items-center px-8 py-6 border-b border-black bg-blue-50 z-20">
         <nav className="hidden xl:flex space-x-8 text-sm uppercase">
           <Link to={PATHNAMES.feature()} className="hover:underline">
             Features
@@ -88,6 +88,15 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
             <ul className="mt-12 space-y-4 text-lg">
               <li>
                 <Link
+                  to={PATHNAMES.event()}
+                  className="block hover:underline"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Launch
+                </Link>
+              </li>
+              <li>
+                <Link
                   to={PATHNAMES.feature()}
                   className="block hover:underline"
                   onClick={() => setIsMenuOpen(false)}
@@ -113,21 +122,12 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
                   Collaborate
                 </Link>
               </li>
-              <li>
-                <Link
-                  to={PATHNAMES.event()}
-                  className="block hover:underline"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Launch
-                </Link>
-              </li>
             </ul>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main className="relative z-10 bg-blue-50">{children}</main>
+      <main className="relative z-10 bg-blue-50 pt-24">{children}</main>
 
       {illustrations}
     </div>

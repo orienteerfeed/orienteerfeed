@@ -18,7 +18,7 @@ export const Checkbox = forwardRef(
         {...props}
         ref={ref}
       >
-        <CheckboxComponent.Indicator className="text-black">
+        <CheckboxComponent.Indicator className="text-black dark:text-white">
           <AiOutlineCheck size={12} />
         </CheckboxComponent.Indicator>
       </CheckboxComponent.Root>

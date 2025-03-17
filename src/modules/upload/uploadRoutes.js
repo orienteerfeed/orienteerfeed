@@ -15,6 +15,7 @@ import {
   publishUpdatedCompetitor,
 } from '../../utils/subscriptionUtils.js';
 import { calculateCompetitorRankingPoints } from '../../utils/ranking.js';
+import { verifyJwtToken } from '../../utils/jwtToken.js';
 import { notifyWinnerChanges } from './../event/winnerCache.js';
 import { storeCzechRankingData } from './uploadService.js';
 
@@ -175,7 +176,7 @@ async function getEventById(eventId) {
   try {
     return await prisma.event.findUnique({
       where: { id: eventId },
-      select: { id: true, relay: true, ranking: true },
+      select: { id: true, relay: true, ranking: true, authorId: true },
     });
   } catch (err) {
     console.error(err);
@@ -697,6 +698,7 @@ async function handleIofXmlUpload(req, res) {
   }
 
   const { eventId, validateXml } = req.body;
+  const { userId } = req.jwtDecoded;
   if (!req.file) {
     console.error('File not found');
     return res.status(422).json(validation('No file uploaded', res.statusCode));
@@ -717,6 +719,21 @@ async function handleIofXmlUpload(req, res) {
     dbResponseEvent = await getEventById(eventId);
   } catch (err) {
     return res.status(500).json(error(err.message, res.statusCode));
+  }
+
+  if (!dbResponseEvent) {
+    return res.status(404).json(error('Event not found', res.statusCode));
+  }
+
+  if (dbResponseEvent.authorId !== userId) {
+    return res
+      .status(403)
+      .json(
+        error(
+          'You are not authorized to upload data for this event',
+          res.statusCode,
+        ),
+      );
   }
 
   let iofXml3;
@@ -824,6 +841,10 @@ async function handleIofXmlUpload(req, res) {
 }
 
 // Link all submodules here
+
+// Verify user authentication
+//TODO: Restrucure the code for better readability
+router.use(verifyJwtToken);
 
 // Upload routes
 

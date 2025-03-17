@@ -178,7 +178,7 @@ export const EventPasswordForm = ({
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-2 top-2"
+                  className="absolute right-2 top-2 dark:text-white"
                 >
                   {passwordVisible ? (
                     <AiOutlineEyeInvisible name="eye-slash" /> // Assuming you have an eye icon for visibility toggle

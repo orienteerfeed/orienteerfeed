@@ -54,7 +54,7 @@ export const UserLoginForm = ({ t }) => {
       const { token, user } = response.data.signin;
       signin({ token, user });
       console.log('Signup successful:', response);
-      navigate(PATHNAMES.empty());
+      navigate(PATHNAMES.event());
     } catch (error) {
       console.error('Error signing in:', error);
       toast({

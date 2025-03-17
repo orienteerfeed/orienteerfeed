@@ -40,10 +40,22 @@ export const CountdownTimer = ({ expiryDate }) => {
 
   return (
     <div className="flex items-center w-full gap-2">
-      <TimerElement label={t('Timer.Days', { ns: 'common' })} value={timeLeft.days} />
-      <TimerElement label={t('Timer.Hours', { ns: 'common' })} value={timeLeft.hours} />
-      <TimerElement label={t('Timer.Minutes', { ns: 'common' })} value={timeLeft.minutes} />
-      <TimerElement label={t('Timer.Seconds', { ns: 'common' })} value={timeLeft.seconds} />
+      <TimerElement
+        label={t('Timer.Days', { ns: 'common' })}
+        value={timeLeft.days}
+      />
+      <TimerElement
+        label={t('Timer.Hours', { ns: 'common' })}
+        value={timeLeft.hours}
+      />
+      <TimerElement
+        label={t('Timer.Minutes', { ns: 'common' })}
+        value={timeLeft.minutes}
+      />
+      <TimerElement
+        label={t('Timer.Seconds', { ns: 'common' })}
+        value={timeLeft.seconds}
+      />
     </div>
   );
 };
@@ -56,7 +68,7 @@ const TimerElement = ({ label, value }) => {
           {value.toString().padStart(2, '0')}
         </h3>
       </div>
-      <p className="text-sm font-normal text-gray-900 mt-1 text-center w-full">
+      <p className="text-sm font-normal text-gray-900 dark:text-white mt-1 text-center w-full">
         {label}
       </p>
     </div>

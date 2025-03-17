@@ -156,7 +156,7 @@ export const DragDropContainer = ({
           <div className="mx-auto text-gray-400 mb-2">
             <AiOutlineUpload size={18} />
           </div>
-          <div className="text-[12px] font-normal text-gray-500">
+          <div className="text-[12px] font-normal text-gray-500 dark:text-gray-400">
             <input
               className="opacity-0 hidden"
               type="file"
@@ -175,7 +175,7 @@ export const DragDropContainer = ({
             </span>{' '}
             {t('Molecules.DragDrop.OrdDragAndDrop')}
           </div>
-          <div className="text-[10px] font-normal text-gray-500">
+          <div className="text-[10px] font-normal text-gray-500 dark:text-gray-400">
             {t('Molecules.DragDrop.SupportedFormats')}{' '}
             {formats.join(', ').toUpperCase()}
           </div>
@@ -195,7 +195,7 @@ export const DragDropContainer = ({
                     {img.type.match(/image.*/i) ? 'image' : 'file'}
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs font-medium text-gray-500">
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
                       {img.name}
                     </div>
                     <div className="text-[10px] font-medium text-gray-400">
@@ -206,7 +206,7 @@ export const DragDropContainer = ({
                 <div className="flex-1 flex justify-end">
                   <div className="space-y-1">
                     <div
-                      className="text-gray-500 text-[17px] cursor-pointer"
+                      className="text-gray-500 dark:text-gray-400 text-[17px] cursor-pointer"
                       onClick={() => onDelete(index)}
                     >
                       &#x2715;

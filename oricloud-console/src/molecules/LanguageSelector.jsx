@@ -73,7 +73,7 @@ export const LanguageSelector = () => {
           </div>
           {isOpen && (
             <div
-              className="origin-top-left absolute left-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+              className="origin-top-left absolute left-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dark:bg-zinc-700"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="language-selector"
@@ -86,9 +86,9 @@ export const LanguageSelector = () => {
                       onClick={() => handleLanguageChange(language)}
                       className={`${
                         selectedLanguage.key === language.key
-                          ? 'bg-gray-100 text-gray-900'
-                          : 'text-gray-700'
-                      } px-4 py-2 text-sm text-left items-center inline-flex hover:bg-gray-100 ${
+                          ? 'bg-gray-100 dark:bg-zinc-600 text-gray-900 dark:text-gray-100'
+                          : 'text-gray-700 dark:text-gray-300'
+                      } px-4 py-2 text-sm text-left items-center inline-flex hover:bg-gray-100 hover:dark:bg-zinc-500 ${
                         index % 2 === 0 ? 'rounded-r' : 'rounded-l'
                       }`}
                       role="menuitem"

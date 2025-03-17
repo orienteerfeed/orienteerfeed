@@ -5,7 +5,7 @@ import { MdArrowBackIosNew } from 'react-icons/md';
 export const BackButton = ({ t, path }) => {
   return (
     <Link to={path} className="">
-      <div className="flex items-center">
+      <div className="flex items-center dark:text-white">
         <MdArrowBackIosNew className="mr-2 h-4 w-4" />
         {t('Back', { ns: 'common' })}
       </div>

@@ -59,7 +59,7 @@ export const DragDropFile = ({ eventId }) => {
   return (
     <div className="w-full">
       <div className="pb-2 border-b border-input">
-        <h2 className="text-black font-semibold">
+        <h2 className="text-black dark:text-white font-semibold">
           {t('Organisms.DragDrop.UploadIofXml.Title')}
         </h2>
       </div>

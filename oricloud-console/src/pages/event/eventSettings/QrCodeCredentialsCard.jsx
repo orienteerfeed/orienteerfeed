@@ -29,8 +29,65 @@ export const QrCodeCredentialsCard = ({
     if (navigator.share) {
       try {
         const canvas = qrCodeRef.current; // Get the QR code canvas element
-        const dataUrl = canvas.toDataURL('image/png'); // Convert the canvas to base64 PNG
-        const blob = dataURLToBlob(dataUrl); // Convert base64 to a Blob
+
+        // Create an offscreen canvas to add padding and border
+        const offscreenCanvas = document.createElement('canvas');
+        const ctx = offscreenCanvas.getContext('2d');
+        const padding = 20;
+        const border = 10;
+        const textHeight = 50; // Increased to accommodate both event name and date
+
+        offscreenCanvas.width = canvas.width + padding * 2 + border * 2;
+        offscreenCanvas.height =
+          canvas.height + padding * 2 + border * 2 + textHeight;
+
+        // Fill the background with white
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+
+        // Draw the black border
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(
+          padding,
+          padding,
+          offscreenCanvas.width - padding * 2,
+          offscreenCanvas.height - padding * 2 - textHeight,
+        );
+
+        // Draw the QR code
+        ctx.drawImage(canvas, padding + border, padding + border);
+
+        // Add the event name text
+        ctx.fillStyle = '#000000';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+
+        // Check if the event name is too long and truncate if necessary
+        let truncatedEventName = eventName;
+        const maxWidth = offscreenCanvas.width - padding * 2;
+        if (ctx.measureText(eventName).width > maxWidth) {
+          while (ctx.measureText(truncatedEventName + '...').width > maxWidth) {
+            truncatedEventName = truncatedEventName.slice(0, -1);
+          }
+          truncatedEventName += '...';
+        }
+
+        ctx.fillText(
+          truncatedEventName,
+          offscreenCanvas.width / 2,
+          offscreenCanvas.height - padding - 20, // Adjusted to leave space for the date
+        );
+
+        // Add the event date text
+        ctx.fillText(
+          eventDate,
+          offscreenCanvas.width / 2,
+          offscreenCanvas.height - padding,
+        );
+
+        // Convert the offscreen canvas to base64 PNG
+        const finalDataUrl = offscreenCanvas.toDataURL('image/png');
+        const blob = dataURLToBlob(finalDataUrl); // Convert base64 to a Blob
         const file = new File([blob], 'ofeed-ochecklist-qr.png', {
           type: 'image/png',
         });

@@ -1421,6 +1421,10 @@ router.put(
  *                type: integer
  *                description: ID of the competitor's class.
  *                example: 5
+ *              classExternalId:
+ *                type: string
+ *                description: ID of the competitor's class in external system.
+ *                example: "182725"
  *              origin:
  *                type: string
  *                description: Origin of the request (e.g., START).
@@ -1547,7 +1551,22 @@ router.put(
   '/:eventId/competitors/:competitorExternalId/external-id',
   check('eventId').not().isEmpty().isString(),
   check('competitorExternalId').not().isEmpty().isString(),
+  check('classExternalId')
+    .optional({ nullable: true })
+    .isString()
+    .isLength({ max: 191 }),
   check('useExternalId').not().isEmpty().isBoolean(),
+  body().custom((value, { req }) => {
+    const { classId, classExternalId } = req.body;
+
+    if (classId && classExternalId) {
+      throw new Error(
+        'Only one of classId or classExternalId should be provided, not both.',
+      );
+    }
+
+    return true;
+  }),
   validateUpdateCompetitor,
   async (req, res) => {
     const errors = validationResult(req);
@@ -1555,7 +1574,7 @@ router.put(
       return res.status(422).json(validationResponse(formatErrors(errors)));
     }
     const { eventId, competitorExternalId } = req.params;
-    const { useExternalId } = req.body;
+    const { useExternalId, classExternalId } = req.body;
 
     if (!useExternalId) {
       return res
@@ -1592,6 +1611,31 @@ router.put(
         .json(errorResponse('Competitor not found', res.statusCode));
     }
 
+    if (classExternalId) {
+      try {
+        const dbClassResponse = await prisma.class.findFirst({
+          where: {
+            eventId: eventId,
+            externalId: classExternalId,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (!dbClassResponse) {
+          return res
+            .status(404)
+            .json(errorResponse('Class not found', res.statusCode));
+        }
+        req.body.classId = dbClassResponse.id;
+      } catch (error) {
+        console.error(error);
+        return res
+          .status(500)
+          .json(errorResponse('Internal Server Error', res.statusCode));
+      }
+    }
     handleValidateAndUpdateCompetitor(req, res, dbCompetitorResponse.id);
   },
 );
