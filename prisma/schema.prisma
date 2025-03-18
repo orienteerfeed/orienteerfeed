@@ -158,8 +158,8 @@ model Protocol {
   competitorId  Int          @db.UnsignedInt
   origin        Origin
   type          ProtocolType
-  previousValue String?      @db.VarChar(32)
-  newValue      String       @db.VarChar(32)
+  previousValue String?
+  newValue      String
   author        User         @relation(fields: [authorId], references: [id])
   authorId      Int          @db.UnsignedInt
   createdAt     DateTime     @default(now())

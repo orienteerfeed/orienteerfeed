@@ -26,7 +26,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
   }, [isMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-blue-50 text-black relative overflow-hidden">
+    <div className="min-h-dvh bg-blue-50 text-black relative overflow-hidden">
       {/* Navbar */}
       <header className="fixed top-0 left-0 right-0 flex justify-end xl:justify-between items-center px-8 py-6 border-b border-black bg-blue-50 z-20">
         <nav className="hidden xl:flex space-x-8 text-sm uppercase">
