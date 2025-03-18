@@ -46,6 +46,7 @@ const COMPETITORS_BY_CLASS_UPDATED = gql`
       firstname
       lastname
       registration
+      bibNumber
       organisation
       card
       startTime
