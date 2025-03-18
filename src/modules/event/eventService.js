@@ -409,7 +409,7 @@ export const storeCompetitor = async (
     });
   } catch (err) {
     console.error('Error creating protocol record:', err);
-    throw new DatabaseError('Error logging competitor creation in protocol.');
+    throw new DatabaseError('Error creating protocol record.');
   }
 
   // Select the current competitor from the database
