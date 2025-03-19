@@ -17,4 +17,5 @@ export {
   ToastAction,
 } from './Toast';
 export { ToggleSwitch } from './ToggleSwitch';
+export { Tooltip } from './Tooltip';
 export { VisibilityBadge } from './VisibilityBadge';

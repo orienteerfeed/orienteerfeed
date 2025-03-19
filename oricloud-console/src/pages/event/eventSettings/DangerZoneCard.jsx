@@ -139,10 +139,12 @@ export const DangerZoneCard = ({ t, eventId }) => {
     >
       <div className="space-y-4">
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">
+          <h3 className="font-semibold dark:text-white">
             {t('Pages.Event.DangerZone.DeleteCompetitors.Title')}
           </h3>
-          <p>{t('Pages.Event.DangerZone.DeleteCompetitors.Description')}</p>
+          <p className="dark:text-gray-400">
+            {t('Pages.Event.DangerZone.DeleteCompetitors.Description')}
+          </p>
           <ButtonWithSpinner
             variant="outline"
             onClick={() => handleDeleteCompetitors()}
@@ -152,10 +154,12 @@ export const DangerZoneCard = ({ t, eventId }) => {
         </div>
 
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">
+          <h3 className="font-semibold dark:text-white">
             {t('Pages.Event.DangerZone.DeleteAllEventData.Title')}
           </h3>
-          <p>{t('Pages.Event.DangerZone.DeleteAllEventData.Description')}</p>
+          <p className="dark:text-gray-400">
+            {t('Pages.Event.DangerZone.DeleteAllEventData.Description')}
+          </p>
           <ButtonWithSpinner
             variant="outline"
             onClick={() => handleDeleteAllEventData()}
@@ -168,7 +172,9 @@ export const DangerZoneCard = ({ t, eventId }) => {
           <h3 className="font-semibold text-red-500">
             {t('Pages.Event.DangerZone.DeleteEvent.Title')}
           </h3>
-          <p>{t('Pages.Event.DangerZone.DeleteEvent.Description')}</p>
+          <p className="dark:text-gray-400">
+            {t('Pages.Event.DangerZone.DeleteEvent.Description')}
+          </p>
           <ButtonWithSpinner
             variant="destructive"
             onClick={() => handleDeleteEvent()}
@@ -178,10 +184,10 @@ export const DangerZoneCard = ({ t, eventId }) => {
         </div>
 
         <div className="flex flex-col items-start space-y-2">
-          <h3 className="font-semibold">
+          <h3 className="font-semibold dark:text-white">
             {t('Pages.Event.DangerZone.TroublesShooting.Title')}
           </h3>
-          <p>
+          <p className="dark:text-gray-400">
             {t('Pages.Event.DangerZone.TroublesShooting.Description1')}{' '}
             <a
               href="mailto:support@orienteerfeed.com"

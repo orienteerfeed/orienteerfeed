@@ -9,11 +9,11 @@ export const PasswordResetEmailSentPage = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center dark:bg-zinc-800">
         {/* Back Button */}
         <Link
           to={PATHNAMES.empty()}
-          className="absolute left-4 top-4 md:left-8 md:top-8"
+          className="absolute left-4 top-4 md:left-8 md:top-8 dark:text-white"
         >
           <div className="flex items-center">
             <MdArrowBackIosNew className="mr-2 h-4 w-4" />
@@ -48,7 +48,7 @@ export const PasswordResetEmailSentPage = () => {
           <div className="flex justify-center mt-6">
             <Link
               to={PATHNAMES.signIn()}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-blue-600 hover:text-blue-800 dark:hover:text-blue-400"
             >
               {t('Go to Login')}
             </Link>

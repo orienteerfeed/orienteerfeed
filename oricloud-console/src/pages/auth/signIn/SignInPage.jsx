@@ -11,7 +11,7 @@ export const SignInPage = () => {
       <div className="flex h-screen w-screen flex-col items-center justify-center dark:bg-zinc-800">
         <Link
           to={PATHNAMES.empty()}
-          className="absolute left-4 top-4 md:left-8 md:top-8 dark:text-gray-400"
+          className="absolute left-4 top-4 md:left-8 md:top-8 dark:text-white"
         >
           <div className="flex items-center">
             <MdArrowBackIosNew className="mr-2 h-4 w-4" />

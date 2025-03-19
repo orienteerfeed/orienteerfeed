@@ -36,8 +36,8 @@ const StartFeature = () => {
           </h2>
           <RotatingList />
           <p className="font-bold tracking-widest text-2xl">
-            ...Stay ahead from the start – track every move, get updates on
-            non-starting athletes, and react to start-line changes instantly!
+            Track every move, get updates on non-starting athletes, and react to
+            start-line changes instantly!
           </p>
         </div>
         <OrienteerFeedDemo
@@ -47,7 +47,7 @@ const StartFeature = () => {
       </div>
       <EntriesTable competitors={competitors}></EntriesTable>
       <FinishGate competitors={competitors} setCompetitors={setCompetitors} />
-      <div className="text-center p-8">
+      <div className="text-center p-8 mt-12">
         <a
           href="https://play.google.com/store/apps/details?id=se.tg3.startlist"
           target="_blank"
@@ -69,8 +69,8 @@ const EntriesTable = ({ competitors }) => {
     return timeDiff <= 10000; // Highlight if last update is within the last 10 seconds
   };
   return (
-    <div className="container mx-auto p-24">
-      <h3 className="font-bold tracking-widest text-xl py-2">Entries</h3>
+    <div className="container mx-auto px-4 lg:p-24">
+      <h3 className="font-bold text-xl py-2">Entries</h3>
       {competitors.length > 0 ? (
         <div className="relative overflow-x-auto rounded">
           <table className="w-full text-sm rtl:text-right">
@@ -295,7 +295,7 @@ const OrienteerFeedDemo = ({ competitors, setCompetitors }) => {
     <div>
       {competitors.filter((competitor) => !competitor.removed).length > 0 && (
         <>
-          <h3 className="font-bold tracking-widest text-xl">Live Demo</h3>
+          <h3 className="font-bold text-xl">Live Demo</h3>
           <ul>
             <AnimatePresence>
               {competitors
@@ -593,7 +593,7 @@ const FinishGate = ({ competitors, setCompetitors }) => {
   });
 
   return (
-    <div className="race-container px-24 text-center">
+    <div className="race-container px-4 lg:px-24 text-center">
       <div className="track relative w-full h-40 overflow-hidden">
         <img
           className="absolute w-20 bottom-0"
