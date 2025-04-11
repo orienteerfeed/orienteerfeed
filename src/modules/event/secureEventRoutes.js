@@ -916,11 +916,19 @@ router.post(
  *              - origin
  *              - firstname
  *              - lastname
+ *            oneOf:
+ *              - required: [classId]
+ *              - required: [classExternalId]
  *            properties:
  *              classId:
  *                type: integer
  *                description: ID of the competitor's class.
  *                example: 5
+ *              classExternalId:
+ *                type: string
+ *                maxLength: 191
+ *                description: External identifier of the competitor's class (from import or external system).
+ *                example: "182725"
  *              origin:
  *                type: string
  *                description: Origin of the request (e.g., START).
@@ -1072,8 +1080,7 @@ router.post(
 
     const { eventId } = req.params;
     const { userId } = req.jwtDecoded;
-    const { origin } = req.body;
-    const competitorData = req.body;
+    const { origin, classExternalId } = req.body;
 
     try {
       // Check if the event exists and the user is authorized
@@ -1091,6 +1098,34 @@ router.post(
           .status(403)
           .json(errorResponse('Not authorized to add a competitor', 403));
       }
+
+      if (classExternalId) {
+        try {
+          const dbClassResponse = await prisma.class.findFirst({
+            where: {
+              eventId: eventId,
+              externalId: classExternalId,
+            },
+            select: {
+              id: true,
+            },
+          });
+
+          if (!dbClassResponse) {
+            return res
+              .status(404)
+              .json(errorResponse('Class not found', res.statusCode));
+          }
+          req.body.classId = dbClassResponse.id;
+        } catch (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .json(errorResponse('Internal Server Error', res.statusCode));
+        }
+      }
+
+      const competitorData = req.body;
 
       // Store competitor
       const storeCompetitorMessage = await storeCompetitor(

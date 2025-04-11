@@ -1,4 +1,4 @@
-import { body, check, validationResult } from 'express-validator';
+import { body, check, oneOf, validationResult } from 'express-validator';
 import { formatErrors } from './errors.js';
 import { validation as validationResponse } from './responseApi.js';
 import prisma from './context.js';
@@ -175,12 +175,37 @@ const commonValidations = [
 
 // Validation middleware for creating a competitor (requires specific fields)
 export const validateCreateCompetitor = [
-  check('classId')
-    .not()
-    .isEmpty()
-    .withMessage('Class ID is required')
-    .isNumeric()
-    .withMessage('Class ID must be a number'),
+  oneOf(
+    [
+      check('classId')
+        .not()
+        .isEmpty()
+        .withMessage('Class ID is required')
+        .isNumeric()
+        .withMessage('Class ID must be a number'),
+
+      check('classExternalId')
+        .not()
+        .isEmpty()
+        .withMessage('Class External ID is required')
+        .isString()
+        .isLength({ max: 191 })
+        .withMessage('Class External ID must be a string of max length 191'),
+    ],
+    'Either classId or classExternalId must be provided',
+  ),
+
+  body().custom((value, { req }) => {
+    const { classId, classExternalId } = req.body;
+
+    if (classId && classExternalId) {
+      throw new Error(
+        'Only one of classId or classExternalId should be provided, not both.',
+      );
+    }
+
+    return true;
+  }),
 
   check('firstname').not().isEmpty().withMessage('First name is required'),
 
