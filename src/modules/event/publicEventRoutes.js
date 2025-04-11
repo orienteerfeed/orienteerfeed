@@ -473,6 +473,9 @@ router.get(
             note: true,
             externalId: true,
             updatedAt: true,
+            splits: {
+              select: { controlCode: true, time: true },
+            },
             class: {
               select: {
                 id: true,
@@ -530,6 +533,9 @@ router.get(
             note: true,
             externalId: true,
             updatedAt: true,
+            splits: {
+              select: { controlCode: true, time: true },
+            },
             class: {
               select: {
                 id: true,

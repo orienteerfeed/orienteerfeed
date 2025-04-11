@@ -29,6 +29,7 @@ export const typeDef = /* GraphQL */ `
     email: String! @constraint(format: "email", maxLength: 255)
     firstname: String! @constraint(maxLength: 255)
     lastname: String! @constraint(maxLength: 255)
+    organisation: String @constraint(maxLength: 191)
     password: String! @constraint(maxLength: 255)
     active: Boolean
     createdAt: String!
@@ -43,5 +44,6 @@ export const typeDef = /* GraphQL */ `
     password: String! @constraint(maxLength: 255)
     firstname: String! @constraint(maxLength: 255)
     lastname: String! @constraint(maxLength: 255)
+    organisation: String @constraint(maxLength: 191)
   }
 `;

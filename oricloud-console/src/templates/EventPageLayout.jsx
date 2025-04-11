@@ -44,7 +44,7 @@ export const EventPageLayout = ({ children, t, pageName }) => {
         </header>
 
         {/* Main Content (Scrollable) */}
-        <main className="flex-grow overflow-auto p-1 md:p-4">
+        <main className="flex-grow overflow-auto p-1 md:px-4">
           <div className="container 2xl:max-w-none  mx-auto lg:mx-0 p-2">
             {children}
           </div>

@@ -10,9 +10,6 @@ export const FeaturePage = ({ t }) => {
         <section id="start" className="min-h-screen">
           <StartFeature />
         </section>
-        <section id="results" className="min-h-screen">
-          Results
-        </section>
       </div>
     </LandingPageLayout>
   );
@@ -80,7 +77,7 @@ const EntriesTable = ({ competitors }) => {
                 <th className="px-2 py-1">Name</th>
                 <th className="px-2 py-1">Club</th>
                 <th className="px-2 py-1">Card Number</th>
-                <th className="px-2 py-1">Time</th>
+                <th className="px-2 py-1">Start</th>
                 <th className="px-2 py-1">Status</th>
               </tr>
             </thead>

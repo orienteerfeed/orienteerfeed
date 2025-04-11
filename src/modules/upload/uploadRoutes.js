@@ -406,6 +406,111 @@ async function upsertCompetitor(
 }
 
 /**
+ * Updates or inserts split times for a given competitor based on the provided result data.
+ *
+ * This function performs the following operations:
+ * - Finds existing splits for the competitor in the database.
+ * - Compares the incoming split times with the existing ones.
+ * - Creates new splits for any incoming splits that do not exist in the database.
+ * - Updates existing splits if their times differ from the incoming data.
+ * - Deletes splits from the database that are not present in the incoming data.
+ *
+ * @async
+ * @function upsertSplits
+ * @param {number} competitorId - The ID of the competitor whose splits are being updated.
+ * @param {Object} result - The result data containing split times.
+ * @param {Array<Object>} result.SplitTime - An array of split time objects.
+ * @param {Array<string>} [result.SplitTime[].ControlCode] - The control code(s) for the split.
+ * @param {Array<string>} [result.SplitTime[].Time] - The time(s) for the split.
+ * @returns {Promise<Object>} An object summarizing the changes made:
+ * - `created` {number}: The number of splits created.
+ * - `updated` {number}: The number of splits updated.
+ * - `deleted` {number}: The number of splits deleted.
+ * - `changeMade` {boolean}: Whether any changes were made (true if splits were created, updated, or deleted).
+ */
+async function upsertSplits(competitorId, result) {
+  const dbSplitResponse = await prisma.split.findMany({
+    where: { competitorId: competitorId },
+    select: {
+      id: true,
+      controlCode: true,
+      time: true,
+    },
+  });
+
+  const splitTimes = result.SplitTime || [];
+  const incomingSplits = splitTimes
+    .map((split) => ({
+      controlCode: split.ControlCode?.[0]
+        ? parseInt(split.ControlCode[0])
+        : null,
+      time: split.Time?.[0] ? parseInt(split.Time[0]) : null,
+    }))
+    .filter((split) => split.controlCode !== null);
+
+  // Create a map of existing splits for quick lookup
+  const existingSplitsMap = new Map(
+    dbSplitResponse.map((split) => [split.controlCode, split]),
+  );
+
+  // Track splits to create, update, and delete
+  const splitsToCreate = [];
+  const splitsToUpdate = [];
+  const existingControlCodes = new Set();
+  let updated = false;
+
+  for (const incomingSplit of incomingSplits) {
+    const existingSplit = existingSplitsMap.get(incomingSplit.controlCode);
+    if (existingSplit) {
+      existingControlCodes.add(incomingSplit.controlCode);
+      if (existingSplit.time !== incomingSplit.time) {
+        splitsToUpdate.push({
+          id: existingSplit.id,
+          time: incomingSplit.time,
+        });
+        updated = true;
+      }
+    } else {
+      splitsToCreate.push({
+        competitorId: competitorId,
+        controlCode: incomingSplit.controlCode,
+        time: incomingSplit.time,
+      });
+      updated = true;
+    }
+  }
+
+  const splitsToDelete = dbSplitResponse.filter(
+    (split) => !existingControlCodes.has(split.controlCode),
+  );
+
+  if (splitsToDelete.length > 0) {
+    updated = true;
+  }
+
+  // Perform database operations
+  await Promise.all([
+    ...splitsToCreate.map((split) => prisma.split.create({ data: split })),
+    ...splitsToUpdate.map((split) =>
+      prisma.split.update({
+        where: { id: split.id },
+        data: { time: split.time },
+      }),
+    ),
+    ...splitsToDelete.map((split) =>
+      prisma.split.delete({ where: { id: split.id } }),
+    ),
+  ]);
+
+  return {
+    created: splitsToCreate.length,
+    updated: splitsToUpdate.length,
+    deleted: splitsToDelete.length,
+    changeMade: updated,
+  };
+}
+
+/**
  * Upserts (inserts or updates) a team entry in the database.
  *
  * This function ensures that a team is either created or updated based on its
@@ -612,7 +717,7 @@ async function processClassResults(
             const person = competitorResult.Person.shift();
             const organisation = competitorResult.Organisation.shift();
             const result = competitorResult.Result.shift();
-            const { updated } = await upsertCompetitor(
+            const { id: competitorId, updated } = await upsertCompetitor(
               eventId,
               classId,
               person,
@@ -620,7 +725,11 @@ async function processClassResults(
               null,
               result,
             );
-            if (updated) updatedClasses.add(classId);
+            const { changeMade: updatedSplits } = await upsertSplits(
+              competitorId,
+              result,
+            );
+            if (updated || updatedSplits) updatedClasses.add(classId);
           }),
         );
         if (dbResponseEvent.ranking) {
@@ -657,7 +766,7 @@ async function processClassResults(
                   const result = [...teamMemberResult.Result].shift();
                   const leg = [...result.Leg].shift();
 
-                  const { updated } = await upsertCompetitor(
+                  const { id: competitorId, updated } = await upsertCompetitor(
                     eventId,
                     classId,
                     person,
@@ -667,7 +776,11 @@ async function processClassResults(
                     teamId,
                     leg,
                   );
-                  if (updated) updatedClasses.add(classId);
+                  const { changeMade: updatedSplits } = await upsertSplits(
+                    competitorId,
+                    result,
+                  );
+                  if (updated || updatedSplits) updatedClasses.add(classId);
                 }),
               );
             }

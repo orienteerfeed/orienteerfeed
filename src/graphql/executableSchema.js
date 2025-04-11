@@ -40,11 +40,17 @@ import {
   resolvers as countryResolvers,
 } from './country/index.js';
 
-// Import type definitions and resolvers for Country.
+// Import type definitions and resolvers for EventPassword.
 import {
   typeDef as EventPassword,
   resolvers as eventPasswordResolvers,
 } from './eventPassword/index.js';
+
+// Import type definitions and resolvers for Split.
+import {
+  typeDef as Split,
+  resolvers as splitResolvers,
+} from './split/index.js';
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 // Basic query and mutation typeDefs
@@ -84,6 +90,7 @@ const schema = makeExecutableSchema({
     Changelog,
     Country,
     EventPassword,
+    Split,
   ],
   resolvers: merge(
     {}, // Start with an empty object to avoid mutating the original resolvers
@@ -97,6 +104,7 @@ const schema = makeExecutableSchema({
     changelogResolvers,
     countryResolvers,
     eventPasswordResolvers,
+    splitResolvers,
   ),
 });
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { Tab } from '../../../atoms';
 import { Alert, FloatingBadge } from '../../../organisms';
 import { EventPageLayout } from '../../../templates';
 import { useAuth } from '../../../utils';
@@ -9,6 +10,7 @@ import PATHNAMES from '../../../pathnames';
 import { ResultTable } from './ResultTable';
 import { WinnerNotification } from './WinnerNotifications';
 import { NotificationControlPanel } from './NotificationControlPanel';
+import { ClassIndividualSplit } from './ClassIndividualSplit';
 
 const GET_EVENT = gql`
   query Event($eventId: String!) {
@@ -74,12 +76,80 @@ export const EventDetailPage = () => {
   const [selectedClass, setSelectedClass] = useState(
     classIdFromUrl || undefined,
   );
-  const [competitors, setCompetitors] = useState([]);
-  const [classMenuOpen, setClassMenuOpen] = useState(false);
 
   const { loading, error, data } = useQuery(GET_EVENT, {
     variables: { eventId },
   });
+
+  if (loading) return <p>{t('Loading', { ns: 'common' })}</p>;
+  if (error)
+    return (
+      <p>
+        {t('Error', { ns: 'common' })}: {error.message}
+      </p>
+    );
+
+  return (
+    <EventPageLayout t={t} pageName={data?.event?.name}>
+      <div className="grid items-start gap-2">
+        <FloatingBadge title={data?.event?.name} />
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-start">
+            {user?.id === data.event.authorId && (
+              <div className="flex items-center">
+                <Link
+                  to={PATHNAMES.getEventSettings(eventId)}
+                  className="bg-zinc-800 dark:bg-zinc-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block text-center"
+                >
+                  {t('Settings', { ns: 'common' })}
+                </Link>
+              </div>
+            )}
+          </div>
+          <NotificationControlPanel className="ibline-block" />
+        </div>
+        <Tab
+          tabs={['Results', 'Splits']}
+          defaultValue="Results"
+          variant="line" // Try: 'line' | 'subtle' | 'outline' | 'plain'
+          size="md" // Try: 'sm' | 'md' | 'lg'
+        >
+          <ClassIndividualResult
+            {...{
+              t,
+              eventId,
+              data,
+              selectedClass,
+              setSelectedClass,
+              setSearchParams,
+            }}
+          />
+          <ClassIndividualSplit
+            {...{
+              t,
+              eventId,
+              data,
+              selectedClass,
+              setSelectedClass,
+              setSearchParams,
+            }}
+          />
+        </Tab>
+        <WinnerNotification eventId={eventId} />
+      </div>
+    </EventPageLayout>
+  );
+};
+
+const ClassIndividualResult = ({
+  t,
+  data,
+  selectedClass,
+  setSelectedClass,
+  setSearchParams,
+}) => {
+  const [competitors, setCompetitors] = useState([]);
+  const [classMenuOpen, setClassMenuOpen] = useState(false);
 
   // Subscribe to competitors updates
   const {
@@ -102,21 +172,13 @@ export const EventDetailPage = () => {
     if (competitorsData) {
       setCompetitors(competitorsData.competitorsByClassUpdated);
     }
-  }, [data, selectedClass, competitorsData]);
+  }, [data, selectedClass, setSelectedClass, competitorsData]);
 
   const onClickClass = (classId) => {
     setSelectedClass(classId);
     setSearchParams({ class: classId }); // Update URL
     setClassMenuOpen(false); // Close menu after selection
   };
-
-  if (loading) return <p>{t('Loading', { ns: 'common' })}</p>;
-  if (error)
-    return (
-      <p>
-        {t('Error', { ns: 'common' })}: {error.message}
-      </p>
-    );
 
   const courseLengthInKm =
     (data?.event?.classes.find((c) => c.id === selectedClass)?.length ?? 0) /
@@ -126,96 +188,71 @@ export const EventDetailPage = () => {
     data?.event?.classes.find((c) => c.id === selectedClass)?.climb ?? '';
 
   return (
-    <EventPageLayout t={t} pageName={data?.event?.name}>
-      <div className="grid items-start gap-8">
-        <FloatingBadge title={data?.event?.name} />
-        <div className="flex items-center justify-between">
-          <div className="inline-flex items-start">
-            {user?.id === data.event.authorId && (
-              <div className="flex items-center">
-                <Link
-                  to={PATHNAMES.getEventSettings(eventId)}
-                  className="bg-zinc-800 dark:bg-zinc-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block text-center"
-                >
-                  {t('Settings', { ns: 'common' })}
-                </Link>
+    <>
+      {typeof data?.event !== 'undefined' && data.event?.classes.length > 0 ? (
+        <div className="flex gap-6">
+          <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                {data?.event?.classes.find((c) => c.id === selectedClass)?.name}
+              </h2>
+              <div>
+                <p className="text-sm">
+                  {formattedCourseLength} km{' '}
+                  {courseClimbthInMetres && '/ ' + courseClimbthInMetres + ' m'}
+                </p>
               </div>
+            </div>
+            {competitors.length > 0 ? (
+              <ResultTable
+                competitors={competitors}
+                event={data?.event}
+                selectedClassName={
+                  data?.event?.classes.find((c) => c.id === selectedClass)?.name
+                }
+                isLoading={competitorsLoading}
+                error={competitorsError}
+              />
+            ) : (
+              <p>{t('Pages.Event.NoCompetitorsFound')}</p>
             )}
           </div>
-          <NotificationControlPanel className="ibline-block" />
-        </div>
-        {typeof data?.event !== 'undefined' &&
-        data.event?.classes.length > 0 ? (
-          <div className="flex gap-6">
-            <div className="relative flex flex-col w-full h-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-                  {
-                    data?.event?.classes.find((c) => c.id === selectedClass)
-                      ?.name
-                  }
-                </h2>
-                <div>
-                  <p className="text-sm">
-                    {formattedCourseLength} km{' '}
-                    {courseClimbthInMetres &&
-                      '/ ' + courseClimbthInMetres + ' m'}
-                  </p>
-                </div>
-              </div>
-              {competitors.length > 0 ? (
-                <ResultTable
-                  competitors={competitors}
-                  event={data?.event}
-                  selectedClassName={
-                    data?.event?.classes.find((c) => c.id === selectedClass)
-                      ?.name
-                  }
-                  isLoading={competitorsLoading}
-                  error={competitorsError}
-                />
-              ) : (
-                <p>{t('Pages.Event.NoCompetitorsFound')}</p>
-              )}
-              <WinnerNotification eventId={eventId} />
+          {/* Sidebar (Visible only on lg+) */}
+          <aside className="hidden xl:flex flex-col gap-4">
+            <div className="relative flex flex-col w-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                {t('Orienteering.Class', { ns: 'common' })}
+              </h2>
+              <nav className="flex flex-wrap gap-4 justify-start max-h-[56rem] overflow-y-auto">
+                {[...data?.event?.classes]
+                  ?.sort((a, b) => a.name.localeCompare(b.name))
+                  .map((classItem) => (
+                    <button
+                      key={classItem.id}
+                      onClick={() => onClickClass(classItem.id)}
+                      className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
+                        selectedClass === classItem.id &&
+                        'bg-accent dark:text-accent-foreground'
+                      }`}
+                    >
+                      <span>{classItem.name}</span>
+                    </button>
+                  ))}
+              </nav>
             </div>
-            {/* Sidebar (Visible only on lg+) */}
-            <aside className="hidden xl:flex flex-col gap-4">
-              <div className="relative flex flex-col w-full rounded-2xl bg-white shadow-lg p-4 dark:bg-zinc-700 dark:text-white">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-                  {t('Orienteering.Class', { ns: 'common' })}
-                </h2>
-                <nav className="flex flex-wrap gap-4 justify-start max-h-[56rem] overflow-y-auto">
-                  {[...data?.event?.classes]
-                    ?.sort((a, b) => a.name.localeCompare(b.name))
-                    .map((classItem) => (
-                      <button
-                        key={classItem.id}
-                        onClick={() => onClickClass(classItem.id)}
-                        className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground ${
-                          selectedClass === classItem.id &&
-                          'bg-accent dark:text-accent-foreground'
-                        }`}
-                      >
-                        <span>{classItem.name}</span>
-                      </button>
-                    ))}
-                </nav>
-              </div>
-            </aside>
-          </div>
-        ) : (
-          <Alert
-            variant="filled"
-            severity="warning"
-            title={t('Pages.Event.Alert.EventDataNotAvailableTitle')}
-            className="!pl-14"
-          >
-            {t('Pages.Event.Alert.EventDataNotAvailableMessage')}
-          </Alert>
-        )}
-      </div>
+          </aside>
+        </div>
+      ) : (
+        <Alert
+          variant="filled"
+          severity="warning"
+          title={t('Pages.Event.Alert.EventDataNotAvailableTitle')}
+          className="!pl-14"
+        >
+          {t('Pages.Event.Alert.EventDataNotAvailableMessage')}
+        </Alert>
+      )}
 
       {/* Floating Button (for Mobile) */}
       <button
@@ -233,7 +270,7 @@ export const EventDetailPage = () => {
         } transition-transform duration-300 ease-in-out shadow-lg`}
       >
         <button
-          className="absolute top-4 right-4 text-xl"
+          className="absolute top-4 right-4 text-xl dark:text-white"
           onClick={() => setClassMenuOpen(false)}
         >
           ✕
@@ -248,7 +285,7 @@ export const EventDetailPage = () => {
               <button
                 key={classItem.id}
                 onClick={() => onClickClass(classItem.id)}
-                className={`text-left px-3 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 ${
+                className={`text-left px-3 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-white ${
                   selectedClass === classItem.id &&
                   'bg-gray-300 dark:bg-gray-500'
                 }`}
@@ -258,6 +295,6 @@ export const EventDetailPage = () => {
             ))}
         </nav>
       </div>
-    </EventPageLayout>
+    </>
   );
 };

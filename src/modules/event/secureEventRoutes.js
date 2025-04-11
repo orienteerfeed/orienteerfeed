@@ -1033,6 +1033,21 @@ router.post(
  *                description: ID of the main source system.
  *                maxLength: 191
  *                example: "27"
+ *              splits:
+ *                type: array
+ *                description: List of split times (controls visited by the competitor).
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    controlCode:
+ *                      type: integer
+ *                      description: Code of the control point.
+ *                      example: 31
+ *                    time:
+ *                      type: integer
+ *                      nullable: true
+ *                      description: Time (in seconds or milliseconds) the competitor reached the control. Can be null if unknown.
+ *                      example: 125
  *    responses:
  *        200:
  *          description: Successfully stored a new competitor.
@@ -1157,6 +1172,7 @@ const handleValidateAndUpdateCompetitor = async (req, res, competitorId) => {
       leg: 'number',
       note: 'string',
       externalId: 'string',
+      splits: 'array',
     };
 
     const updateData = Object.keys(req.body).reduce((acc, field) => {
@@ -1170,6 +1186,11 @@ const handleValidateAndUpdateCompetitor = async (req, res, competitorId) => {
             break;
           case 'date':
             acc[field] = new Date(req.body[field]);
+            break;
+          case 'array':
+            acc[field] = Array.isArray(req.body[field])
+              ? req.body[field]
+              : [req.body[field]];
             break;
           default:
             acc[field] = req.body[field];
@@ -1357,6 +1378,21 @@ const handleValidateAndUpdateCompetitor = async (req, res, competitorId) => {
  *                description: ID of the main source system.
  *                maxLength: 191
  *                example: "27"
+ *              splits:
+ *                type: array
+ *                description: List of split times (controls visited by the competitor).
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    controlCode:
+ *                      type: integer
+ *                      description: Code of the control point.
+ *                      example: 31
+ *                    time:
+ *                      type: integer
+ *                      nullable: true
+ *                      description: Time (in seconds or milliseconds) the competitor reached the control. Can be null if unknown.
+ *                      example: 125
  *    responses:
  *        200:
  *          description: Return successful message
@@ -1537,6 +1573,21 @@ router.put(
  *                description: ID of the main source system.
  *                maxLength: 191
  *                example: "27"
+ *              splits:
+ *                type: array
+ *                description: List of split times (controls visited by the competitor).
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    controlCode:
+ *                      type: integer
+ *                      description: Code of the control point.
+ *                      example: 31
+ *                    time:
+ *                      type: integer
+ *                      nullable: true
+ *                      description: Time (in seconds or milliseconds) the competitor reached the control. Can be null if unknown.
+ *                      example: 125
  *    responses:
  *        200:
  *          description: Return successful message

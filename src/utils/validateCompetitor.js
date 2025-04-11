@@ -156,6 +156,21 @@ const commonValidations = [
     .isString()
     .isLength({ max: 191 })
     .withMessage('External ID can be at most 191 characters long'),
+
+  body('splits').optional().isArray().withMessage('splits must be an array'),
+
+  body('splits.*.controlCode')
+    .if(body('splits').exists())
+    .isInt()
+    .withMessage('Each split must have an integer controlCode'),
+
+  body('splits.*.time')
+    .optional({ nullable: true })
+    .custom((value) => {
+      if (value === null || value === undefined) return true;
+      if (Number.isInteger(value)) return true;
+      throw new Error('Each split.time must be an integer, null, or undefined');
+    }),
 ];
 
 // Validation middleware for creating a competitor (requires specific fields)

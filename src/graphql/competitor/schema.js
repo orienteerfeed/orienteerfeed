@@ -46,6 +46,7 @@ export const typeDef = /* GraphQL */ `
     note: String
     externalId: String
     updatedAt: String!
+    splits: [Split!]
   }
   input StatusChange {
     eventId: ID!

@@ -45,6 +45,7 @@ model User {
   email     String   @unique
   firstname String
   lastname  String
+  organisation String?
   password  String   @db.VarChar(255)
   active    Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -137,6 +138,15 @@ model Competitor {
   updatedAt     DateTime     @default(now()) @updatedAt
   externalId    String?
   protocols     Protocol[]
+  splits        Split[]
+}
+
+model Split {
+  id            Int          @id @default(autoincrement()) @db.UnsignedInt
+  competitorId  Int          @db.UnsignedInt
+  competitor    Competitor   @relation(fields: [competitorId], references: [id])
+  controlCode   Int
+  time          Int?
 }
 
 model Team {

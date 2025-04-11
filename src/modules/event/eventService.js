@@ -206,6 +206,13 @@ export const updateCompetitor = async (
         leg: true,
         note: true,
         externalId: true,
+        splits: {
+          select: {
+            id: true,
+            controlCode: true,
+            time: true,
+          },
+        },
       },
     });
   } catch (err) {
@@ -273,11 +280,27 @@ export const updateCompetitor = async (
     }
   });
 
+  const { splits, ...baseData } = updateData;
+
   try {
     await prisma.competitor.update({
       where: { id: parseInt(competitorId) },
-      data: { ...updateData },
+      data: { ...baseData },
     });
+
+    if (splits && Array.isArray(splits)) {
+      await prisma.split.deleteMany({
+        where: { competitorId: parseInt(competitorId) },
+      });
+
+      await prisma.split.createMany({
+        data: splits.map(({ controlCode, time }) => ({
+          competitorId: parseInt(competitorId),
+          controlCode,
+          time,
+        })),
+      });
+    }
   } catch (err) {
     console.error('Failed to update competitor:', err);
     throw new DatabaseError('Error updating competitor');
@@ -338,8 +361,16 @@ export const storeCompetitor = async (
   userId,
   origin,
 ) => {
-  const { classId, firstname, lastname, registration, status, card, note } =
-    competitorData;
+  const {
+    classId,
+    firstname,
+    lastname,
+    registration,
+    status,
+    card,
+    note,
+    splits,
+  } = competitorData;
 
   // Check if the class exists before proceeding
   let existingClass;
@@ -392,6 +423,26 @@ export const storeCompetitor = async (
   } catch (err) {
     console.error('Error creating competitor:', err);
     throw new DatabaseError('Error storing competitor.');
+  }
+
+  // Handle splits if provided
+  if (splits && Array.isArray(splits)) {
+    try {
+      await prisma.$transaction(
+        splits.map(({ controlCode, time }) =>
+          prisma.split.create({
+            data: {
+              competitorId: newCompetitor.id,
+              controlCode,
+              time: time ?? null,
+            },
+          }),
+        ),
+      );
+    } catch (err) {
+      console.error('Error storing splits:', err);
+      throw new DatabaseError('Error storing competitor splits.');
+    }
   }
 
   // Add a protocol record for each changed field

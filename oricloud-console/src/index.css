@@ -51,3 +51,15 @@
     color: white !important;
   }
 }
+
+@media (min-aspect-ratio: 16/9) {
+  .hide-on-small-ratio {
+    display: none;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) and (min-width: 3300px) and (min-height: 1600px) {
+  .increase-margin-top {
+    margin-top: 15rem !important; /* Adjust the value as needed */
+  }
+}
