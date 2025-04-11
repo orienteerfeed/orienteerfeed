@@ -155,6 +155,14 @@ router.get(
  *         description: ID of the class whose results you want to retrieve.
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: lastUpdate
+ *         required: false
+ *         description: ISO 8601 UTC datetime — return only competitors updated after this time.
+ *         schema:
+ *          type: string
+ *          format: date-time
+ *          example: "2025-04-10T00:00:00Z"
  *    responses:
  *      200:
  *        description: Event with array of classes and competitors
@@ -168,6 +176,10 @@ router.get(
   [
     check('eventId').not().isEmpty().isString(),
     check('class').isNumeric().optional(),
+    check('lastUpdate')
+      .optional()
+      .isISO8601()
+      .withMessage('lastUpdate must be a valid ISO 8601 datetime'),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -175,6 +187,7 @@ router.get(
       return res.status(422).json(validation(formatErrors(errors)));
     }
     const { eventId } = req.params;
+    const { lastUpdate } = req.query;
     const classes = req.query.class;
     // Everything went fine.
     let dbResponseEvent;
@@ -228,6 +241,13 @@ router.get(
                 climb: true,
                 controlsCount: true,
                 competitors: {
+                  where: lastUpdate
+                    ? {
+                        updatedAt: {
+                          gte: new Date(lastUpdate),
+                        },
+                      }
+                    : undefined,
                   select: {
                     id: true,
                     lastname: true,
@@ -284,6 +304,13 @@ router.get(
                     shortName: true,
                     bibNumber: true,
                     competitors: {
+                      where: lastUpdate
+                        ? {
+                            updatedAt: {
+                              gte: new Date(lastUpdate),
+                            },
+                          }
+                        : undefined,
                       select: {
                         id: true,
                         leg: true,

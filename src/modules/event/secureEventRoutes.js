@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, check, validationResult } from 'express-validator';
+import { body, check, query, validationResult } from 'express-validator';
 
 import {
   AuthenticationError,
@@ -1741,6 +1741,29 @@ router.put(
  *         description: String ID of the event to retrieve the protocol.
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: since
+ *         required: false
+ *         description: Return only changes created after this ISO 8601 datetime (UTC).
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-03-10T00:00:00Z"
+ *       - in: query
+ *         name: origin
+ *         required: false
+ *         description: Filter changes by origin (e.g. START, FINISH, IT, OFFICE).
+ *         schema:
+ *           type: string
+ *           enum: ["START", "FINISH", "IT", "OFFICE"]
+ *           example: "START"
+ *       - in: query
+ *         name: group
+ *         required: false
+ *         description: Group changes by competitor (aggregating fields per competitorId).
+ *         schema:
+ *           type: boolean
+ *           example: true
  *    responses:
  *        200:
  *          description: Return successful message
@@ -1753,7 +1776,15 @@ router.put(
  */
 router.get(
   '/:eventId/changelog',
-  [check('eventId').not().isEmpty().isString()],
+  [
+    check('eventId').not().isEmpty().isString(),
+    query('since')
+      .optional()
+      .isISO8601()
+      .withMessage('since must be a valid ISO 8601 datetime'),
+    query('origin').optional().isIn(['START', 'FINISH', 'IT', 'OFFICE']),
+    query('group').optional().isBoolean().toBoolean(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -1761,6 +1792,8 @@ router.get(
     }
     const { eventId } = req.params;
     const { userId } = req.jwtDecoded;
+    const { since, origin, group } = req.query;
+    const shouldGroup = group === 'true' || group === true;
 
     //TODO: Check user permissions
     const event = await prisma.event.findUnique({
@@ -1800,10 +1833,25 @@ router.get(
           ),
         );
     }
+
+    // Build filters for the query
+    const filters = {
+      eventId: eventId,
+    };
+
+    if (since) {
+      filters.createdAt = { gte: new Date(since) };
+    }
+
+    if (origin) {
+      filters.origin = origin;
+    }
+
+    // Fetch the protocol data
     let dbProtocolResponse;
     try {
       dbProtocolResponse = await prisma.protocol.findMany({
-        where: { eventId: eventId },
+        where: filters,
         orderBy: [
           {
             createdAt: 'asc',
@@ -1836,13 +1884,49 @@ router.get(
       return res
         .status(500)
         .json(errorResponse(`An error occurred: ` + err.message));
-    } finally {
+    }
+
+    if (shouldGroup) {
+      const grouped = {};
+
+      for (const entry of dbProtocolResponse) {
+        const { competitorId } = entry;
+
+        if (!grouped[competitorId]) {
+          grouped[competitorId] = {
+            competitorId,
+            competitor: entry.competitor,
+            changes: [],
+          };
+        }
+
+        grouped[competitorId].changes.push({
+          id: entry.id,
+          origin: entry.origin,
+          type: entry.type,
+          previousValue: entry.previousValue,
+          newValue: entry.newValue,
+          author: entry.author,
+          createdAt: entry.createdAt,
+        });
+      }
+
       return res
         .status(200)
         .json(
-          successResponse('OK', { data: dbProtocolResponse }, res.statusCode),
+          successResponse(
+            'OK',
+            { data: Object.values(grouped) },
+            res.statusCode,
+          ),
         );
     }
+
+    return res
+      .status(200)
+      .json(
+        successResponse('OK', { data: dbProtocolResponse }, res.statusCode),
+      );
   },
 );
 
