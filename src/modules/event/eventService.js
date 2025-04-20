@@ -493,6 +493,57 @@ export const storeCompetitor = async (
 };
 
 /**
+ * Deletes all protocols, splits, and competitors related to event classes.
+ *
+ * @param {number} eventId - The event ID.
+ * @throws {DatabaseError} If any deletion fails.
+ */
+export const deleteEventCompetitorsAndProtocols = async (eventId) => {
+  try {
+    // 1. Find all class IDs associated with the eventId
+    const classIds = await prisma.class.findMany({
+      where: { eventId: eventId },
+      select: { id: true },
+    });
+
+    const classIdList = classIds.map((cls) => cls.id);
+
+    if (classIdList.length === 0) {
+      console.warn(`No classes found for event ${eventId}.`);
+      return;
+    }
+
+    // 2. Find all competitors under these classes
+    const competitors = await prisma.competitor.findMany({
+      where: { classId: { in: classIdList } },
+      select: { id: true },
+    });
+
+    const competitorIdList = competitors.map((c) => c.id);
+
+    if (competitorIdList.length > 0) {
+      // 3. Delete Protocols linked to competitors
+      await prisma.protocol.deleteMany({
+        where: { competitorId: { in: competitorIdList } },
+      });
+
+      // 4. Delete Splits linked to competitors
+      await prisma.split.deleteMany({
+        where: { competitorId: { in: competitorIdList } },
+      });
+
+      // 5. Delete Competitors
+      await prisma.competitor.deleteMany({
+        where: { id: { in: competitorIdList } },
+      });
+    }
+  } catch (err) {
+    console.error('Failed to delete competitors or protocols:', err);
+    throw new DatabaseError('Error deleting competitors or related data');
+  }
+};
+
+/**
  * Deletes all records from the protocol table for a given eventId
  * and removes all competitors associated with that eventId.
  *
@@ -502,33 +553,10 @@ export const storeCompetitor = async (
  */
 export const deleteEventCompetitors = async (eventId) => {
   try {
-    // Delete all protocol records for the given eventId
-    await prisma.protocol.deleteMany({
-      where: { eventId: eventId },
-    });
+    await deleteEventCompetitorsAndProtocols(eventId);
   } catch (err) {
-    console.error('Failed to delete protocol records:', err);
-    throw new DatabaseError('Error deleting protocol records');
+    throw err; // already handled inside
   }
-
-  try {
-    // Find all class IDs associated with the eventId
-    const classIds = await prisma.class.findMany({
-      where: { eventId: eventId },
-      select: { id: true },
-    });
-
-    const classIdList = classIds.map((cls) => cls.id);
-
-    // Delete all competitors associated with the found class IDs
-    await prisma.competitor.deleteMany({
-      where: { classId: { in: classIdList } },
-    });
-  } catch (err) {
-    console.error('Failed to delete competitors:', err);
-    throw new DatabaseError('Error deleting competitors');
-  }
-
   return `All competitors for event ${eventId} have been successfully deleted.`;
 };
 
@@ -542,42 +570,21 @@ export const deleteEventCompetitors = async (eventId) => {
  */
 export const deleteAllEventData = async (eventId) => {
   try {
-    // Delete all protocol records for the given eventId
-    await prisma.protocol.deleteMany({
-      where: { eventId: eventId },
-    });
-  } catch (err) {
-    console.error('Failed to delete protocol records:', err);
-    throw new DatabaseError('Error deleting protocol records');
-  }
+    // Step 1: Delete competitors, protocols, splits
+    await deleteEventCompetitorsAndProtocols(eventId);
 
-  try {
-    // Find all class IDs associated with the eventId
-    const classIds = await prisma.class.findMany({
-      where: { eventId: eventId },
-      select: { id: true },
-    });
-
-    const classIdList = classIds.map((cls) => cls.id);
-
-    // Delete all competitors associated with the found class IDs
-    await prisma.competitor.deleteMany({
-      where: { classId: { in: classIdList } },
-    });
-
-    // Delete all classes associated with the eventId
+    // Step 2: Delete Classes linked to event
     await prisma.class.deleteMany({
       where: { eventId: eventId },
     });
 
-    // Delete event password
+    // Step 3: Delete Event Passwords
     await prisma.eventPassword.deleteMany({
       where: { eventId: eventId },
     });
   } catch (err) {
-    console.error('Failed to delete event-related data:', err);
-    throw new DatabaseError('Error deleting event-related data');
+    console.error('Failed to delete all event data:', err);
+    throw new DatabaseError('Error deleting all event data');
   }
-
   return `All event data for event ${eventId} have been successfully deleted.`;
 };

@@ -86,7 +86,7 @@ const validateEvent = [
 
   // Validate 'longitude' - must be a number between -180 and 180
   check('longitude')
-    .optional({ nullable: true })
+    .optional({ checkFalsy: true })
     .isFloat({ min: -180, max: 180 })
     .withMessage('Longitude must be a number between -180 and 180'),
 

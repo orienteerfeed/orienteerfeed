@@ -9,14 +9,15 @@ const tabsTrigger = cva(
   {
     variants: {
       variant: {
-        line: 'text-gray-600 hover:text-black data-[state=active]:text-black data-[state=active]:border-b-2 data-[state=active]:border-black',
+        line: 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white data-[state=active]:text-black dark:data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-black dark:data-[state=active]:border-white',
         subtle:
-          'text-gray-600 hover:text-black data-[state=active]:text-black bg-transparent data-[state=active]:bg-gray-100 rounded-md',
+          'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white data-[state=active]:text-black bg-transparent data-[state=active]:bg-gray-100 rounded-md',
         enclosed:
-          'text-gray-600 hover:text-black border data-[state=active]:bg-white data-[state=active]:border-gray-300 rounded-t-md',
+          'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white border data-[state=active]:bg-white data-[state=active]:border-gray-300 rounded-t-md',
         outline:
-          'text-gray-600 hover:text-black border border-gray-300 data-[state=active]:bg-white rounded-md',
-        plain: 'text-gray-700 data-[state=active]:font-semibold',
+          'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white border border-gray-300 data-[state=active]:bg-white rounded-md',
+        plain:
+          'text-gray-700 dark:text-gray-500 data-[state=active]:font-semibold',
       },
       size: {
         sm: 'text-sm px-3 py-1',

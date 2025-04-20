@@ -1,3 +1,4 @@
+export { CreateEventDialog } from './CreateEventDialog';
 export { EventPage } from './EventPage';
 export { EventDetailPage } from './eventDetail';
 export { EventSettingsPage, EventInfoCard } from './eventSettings';

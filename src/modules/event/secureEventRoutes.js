@@ -410,6 +410,8 @@ router.put('/:eventId', validateEvent, async (req, res) => {
     date,
     organizer,
     location,
+    latitude,
+    longitude,
     country,
     zeroTime,
     ranking,
@@ -439,6 +441,16 @@ router.put('/:eventId', validateEvent, async (req, res) => {
 
     // TODO: Add permission checks to ensure the user is allowed to edit the event
 
+    // 🔥 Normalize latitude and longitude
+    const dbLatitude =
+      latitude === '' || latitude === null || Number(latitude) === 0
+        ? null
+        : Number(latitude);
+    const dbLongitude =
+      longitude === '' || longitude === null || Number(longitude) === 0
+        ? null
+        : Number(longitude);
+
     const updatedEvent = await prisma.event.update({
       where: { id: eventId },
       data: {
@@ -446,6 +458,8 @@ router.put('/:eventId', validateEvent, async (req, res) => {
         date: new Date(date),
         organizer,
         location,
+        latitude: dbLatitude,
+        longitude: dbLongitude,
         countryId: country,
         zeroTime: new Date(zeroTime),
         ranking,

@@ -2,21 +2,24 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSetting } from 'react-icons/ai';
+import { Button, VisibilityBadge } from '../../../atoms';
 import { BackButton, TableFetchState } from '../../../molecules';
 import { EventPageLayout } from '../../../templates';
+import { CreateEventDialog } from '../';
 
 import { formatDate, useFetchRequest } from '../../../utils';
 
 import ENDPOINTS from '../../../endpoints';
 import PATHNAMES from '../../../pathnames';
-import { Button, VisibilityBadge } from '../../../atoms';
-
 export const MyEventPage = () => {
   const { t } = useTranslation();
   return (
     <EventPageLayout t={t}>
       <div className="grid items-start gap-8">
-        <BackButton t={t} path={PATHNAMES.empty()} />
+        <div className="flex justify-between">
+          <BackButton t={t} path={PATHNAMES.empty()} />
+          <CreateEventDialog t={t} />
+        </div>
         <MyEventList t={t} />
       </div>
     </EventPageLayout>

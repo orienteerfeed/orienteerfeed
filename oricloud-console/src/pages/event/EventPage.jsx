@@ -1,59 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AiOutlinePlus } from 'react-icons/ai';
-import { EventPageLayout } from '../../templates';
 
-import { Alert, SubmitButton } from '../../organisms';
-import { EventList } from './EventList';
-import { Button } from 'src/atoms';
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogFooter,
-} from 'src/organisms/Dialog';
-import { EventForm } from '.';
+import { Button } from '../../atoms';
+import { Alert } from '../../organisms';
+import { EventPageLayout } from '../../templates';
 import { useAuth } from '../../utils';
 
-import PATHNAMES from '../../pathnames';
+import { CreateEventDialog } from './CreateEventDialog';
+import { EventList } from './EventList';
 
-const CreateEventDialog = ({ t, initialData = null }) => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>
-          <AiOutlinePlus className="mr-2" />
-          {t('Pages.Event.Oprations.CreateEvent')}
-        </Button>
-      </DialogTrigger>
-      <DialogContent
-        title={
-          initialData
-            ? t('Pages.Event.Oprations.EditEvent')
-            : t('Pages.Event.Oprations.CreateEvent')
-        }
-        description={
-          initialData
-            ? t('Pages.Event.Oprations.EditDescription')
-            : t('Pages.Event.Oprations.CreateDescription')
-        }
-      >
-        <EventForm
-          t={t}
-          initialData={initialData}
-          renderSubmitButton={({ isSubmitting }) => (
-            <DialogFooter>
-              <SubmitButton isSubmitting={isSubmitting}>
-                {t('Operations.Submit', { ns: 'common' })}
-              </SubmitButton>
-            </DialogFooter>
-          )}
-        />
-      </DialogContent>
-    </Dialog>
-  );
-};
+import PATHNAMES from '../../pathnames';
 
 export const EventPage = () => {
   const { t } = useTranslation();

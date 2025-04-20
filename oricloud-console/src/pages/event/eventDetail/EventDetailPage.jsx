@@ -4,6 +4,7 @@ import { gql, useQuery, useSubscription } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Tab } from '../../../atoms';
 import { Alert, FloatingBadge } from '../../../organisms';
+import { NotFoundPage } from '../../../pages/notFound';
 import { EventPageLayout } from '../../../templates';
 import { useAuth } from '../../../utils';
 import PATHNAMES from '../../../pathnames';
@@ -88,6 +89,7 @@ export const EventDetailPage = () => {
         {t('Error', { ns: 'common' })}: {error.message}
       </p>
     );
+  if (!data.event) return <NotFoundPage />;
 
   return (
     <EventPageLayout t={t} pageName={data?.event?.name}>

@@ -21,7 +21,7 @@ const DialogOverlay = forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in',
+      'fixed inset-0 z-50 bg-background/80 dark:bg-zinc-800/80 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in',
       className,
     )}
     {...props}
@@ -35,19 +35,19 @@ const DialogContent = forwardRef(
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed z-50 flex flex-col w-full max-h-[90vh] sm:max-w-lg bg-background rounded-lg shadow-lg border animate-in',
+          'fixed z-50 flex flex-col w-full max-h-[90vh] sm:max-w-lg bg-background dark:bg-zinc-800 rounded-lg shadow-lg border dark:border-zinc-900 animate-in',
           className,
         )}
         {...props}
       >
         {/* 🔹 Close Button in Top-Right */}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm z-20 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm z-20 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground data-[state=open]:text-white dark:text-white">
           <MdClose className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
 
         {/* 🔹 Fixed Header */}
-        <div className="sticky top-0 z-10 bg-background p-4 shadow-sm">
+        <div className="sticky top-0 z-10 bg-background dark:bg-zinc-800 p-4 shadow-sm">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
@@ -58,7 +58,7 @@ const DialogContent = forwardRef(
         <div className="flex-1 overflow-y-auto p-4">{children}</div>
 
         {/* 🔹 Fixed Footer */}
-        <div className="sticky bottom-0 z-10 bg-background p-1 shadow-sm">
+        <div className="sticky bottom-0 z-10 bg-background dark:bg-zinc-800 p-1 shadow-sm">
           <DialogFooter />
         </div>
       </DialogPrimitive.Content>
@@ -90,7 +90,7 @@ const DialogTitle = forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'text-lg font-semibold leading-none tracking-tight',
+      'text-lg font-semibold leading-none tracking-tight dark:text-white',
       className,
     )}
     {...props}
@@ -100,7 +100,10 @@ const DialogTitle = forwardRef(({ className, ...props }, ref) => (
 const DialogDescription = forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-muted-foreground', className)}
+    className={cn(
+      'text-sm text-muted-foreground dark:text-gray-400',
+      className,
+    )}
     {...props}
   />
 ));

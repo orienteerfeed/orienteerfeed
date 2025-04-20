@@ -1,4 +1,5 @@
 import { body, check, oneOf, validationResult } from 'express-validator';
+import { isExternalIdUnique } from './competitorUtils.js';
 import { formatErrors } from './errors.js';
 import { validation as validationResponse } from './responseApi.js';
 import prisma from './context.js';
@@ -210,6 +211,23 @@ export const validateCreateCompetitor = [
   check('firstname').not().isEmpty().withMessage('First name is required'),
 
   check('lastname').not().isEmpty().withMessage('Last name is required'),
+
+  check('externalId')
+    .optional({ nullable: true })
+    .isString()
+    .isLength({ max: 191 })
+    .withMessage('External ID can be at most 191 characters long')
+    .bail()
+    .custom(async (externalId, { req }) => {
+      if (externalId) {
+        const eventId = req.params.eventId; // assuming you send eventId in the body
+        const isUnique = await isExternalIdUnique(eventId, externalId);
+        if (!isUnique) {
+          throw new Error('External ID must be unique per event.');
+        }
+      }
+      return true;
+    }),
 
   ...commonValidations,
 
