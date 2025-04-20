@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cors());
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use('/mrb/assets', express.static('mrb/assets', { fallthrough: false }));
+app.use('../mrb/assets', express.static('mrb/assets', { fallthrough: false }));
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/mrb*', (req, res) => {
-  res.sendFile(path.join('mrb', 'index.html'), { root: '.' });
+  res.sendFile(path.join('..', 'mrb', 'index.html'), { root: '.' });
 });
 
 // Set up Apollo Server

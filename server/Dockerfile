@@ -1,6 +1,6 @@
 # Use the official Node.js image.
 # https://hub.docker.com/_/node
-FROM node:20.17-slim
+FROM node:22.14-slim
 
 RUN apt-get update -y
 RUN apt-get install -y openssl

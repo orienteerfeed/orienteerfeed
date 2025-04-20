@@ -24,7 +24,7 @@ This application is like a digital hub for all things related to orienteering ev
 
 ## Development
 
-We will be using [Node.js](https://nodejs.org/) v20.17.0 (current LTS).
+We will be using [Node.js](https://nodejs.org/) v22.14.0 (current LTS).
 New JavaScript features (ES2015) are "enabled". Can be used with promises, ES6 generators and async/await using [Babel](https://babeljs.io/).
 
 ### NodeJS Express
@@ -41,7 +41,14 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 git clone https://github.com/martinkrivda/orienteerfeed.git
 # Go into the repository
 cd orienteerfeed
-Create backend/.env from the template in backend/.env.example and fill in the credentials to your database and keys to 3rd party.
+```
+
+#### Backend
+
+```bash
+Create server/.env from the template in server/.env.example and fill in the credentials to your database and keys to 3rd party.
+# Go into the app folder
+cd server
 # Install dependencies
 npm install
 # Deploy database schema
@@ -51,9 +58,21 @@ npx prisma db seed
 npm run start:dev
 ```
 
+#### Frontend
+
+```bash
+Create client/.env from the template in client/.env.example and fill in the base url for backend api service.
+# Go into the app folder
+cd client
+# Install dependencies
+npm install
+# Run the app
+npm run start
+```
+
 #### How to update database schema
 
-1. Modify your `./prisma/schema.prisma` file to reflect the changes you want in your [database schema](https://www.prisma.io/docs/orm/prisma-schema/data-model/models). This could involve adding new models, updating existing models, or deleting models. For example, to add a new model:
+1. Modify your `./server/prisma/schema.prisma` file to reflect the changes you want in your [database schema](https://www.prisma.io/docs/orm/prisma-schema/data-model/models). This could involve adding new models, updating existing models, or deleting models. For example, to add a new model:
 
 ```
 model Post {

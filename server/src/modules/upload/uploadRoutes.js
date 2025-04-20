@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import multer from 'multer';
 import { Parser } from 'xml2js';
-import libxmljs from 'libxmljs';
+import libxmljs from 'libxmljs2';
 import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 
@@ -71,8 +71,13 @@ function getCompetitorKey(classId, person, keyType = 'registration') {
     if (keyType === 'registration') {
       // Use the first valid ID with type "CZE" or any other ID if "CZE" is not available
       const id =
-        person.Id.find((sourceId) => sourceId.ATTR?.type === 'CZE')?._ ||
-        person.Id[0];
+        person.Id.find(
+          (sourceId) =>
+            sourceId.ATTR?.type === 'CZE' &&
+            sourceId._ &&
+            sourceId._.trim() !== '',
+        )?._ ||
+        person.Id.find((sourceId) => sourceId._ && sourceId._.trim() !== '')?._;
       if (id) return id; // Use ID if available
     } else if (keyType === 'system') {
       // Use the system ID with type "QuickEvent"

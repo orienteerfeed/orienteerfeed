@@ -1,7 +1,7 @@
 version: '3'
 services:
   api:
-    image: oricloud-app
+    image: ofeed-app
     network_mode: host
     build: .
     restart: unless-stopped

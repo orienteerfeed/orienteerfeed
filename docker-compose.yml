@@ -10,9 +10,9 @@ services:
     networks:
       - app-network
   api:
-    image: oricloud-app
-    env_file: ./.env
-    build: .
+    image: ofeed-server
+    env_file: ./server/.env
+    build: ./server
     ports:
       - '${PORT}:3001'
     environment:
@@ -25,11 +25,12 @@ services:
     depends_on:
       - mysql
   frontend:
-    image: orinteerfeed-console
-    env_file: ./oricloud-console/.env
-    build: ./oricloud-console
+    image: ofeed-client
+    env_file: ./client/.env
+    build: ./client
     ports:
       - '3000:80'
+    restart: unless-stopped
     networks:
       - app-network
     depends_on:
