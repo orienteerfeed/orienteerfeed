@@ -41,6 +41,12 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 git clone https://github.com/martinkrivda/orienteerfeed.git
 # Go into the repository
 cd orienteerfeed
+# Install root dependencies
+# (Root dependencies include shared development tools like Prettier and ESLint,
+# which are used for code formatting, linting, and maintaining a consistent code style
+# across both the client and server applications. These tools are not needed in production
+# but are essential for a clean and maintainable codebase during development.)
+npm install
 ```
 
 #### Backend
