@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql:
-    env_file: ./.env
+    env_file: ./server/.env
     image: mysql:latest
     container_name: mysql
     restart: always
