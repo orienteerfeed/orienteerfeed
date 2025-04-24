@@ -17,6 +17,7 @@ import {
 import {
   EventDetailPage,
   EventPage,
+  EventReportPage,
   EventSettingsPage,
   MyEventPage,
 } from './pages/event';
@@ -53,6 +54,10 @@ export const AppRouter = () => {
         <Route
           path={PATHNAMES.myEvents()}
           element={<PrivateRoute component={<MyEventPage />} />}
+        />
+        <Route
+          path={PATHNAMES.eventReport()}
+          element={<PrivateRoute component={<EventReportPage />} />}
         />
         <Route
           path={PATHNAMES.eventSettings()}
