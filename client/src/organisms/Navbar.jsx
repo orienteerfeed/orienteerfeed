@@ -100,22 +100,11 @@ export const Navbar = ({ routes, onOpenSidenav, pageName, t }) => {
                 <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white"></div>
                 <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
                   <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Update: Martin Křivda miss punched
+                    New Update: Notifications for selected competitors and
+                    classes
                   </p>
                   <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    A new update for your fav competitor is available!
-                  </p>
-                </div>
-              </button>
-
-              <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white"></div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Update: Tomáš Křivda v cíli
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    A new update for your fav competitor!
+                    ... coming soon
                   </p>
                 </div>
               </button>

@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { FloatingBadge } from '../../organisms';
 import { EventPageLayout } from '../../templates';
 
+import PATHNAMES from '../../pathnames';
+
 export const ContactPage = () => {
   const { t } = useTranslation();
 
@@ -47,7 +49,7 @@ export const ContactPage = () => {
               orienteering enthusiasts, ask questions, and share experiences on
               our{' '}
               <Link
-                href="https://discord.gg/bXHnBcNWNc"
+                to={PATHNAMES.discord()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 underline"
@@ -96,7 +98,7 @@ export const ContactPage = () => {
           <p className="text-gray-700 dark:text-gray-300">
             Spotted a bug? Report it on our{' '}
             <Link
-              to="https://github.com/martinkrivda/orienteerfeed/issues"
+              to={PATHNAMES.github() + '/issues'}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 underline"

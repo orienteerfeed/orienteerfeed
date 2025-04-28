@@ -1,14 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <!-- Light mode favicon -->
+    <link
+      rel="icon"
+      href="%PUBLIC_URL%/favicon-light.ico"
+      media="(prefers-color-scheme: light)"
+    />
+    <!-- Dark mode favicon -->
+    <link
+      rel="icon"
+      href="%PUBLIC_URL%/favicon-dark.ico"
+      media="(prefers-color-scheme: dark)"
+    />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="OrienteerFeed is a platform for synchronizing data and delivering live results during orienteering events."
     />
+    <meta
+      name="keywords"
+      content="orienteering, live results, orienteering events, OrienteerFeed, race synchronization, real-time orienteering data, o-races, gps, splits, timing, oresults, orientační, běh, výsledky"
+    />
+    <meta name="author" content="Martin Křivda" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="en" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a

@@ -39,10 +39,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
           >
             Docs
           </Link>
-          <Link
-            to="https://github.com/martinkrivda/orienteerfeed"
-            className="hover:underline"
-          >
+          <Link to={PATHNAMES.github()} className="hover:underline">
             Collaborate
           </Link>
         </nav>
@@ -115,7 +112,7 @@ export const LandingPageLayout = ({ children, illustrations = null }) => {
               </li>
               <li>
                 <Link
-                  to="https://github.com/martinkrivda/orienteerfeed"
+                  to={PATHNAMES.github()}
                   className="block hover:underline"
                   onClick={() => setIsMenuOpen(false)}
                 >

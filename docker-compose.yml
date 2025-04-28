@@ -7,6 +7,8 @@ services:
     restart: always
     ports:
       - '3306:3306'
+    volumes:
+      - ./mysql-data:/var/lib/mysql
     networks:
       - app-network
   api:
@@ -14,11 +16,9 @@ services:
     env_file: ./server/.env
     build: ./server
     ports:
-      - '${PORT}:3001'
+      - '${SERVER_PORT}:3001'
     environment:
       - NODE_ENV=production
-      - ENCRYPTION_SECRET_KEY=${ENCRYPTION_SECRET_KEY}
-      - JWT_TOKEN_SECRET_KEY=${JWT_TOKEN_SECRET_KEY}
     restart: unless-stopped
     networks:
       - app-network
@@ -29,7 +29,7 @@ services:
     env_file: ./client/.env
     build: ./client
     ports:
-      - '3000:80'
+      - '${FRONTEND_PORT}:80'
     restart: unless-stopped
     networks:
       - app-network

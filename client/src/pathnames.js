@@ -24,8 +24,10 @@ const routes = {
   passwordResetEmailSentPage: () => '/password-reset-email-sent',
   passwordResetConfirmation: () => '/password-reset-confirmation/:userHash',
   getPasswordResetConfirmation: () => '/password-reset-confirmation',
-  landing: () => '/landing',
   mrb: () => `${process.env.REACT_APP_BASE_API_URL}/mrb`,
+  buyMeCoffee: () => 'https://buymeacoffee.com/ofeed',
+  discord: () => 'https://discord.gg/YWURC23tHZ',
+  github: () => 'https://github.com/orienteerfeed/orienteerfeed',
 };
 
 export default routes;

@@ -18,7 +18,7 @@ export const Footer = ({ t }) => {
         <ul className="flex flex-wrap items-center gap-3 sm:flex-nowrap md:gap-10">
           <li>
             <Link
-              to="https://github.com/martinkrivda/orienteerfeed"
+              to={PATHNAMES.github()}
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
               {t('Organisms.Footer.Collaborate')}
@@ -34,7 +34,7 @@ export const Footer = ({ t }) => {
           </li>
           <li>
             <Link
-              to="#"
+              to={PATHNAMES.buyMeCoffee()}
               className="text-base hover:underline font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
             >
               {t('Organisms.Footer.Donate')}

@@ -4,7 +4,7 @@
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/bXHnBcNWNc)](https://discord.gg/https://discord.gg/bXHnBcNWNc)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/YWURC23tHZ)](https://discord.gg/https://discord.gg/YWURC23tHZ)
 
 ## How It Works
 
@@ -38,7 +38,9 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ```bash
 # Clone this repository
-git clone https://github.com/martinkrivda/orienteerfeed.git
+git clone https://github.com/orienteerfeed/orienteerfeed.git
+# Create shared .env file in the project root folder
+Create .env from the template in .env.example - you can use default values.
 # Go into the repository
 cd orienteerfeed
 # Install root dependencies
