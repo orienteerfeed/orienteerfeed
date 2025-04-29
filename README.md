@@ -97,8 +97,11 @@ model Post {
 npx prisma migrate dev --name your_migration_name
 ```
 
-#### Docker compose
+## Docker compose
 ```bash
+# Create server and client env files
+Create server/.env from the template in server/.env.example and fill in the credentials to your database and keys to 3rd party.
+Create client/.env from the template in client/.env.example and fill in the base url for backend api service.
 # Start the OFeed platform with one command, docker must be running (e.g. Docker Desktop)
 docker compose up -d
 ```
