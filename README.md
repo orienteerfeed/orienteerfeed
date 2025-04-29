@@ -4,7 +4,7 @@
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/YWURC23tHZ)](https://discord.gg/https://discord.gg/YWURC23tHZ)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/YWURC23tHZ)](https://discord.gg/YWURC23tHZ)
 
 ## How It Works
 
@@ -38,9 +38,7 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ```bash
 # Clone this repository
-git clone https://github.com/orienteerfeed/orienteerfeed.git
-# Create shared .env file in the project root folder
-Create .env from the template in .env.example - you can use default values.
+git clone https://github.com/martinkrivda/orienteerfeed.git
 # Go into the repository
 cd orienteerfeed
 # Install root dependencies
@@ -51,12 +49,12 @@ cd orienteerfeed
 npm install
 ```
 
-#### Backend
+#### Server
 
 ```bash
-Create server/.env from the template in server/.env.example and fill in the credentials to your database and keys to 3rd party.
 # Go into the app folder
 cd server
+Create .env from the template in .env.example and fill in the credentials to your database and keys to 3rd party.
 # Install dependencies
 npm install
 # Deploy database schema
@@ -66,12 +64,12 @@ npx prisma db seed
 npm run start:dev
 ```
 
-#### Frontend
+#### Client
 
 ```bash
-Create client/.env from the template in client/.env.example and fill in the base url for backend api service.
 # Go into the app folder
 cd client
+Create .env from the template in .env.example and fill in the base url for backend api service.
 # Install dependencies
 npm install
 # Run the app
@@ -97,6 +95,12 @@ model Post {
 
 ```
 npx prisma migrate dev --name your_migration_name
+```
+
+#### Docker compose
+```bash
+# Start the OFeed platform with one command, docker must be running (e.g. Docker Desktop)
+docker compose up -d
 ```
 
 ## Contributing
