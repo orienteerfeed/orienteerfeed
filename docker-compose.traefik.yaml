@@ -1,0 +1,11 @@
+services:
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`${HOST?}`)
+      - traefik.http.routers.api.entrypoints=https
+      - traefik.http.routers.api.tls.certresolver=le
+      - traefik.http.services.api.loadbalancer.server.port=${SERVER_PORT?}
+      - traefik.http.middlewares.api-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.api-redirect.redirectscheme.permanent=true
+      - traefik.http.routers.api.middlewares=api-redirect
