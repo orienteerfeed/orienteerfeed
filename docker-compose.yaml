@@ -25,6 +25,16 @@ services:
       - app-network
     depends_on:
       - mysql
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -f http://localhost:${SERVER_PORT:-3001}/readyz || exit 1',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
   frontend:
     image: ofeed-client
     env_file: ./client/.env
