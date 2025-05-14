@@ -11,7 +11,15 @@ export const Footer = ({ t }) => {
           <Link className="hover:underline" to={PATHNAMES.empty()}>
             Orienteerfeed
           </Link>
-          . {t('Organisms.Footer.AllRightsReserved')}
+          .{' '}
+          <Link
+            className="hover:underline"
+            to="https://www.gnu.org/licenses/gpl-3.0.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('Organisms.Footer.LicensedUnderGnuGpl3')}
+          </Link>
         </p>
       </h5>
       <div>

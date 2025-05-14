@@ -6,6 +6,8 @@ import { ToggleSwitch, VisibilityBadge } from '../../../atoms';
 
 import { toast } from '../../../utils';
 
+import { GET_EVENT } from './EventSettingsPage';
+
 // GraphQL mutation to update published status
 const UPDATE_EVENT_VISIBILITY = gql`
   mutation UpdateEventVisibility($eventId: String!, $published: Boolean!) {
@@ -23,6 +25,14 @@ export const EventVisibilityCard = ({ t, eventId, isPublished }) => {
   const [published, setPublished] = useState(isPublished || false);
   const [updateEventVisibility, { loading }] = useMutation(
     UPDATE_EVENT_VISIBILITY,
+    {
+      refetchQueries: [
+        {
+          query: GET_EVENT,
+          variables: { eventId },
+        },
+      ],
+    },
   );
 
   const handleToggleEventVisibility = async () => {
