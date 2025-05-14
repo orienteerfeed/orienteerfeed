@@ -19,5 +19,4 @@ Thumbs.db
 *.swp
 
 # Environment / Secrets
-.env
 .env.*

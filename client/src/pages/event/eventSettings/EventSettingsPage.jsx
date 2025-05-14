@@ -27,7 +27,7 @@ import { NotAuthorizedPage } from 'src/pages/notAuthorized';
 import ENDPOINTS from '../../../endpoints';
 import PATHNAMES from '../../../pathnames';
 
-const GET_EVENT = gql`
+export const GET_EVENT = gql`
   query Event($eventId: String!) {
     event(id: $eventId) {
       id
@@ -125,6 +125,7 @@ export const EventSettingsPage = () => {
             <EventPasswordCard
               t={t}
               eventId={initialData.id}
+              eventData={data?.event}
               password={data?.event.eventPassword?.password}
               expiresAt={data?.event.eventPassword?.expiresAt}
               onPasswordUpdate={setPassword} // Pass the callback to update password
@@ -156,14 +157,6 @@ export const EventSettingsPage = () => {
                 new Date(parseInt(data.event.date, 10)),
               )}
             />
-            <div style={{ width: '100%', height: '800px', border: 'none' }}>
-              <iframe
-                src="https://www.buymeacoffee.com/ofeed"
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                title="Buy Me a Coffee"
-                allow="payment"
-              />
-            </div>
           </div>
           <div className="flex flex-col">
             <DangerZoneCard t={t} eventId={eventId} />

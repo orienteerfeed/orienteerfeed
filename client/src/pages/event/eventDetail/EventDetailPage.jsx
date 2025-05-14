@@ -256,14 +256,40 @@ const ClassIndividualResult = ({
         </Alert>
       )}
 
-      {/* Floating Button (for Mobile) */}
-      <button
-        className="xl:hidden fixed bottom-24 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg"
-        onClick={() => setClassMenuOpen(!classMenuOpen)}
-      >
-        {data?.event?.classes.find((c) => c.id === selectedClass)?.name ||
-          'Class'}
-      </button>
+      <div className="xl:hidden fixed bottom-20 right-0 z-50 group">
+        <button
+          onClick={() => setClassMenuOpen(!classMenuOpen)}
+          className={`
+      flex items-center bg-neutral-800 dark:bg-neutral-400 text-white rounded-l-full shadow-lg
+      overflow-hidden h-12 pr-6 pl-4
+      transition-all duration-300 ease-in-out
+      ${classMenuOpen ? 'max-w-[200px]' : 'max-w-[140px] group-hover:max-w-[200px]'}
+    `}
+        >
+          {/* Výchozí text "< Kategorie" */}
+          <span
+            className={`
+        whitespace-nowrap text-sm absolute
+        transition-opacity duration-200 ease-in-out
+        ${classMenuOpen ? 'opacity-0' : 'opacity-100 group-hover:opacity-0'}
+      `}
+          >
+            Kategorie
+          </span>
+
+          {/* Název třídy */}
+          <span
+            className={`
+        whitespace-nowrap text-sm ml-2
+        transition-opacity duration-200 ease-in-out
+        ${classMenuOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
+      `}
+          >
+            {data?.event?.classes.find((c) => c.id === selectedClass)?.name ||
+              'Class'}
+          </span>
+        </button>
+      </div>
 
       {/* Mobile Menu (Slide-in from Right) */}
       <div

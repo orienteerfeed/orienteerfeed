@@ -1,0 +1,8 @@
+services:
+  api:
+    deploy:
+      replicas: ${BACKEND_REPLICAS:-2}
+
+  frontend:
+    deploy:
+      replicas: ${FRONTEND_REPLICAS:-2}

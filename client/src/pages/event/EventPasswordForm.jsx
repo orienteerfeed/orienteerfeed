@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useApolloClient } from '@apollo/client';
 import { Formik } from 'formik';
 import { AiOutlineEye } from 'react-icons/ai';
 import { AiOutlineEyeInvisible } from 'react-icons/ai';
@@ -9,9 +10,12 @@ import { useRequest, toast } from '../../utils';
 
 import ENDPOINTS from '../../endpoints';
 
+import { GET_EVENT } from './eventSettings/EventSettingsPage';
+
 export const EventPasswordForm = ({
   t,
   eventId,
+  eventData,
   onPasswordUpdate,
   password: decryptedPassword,
   expiresAt,
@@ -23,6 +27,7 @@ export const EventPasswordForm = ({
   );
 
   const request = useRequest();
+  const apolloClient = useApolloClient();
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
@@ -55,6 +60,21 @@ export const EventPasswordForm = ({
         setPassword(newPassword);
         setExpiration(new Date(response.results.data.expiresAt).getTime());
         onPasswordUpdate(newPassword); // Notify parent of updated password
+
+        apolloClient.writeQuery({
+          query: GET_EVENT,
+          variables: { eventId },
+          data: {
+            event: {
+              ...eventData, // pokud máš, nebo doplň celé
+              eventPassword: {
+                password: newPassword,
+                expiresAt: new Date(response.results.data.expiresAt).getTime(),
+                __typename: 'EventPassword',
+              },
+            },
+          },
+        });
 
         console.log('Password updated successfully');
 

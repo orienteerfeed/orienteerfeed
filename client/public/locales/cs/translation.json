@@ -246,11 +246,11 @@
       "Pages": "Stránky"
     },
     "Footer": {
-      "AllRightsReserved": "Všechna práva vyhrazena.",
       "Collaborate": "Spolupracovat",
       "Docs": "Dokumentace",
       "Donate": "Podpořit",
-      "Blog": "Blog"
+      "Blog": "Blog",
+      "LicensedUnderGnuGpl3": "Publikováno pod licencí GNU GPL v3.0."
     }
   },
   "Molecules": {

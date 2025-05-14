@@ -27,7 +27,7 @@ const routes = {
   mrb: () => `${process.env.REACT_APP_BASE_API_URL}/mrb`,
   buyMeCoffee: () => 'https://buymeacoffee.com/ofeed',
   discord: () => 'https://discord.gg/YWURC23tHZ',
-  github: () => 'https://github.com/orienteerfeed/orienteerfeed',
+  github: () => 'https://github.com/orienteerfeed/ofeed',
 };
 
 export default routes;

@@ -38,9 +38,9 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ```bash
 # Clone this repository
-git clone https://github.com/martinkrivda/orienteerfeed.git
+git clone https://github.com/orienteerfeed/ofeed.git
 # Go into the repository
-cd orienteerfeed
+cd ofeed
 # Install root dependencies
 # (Root dependencies include shared development tools like Prettier and ESLint,
 # which are used for code formatting, linting, and maintaining a consistent code style
@@ -124,7 +124,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## Credits
 
 - [Martin Křivda](https://github.com/martinkrivda)
-- [All Contributors](https://github.com/martinkrivda/orienteerfeed/graphs/contributors)
+- [Lukáš Kettner](https://github.com/lukaskett)
+- [All Contributors](https://github.com/orienteerfeed/ofeed/graphs/contributors)
 
 ## License
 
