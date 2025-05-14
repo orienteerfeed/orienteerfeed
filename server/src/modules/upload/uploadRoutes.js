@@ -765,29 +765,44 @@ async function processClassResults(
               teamResult.TeamMemberResult &&
               teamResult.TeamMemberResult.length > 0
             ) {
-              await Promise.all(
-                teamResult.TeamMemberResult.map(async (teamMemberResult) => {
-                  const person = teamMemberResult.Person[0];
-                  const result = [...teamMemberResult.Result].shift();
-                  const leg = [...result.Leg].shift();
+              if (
+                Array.isArray(teamResult.TeamMemberResult) &&
+                teamResult.TeamMemberResult.length > 0
+              ) {
+                await Promise.all(
+                  teamResult.TeamMemberResult.map(async (teamMemberResult) => {
+                    if (!teamMemberResult?.Person?.[0]) return;
+                    const person = teamMemberResult.Person[0];
+                    const result = [...teamMemberResult.Result].shift();
+                    const leg = [...result.Leg].shift();
 
-                  const { id: competitorId, updated } = await upsertCompetitor(
-                    eventId,
-                    classId,
-                    person,
-                    organisation,
-                    null,
-                    result,
-                    teamId,
-                    leg,
-                  );
-                  const { changeMade: updatedSplits } = await upsertSplits(
-                    competitorId,
-                    result,
-                  );
-                  if (updated || updatedSplits) updatedClasses.add(classId);
-                }),
-              );
+                    if (!person || !result || !leg) {
+                      console.warn(
+                        'Skipping incomplete TeamMemberResult:',
+                        teamMemberResult,
+                      );
+                      return;
+                    }
+
+                    const { id: competitorId, updated } =
+                      await upsertCompetitor(
+                        eventId,
+                        classId,
+                        person,
+                        organisation,
+                        null,
+                        result,
+                        teamId,
+                        leg,
+                      );
+                    const { changeMade: updatedSplits } = await upsertSplits(
+                      competitorId,
+                      result,
+                    );
+                    if (updated || updatedSplits) updatedClasses.add(classId);
+                  }),
+                );
+              }
             }
           }),
         );

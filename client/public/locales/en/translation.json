@@ -68,7 +68,7 @@
       },
       "Alert": {
         "DemoTitle": "This is a demo app",
-        "DemoDescription": "OrienteerFeed console app is a demo app. If you face an issue please report it to Github issues, thanks.",
+        "DemoDescription": "OrienteerFeed app is a demo app. If you face an issue please report it to Github issues, thanks.",
         "EventDataNotAvailableTitle": "Event Data Not Available",
         "EventDataNotAvailableMessage": "No data is currently available for this event (start lists, registrations, courses, or results). Please check back later or contact the event organizer for more information."
       },
@@ -246,11 +246,11 @@
       "Pages": "Pages"
     },
     "Footer": {
-      "AllRightsReserved": "All Rights Reserved.",
       "Collaborate": "Collaborate",
       "Docs": "Docs",
       "Donate": "Donate",
-      "Blog": "Blog"
+      "Blog": "Blog",
+      "LicensedUnderGnuGpl3": "Licensed under the GNU GPL v3.0."
     }
   },
   "Molecules": {

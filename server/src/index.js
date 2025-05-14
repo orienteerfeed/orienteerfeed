@@ -140,6 +140,11 @@ app.get('/version', (req, res) => {
   return res.status(200).json(success(`Version: ${packageJson.version}`));
 });
 
+// Healthcheck endpoint
+app.get('/readyz', (req, res) => {
+  return res.status(200).send('OK');
+});
+
 // 404 - not found handling
 app.use((req, res) => {
   return res.status(404).json(error('404: Not found.', res.statusCode));
