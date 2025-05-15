@@ -6,13 +6,20 @@ on:
       - main
 
 jobs:
-  discord:
+  notify:
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
-      - name: Send commit message to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Notify Discord of commits to main
         run: |
-          curl -H "Content-Type: application/json" -X POST -d '{
-            "content": "**New Commit on `'"${GITHUB_REPOSITORY}"'`**\nBranch: `'"${GITHUB_REF#refs/heads/}"'`\nCommit: `'"${GITHUB_SHA}"'`\nAuthor: `'"${GITHUB_ACTOR}"'`\nMessage: `'"${{ github.event.head_commit.message }}"'`"
-          }' "$DISCORD_WEBHOOK"
+          COMMITS=$(jq -c '.commits[]' $GITHUB_EVENT_PATH)
+          for COMMIT in $COMMITS; do
+            AUTHOR=$(echo $COMMIT | jq -r '.author.name')
+            MESSAGE=$(echo $COMMIT | jq -r '.message')
+            URL=$(echo $COMMIT | jq -r '.url')
+
+            curl -H "Content-Type: application/json" -X POST -d "{
+              \"content\": \"📦 **New Commit on \`${GITHUB_REPOSITORY}\`**\n🔀 Branch: \`${GITHUB_REF#refs/heads/}\`\n👤 Author: \`${AUTHOR}\`\n📝 Message: ${MESSAGE}\n🔗 ${URL}\"
+            }" \"$DISCORD_WEBHOOK\"
+          done
