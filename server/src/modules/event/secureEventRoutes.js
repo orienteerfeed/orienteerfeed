@@ -1772,6 +1772,13 @@ router.put(
  *           enum: ["START", "FINISH", "IT", "OFFICE"]
  *           example: "START"
  *       - in: query
+ *         name: classId
+ *         required: false
+ *         description: Filter changes by classId.
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *       - in: query
  *         name: group
  *         required: false
  *         description: Group changes by competitor (aggregating fields per competitorId).
@@ -1798,6 +1805,23 @@ router.get(
       .withMessage('since must be a valid ISO 8601 datetime'),
     query('origin').optional().isIn(['START', 'FINISH', 'IT', 'OFFICE']),
     query('group').optional().isBoolean().toBoolean(),
+    query('classId')
+      .optional({ nullable: true })
+      .isNumeric()
+      .withMessage('Class ID must be a number')
+      .custom(async (value, { req }) => {
+        if (value && !isNaN(value)) {
+          const existingClass = await prisma.class.findFirst({
+            where: {
+              id: Number(value),
+              eventId: req.params.eventId,
+            },
+          });
+          if (!existingClass)
+            throw new Error('Class ID does not exist in the database');
+        }
+        return true;
+      }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -1806,7 +1830,7 @@ router.get(
     }
     const { eventId } = req.params;
     const { userId } = req.jwtDecoded;
-    const { since, origin, group } = req.query;
+    const { since, origin, group, classId } = req.query;
     const shouldGroup = group === 'true' || group === true;
 
     //TODO: Check user permissions
@@ -1861,6 +1885,10 @@ router.get(
       filters.origin = origin;
     }
 
+    if (classId) {
+      filters.competitor = { classId: Number(classId) };
+    }
+
     // Fetch the protocol data
     let dbProtocolResponse;
     try {
@@ -1878,6 +1906,7 @@ router.get(
             select: {
               lastname: true,
               firstname: true,
+              classId: true,
             },
           },
           origin: true,
