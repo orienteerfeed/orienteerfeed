@@ -16,15 +16,11 @@ jobs:
           jq -c '.commits[]' "$GITHUB_EVENT_PATH" | while read -r COMMIT; do
             AUTHOR=$(echo "$COMMIT" | jq -r '.author.name')
             MESSAGE=$(echo "$COMMIT" | jq -r '.message')
-            URL=$(echo "$COMMIT" | jq -r '.url')
 
-            CONTENT="📦 **New Commit on \`${GITHUB_REPOSITORY}\`**\n"
-            CONTENT+="🔀 Branch: \`${GITHUB_REF#refs/heads/}\`\n"
-            CONTENT+="👤 Author: \`${AUTHOR}\`\n"
-            CONTENT+="📝 Message: ${MESSAGE}\n"
-            CONTENT+="🔗 ${URL}"
+            CONTENT=$(printf "📦 **New Commit on \`%s\`**\n🔀 Branch: \`%s\`\n👤 Author: \`%s\`\n📝 Message: %s" \
+              "$GITHUB_REPOSITORY" "${GITHUB_REF#refs/heads/}" "$AUTHOR" "$MESSAGE")
 
-            echo "$CONTENT" | jq -Rs '{content: .}' > payload.json
+            jq -n --arg content "$CONTENT" '{content: $content}' > payload.json
 
             curl -H "Content-Type: application/json" -X POST -d @payload.json "$DISCORD_WEBHOOK"
           done
