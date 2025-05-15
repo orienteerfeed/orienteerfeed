@@ -2,8 +2,11 @@
 # https://hub.docker.com/_/node
 FROM node:22.14-slim
 
-RUN apt-get update -y
-RUN apt-get install -y openssl
+# Install required system packages (including curl for healthcheck)
+RUN apt-get update && apt-get install -y \
+  curl \
+  openssl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
