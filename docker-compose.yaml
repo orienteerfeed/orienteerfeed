@@ -1,4 +1,3 @@
-version: '3'
 name: ofeed
 services:
   mysql:
