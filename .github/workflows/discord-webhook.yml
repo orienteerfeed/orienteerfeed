@@ -18,14 +18,20 @@ jobs:
             MESSAGE=$(echo "$COMMIT" | jq -r '.message')
             URL=$(echo "$COMMIT" | jq -r '.url')
 
-            jq -n --arg repo "$GITHUB_REPOSITORY" \
-                  --arg branch "${GITHUB_REF#refs/heads/}" \
-                  --arg author "$AUTHOR" \
-                  --arg message "$MESSAGE" \
-                  --arg url "$URL" \
-                  '{
-                    content: "📦 **New Commit on `" + $repo + "`**\n🔀 Branch: `" + $branch + "`\n👤 Author: `" + $author + "`\n📝 Message: " + $message + "\n🔗 " + $url
-                  }' > payload.json
+            jq -n \
+              --arg repo "$GITHUB_REPOSITORY" \
+              --arg branch "${GITHUB_REF#refs/heads/}" \
+              --arg author "$AUTHOR" \
+              --arg message "$MESSAGE" \
+              --arg url "$URL" \
+              '{
+                content:
+                  "📦 **New Commit on `" + $repo + "`**\n" +
+                  "🔀 Branch: `" + $branch + "`\n" +
+                  "👤 Author: `" + $author + "`\n" +
+                  "📝 Message: " + $message + "\n" +
+                  "🔗 " + $url
+              }' > payload.json
 
             curl -H "Content-Type: application/json" -X POST -d @payload.json "$DISCORD_WEBHOOK"
           done
