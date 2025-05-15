@@ -1,7 +1,7 @@
 #Dockerfile for React frontend (ofeed-client)
 
 # Use the official Node.js image to build the frontend
-FROM node:22.14-slim as build
+FROM node:22.14-slim AS build
 
 # Set working directory
 WORKDIR /usr/src/app
