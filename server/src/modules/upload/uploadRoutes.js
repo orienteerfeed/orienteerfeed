@@ -334,8 +334,8 @@ async function upsertCompetitor(
     bibNumber: result?.BibNumber
       ? parseInt(result.BibNumber.shift())
       : start?.BibNumber
-      ? parseInt(start.BibNumber.shift()) ?? dbCompetitorResponse?.bibNumber
-      : null,
+        ? parseInt(start.BibNumber.shift()) ?? dbCompetitorResponse?.bibNumber
+        : null,
     startTime:
       (result?.StartTime?.shift() || start?.StartTime?.shift()) ??
       (dbCompetitorResponse?.startTime || null),
@@ -347,8 +347,8 @@ async function upsertCompetitor(
     card: result?.ControlCard
       ? parseInt(result.ControlCard.shift())
       : start?.ControlCard
-      ? parseInt(start.ControlCard.shift())
-      : dbCompetitorResponse?.card ?? null,
+        ? parseInt(start.ControlCard.shift())
+        : dbCompetitorResponse?.card ?? null,
     status:
       result?.Status?.toString() ??
       (dbCompetitorResponse?.status || 'Inactive'),
@@ -389,7 +389,7 @@ async function upsertCompetitor(
       ({ key, type }) =>
         competitorData[key] !== undefined &&
         normalizeValue(type, competitorData[key]) !==
-          normalizeValue(type, dbCompetitorResponse[key]),
+        normalizeValue(type, dbCompetitorResponse[key]),
     );
 
     if (isDifferent) {
@@ -651,8 +651,8 @@ async function processClassStarts(
 
         await Promise.all(
           classStart.TeamStart.map(async (teamStart) => {
-            const organisation = teamResult.Organisation
-              ? [...teamResult.Organisation].shift()
+            const organisation = teamStart.Organisation
+              ? [...teamStart.Organisation].shift()
               : null; // Organisation details
 
             const teamId = await upsertTeam(
